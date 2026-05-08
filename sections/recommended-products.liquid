@@ -13,9 +13,13 @@
           {%- render 'product-card', product: product -%}
         {%- endfor -%}
       {%- elsif product -%}
-        {%- assign related_products = product.recommendations.products | default: collections.all.products | where_exp: "p", "p.handle != product.handle" | limit: section.settings.limit -%}
-        {%- for product in related_products -%}
-          {%- render 'product-card', product: product -%}
+        {%- assign related_products = product.recommendations.products | default: collections.all.products -%}
+        {%- assign prod_count = 0 -%}
+        {%- for prod in related_products -%}
+          {%- if prod.handle == product.handle -%}{%- continue -%}{%- endif -%}
+          {%- assign prod_count = prod_count | plus: 1 -%}
+          {%- if prod_count > section.settings.limit -%}{%- break -%}{%- endif -%}
+          {%- render 'product-card', product: prod -%}
         {%- endfor -%}
       {%- else -%}
         {%- for product in collections.all.products limit: section.settings.limit -%}

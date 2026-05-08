@@ -8,7 +8,7 @@
   <div class="product-gallery">
     <div class="product-gallery__main" id="qv-main-image">
       {%- if product.featured_media -%}
-        <img src="{{ product.featured_media | image_url: width: 800 }}" alt="{{ product.featured_media.alt | escape }}" style="width:100%;height:auto;border-radius:var(--radius-lg)">
+        <img src="{{ product.featured_media | image_url: width: 800 }}" alt="{{ product.featured_media.alt | escape }}" width="800" height="800" style="width:100%;height:auto;border-radius:var(--radius-lg)">
       {%- else -%}
         <div style="width:100%;aspect-ratio:1;display:flex;align-items:center;justify-content:center;background:var(--color-surface-low);border-radius:var(--radius-lg)">
           <span class="material-symbols-outlined" style="font-size:64px;color:var(--color-border)">image</span>

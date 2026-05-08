@@ -15,9 +15,9 @@
           {%- if col != blank -%}
           <a href="{{ col.url }}" class="group" style="display:block;position:relative;overflow:hidden;border-radius:4px;aspect-ratio:3/4;background:var(--color-surface-low)" {{ block.shopify_attributes }}>
             {%- if block.settings.image != blank -%}
-              <img src="{{ block.settings.image | image_url: width: 800 }}" alt="{{ block.settings.label | default: col.title }}" loading="lazy" style="width:100%;height:100%;object-fit:cover;transition:transform 0.6s ease">
+              <img src="{{ block.settings.image | image_url: width: 800 }}" alt="{{ block.settings.label | default: col.title }}" width="800" height="1067" loading="lazy" style="width:100%;height:100%;object-fit:cover;transition:transform 0.6s ease">
             {%- elsif col.image -%}
-              <img src="{{ col.image | image_url: width: 800 }}" alt="{{ col.title }}" loading="lazy" style="width:100%;height:100%;object-fit:cover;transition:transform 0.6s ease">
+              <img src="{{ col.image | image_url: width: 800 }}" alt="{{ col.title }}" width="800" height="1067" loading="lazy" style="width:100%;height:100%;object-fit:cover;transition:transform 0.6s ease">
             {%- endif -%}
             <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.6) 0%,transparent 50%);pointer-events:none"></div>
             <div style="position:absolute;bottom:28px;left:24px;right:24px;color:white">

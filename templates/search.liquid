@@ -60,7 +60,7 @@
                   <article class="blog-card">
                     <a href="{{ result.url }}" class="blog-card__image">
                       {%- if result.image -%}
-                        <img src="{{ result.image | image_url: width: 600 }}" alt="{{ result.title | escape }}" loading="lazy">
+                        <img src="{{ result.image | image_url: width: 600 }}" alt="{{ result.title | escape }}" width="600" height="450" loading="lazy">
                       {%- endif -%}
                     </a>
                     <p class="blog-card__category">Article</p>
@@ -99,16 +99,20 @@
       {%- endif -%}
     {%- else -%}
       <!-- Search suggestions -->
-      {%- if section.blocks.size > 0 -%}
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
-          {%- for block in section.blocks -%}
-            <a href="{{ block.settings.link | default: '#' }}" style="display:flex;align-items:center;gap:12px;padding:16px;border:1px solid var(--color-border);border-radius:4px;background:white;transition:border-color 0.15s" {{ block.shopify_attributes }}>
-              <span class="material-symbols-outlined" style="color:var(--color-primary)">{{ block.settings.icon | default: 'search' }}</span>
-              <span style="font-size:14px;font-weight:600">{{ block.settings.label }}</span>
-            </a>
-          {%- endfor -%}
-        </div>
-      {%- endif -%}
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+        <a href="{{ routes.all_products_collection_url }}" style="display:flex;align-items:center;gap:12px;padding:16px;border:1px solid var(--color-border);border-radius:4px;background:white;transition:border-color 0.15s">
+          <span class="material-symbols-outlined" style="color:var(--color-primary)">search</span>
+          <span style="font-size:14px;font-weight:600">Browse Products</span>
+        </a>
+        <a href="{{ blogs['news'].url | default: '#' }}" style="display:flex;align-items:center;gap:12px;padding:16px;border:1px solid var(--color-border);border-radius:4px;background:white;transition:border-color 0.15s">
+          <span class="material-symbols-outlined" style="color:var(--color-primary)">article</span>
+          <span style="font-size:14px;font-weight:600">Read Our Blog</span>
+        </a>
+        <a href="{{ routes.root_url }}" style="display:flex;align-items:center;gap:12px;padding:16px;border:1px solid var(--color-border);border-radius:4px;background:white;transition:border-color 0.15s">
+          <span class="material-symbols-outlined" style="color:var(--color-primary)">store</span>
+          <span style="font-size:14px;font-weight:600">Visit Homepage</span>
+        </a>
+      </div>
     {%- endif -%}
   </div>
 </div>
@@ -128,3 +132,4 @@
   });
 })();
 </script>
+

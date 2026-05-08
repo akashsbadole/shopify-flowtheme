@@ -13,7 +13,7 @@
                 <th style="text-align:center">
                   {%- if block.settings.product != blank -%}
                     {%- assign prod = all_products[block.settings.product] -%}
-                    <img src="{{ prod.featured_image | image_url: width: 200 }}" alt="{{ prod.title }}" style="width:80px;height:80px;object-fit:cover;border-radius:4px;margin-bottom:8px;display:block;margin-inline:auto">
+                    <img src="{{ prod.featured_image | image_url: width: 200 }}" alt="{{ prod.title }}" width="80" height="80" style="width:80px;height:80px;object-fit:cover;border-radius:4px;margin-bottom:8px;display:block;margin-inline:auto">
                     <span>{{ prod.title }}</span><br>
                     <strong style="color:var(--color-primary)">{{ prod.price | money }}</strong>
                   {%- else -%}

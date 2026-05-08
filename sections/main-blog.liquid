@@ -3,7 +3,7 @@
   <div class="container">
     <!-- Breadcrumbs -->
     <div class="breadcrumbs">
-      <span class="breadcrumbs__item"><a href="/">Home</a></span>
+      <span class="breadcrumbs__item"><a href="{{ routes.root_url }}">Home</a></span>
       <span class="breadcrumbs__item">Blog</span>
     </div>
 
@@ -48,7 +48,7 @@
               <span>{{ article.published_at | date: '%b %d, %Y' }}</span>
             {%- endif -%}
             <span style="color:var(--color-border-strong)">â€¢</span>
-            <span>{{ article.content | number_of_words | divided_by: 200 }} min read</span>
+            <span>{{ article.content | strip_html | split: ' ' | size | divided_by: 200 }} min read</span>
           </div>
         </article>
       {%- endfor -%}

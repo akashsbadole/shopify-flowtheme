@@ -4,7 +4,7 @@
       <!-- Logo -->
       <a class="header__logo" href="{{ routes.root_url }}">
         {%- if settings.logo != blank -%}
-          <img src="{{ settings.logo | image_url: width: 200 }}" alt="{{ shop.name }}" height="40" loading="eager">
+          <img src="{{ settings.logo | image_url: width: 200 }}" alt="{{ shop.name }}" width="200" height="40" loading="eager">
         {%- else -%}
           {{ shop.name }}
         {%- endif -%}
@@ -28,7 +28,7 @@
                   {%- endfor -%}
                   {%- if settings.mega_menu_image != blank -%}
                     <a href="{{ settings.mega_menu_link | default: '#' }}" class="mega-menu__featured">
-                      <img src="{{ settings.mega_menu_image | image_url: width: 400 }}" alt="{{ settings.mega_menu_label }}">
+                      <img src="{{ settings.mega_menu_image | image_url: width: 400 }}" alt="{{ settings.mega_menu_label }}" width="400" height="267">
                       <div class="mega-menu__featured-label">
                         <p class="text-label">{{ settings.mega_menu_label | default: 'Featured' }}</p>
                       </div>
