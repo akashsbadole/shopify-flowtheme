@@ -30,13 +30,14 @@
       "type": "featured-collections",
       "settings": {
         "title": "Shop by Category",
-        "columns": 3
+        "columns": 4
       },
-      "block_order": ["col1","col2","col3"],
+      "block_order": ["col1","col2","col3","col4"],
       "blocks": {
-        "col1": {"type":"collection","settings":{"label":"New Arrivals","subtitle":"Latest drops"}},
-        "col2": {"type":"collection","settings":{"label":"Best Sellers","subtitle":"Fan favorites"}},
-        "col3": {"type":"collection","settings":{"label":"Sale","subtitle":"Up to 50% off"}}
+        "col1": {"type":"collection","settings":{"label":"New Arrivals","subtitle":"Just dropped"}},
+        "col2": {"type":"collection","settings":{"label":"Best Sellers","subtitle":"Top rated"}},
+        "col3": {"type":"collection","settings":{"label":"Sale Items","subtitle":"Up to 50% off"}},
+        "col4": {"type":"collection","settings":{"label":"View All","subtitle":"Browse store"}}
       }
     },
     "featured_products": {
