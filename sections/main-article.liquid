@@ -68,7 +68,6 @@
     {%- if section.settings.show_related -%}
       {%- assign related_limit = section.settings.related_limit -%}
       {%- assign related_count = 0 -%}
-      {%- assign show_related_block = false -%}
       {%- for a in blog.articles -%}{%- if a.handle != article.handle -%}{%- assign related_count = related_count | plus: 1 -%}{%- endif -%}{%- endfor -%}
       {%- if related_count > 0 -%}
         <div style="margin-top:80px;padding-top:40px;border-top:2px solid var(--color-border)">
