@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="product-card__info">
           <a href="/products/${p.handle}" class="product-card__title">${p.title}</a>
           <div class="product-card__pricing">
-            <span class="product-card__price">${(p.price / 100).toLocaleString('en-US',{style:'currency',currency:'USD'})}</span>
+            <span class="product-card__price">${(p.price / 100).toLocaleString('en-US',{style:'currency',currency:'{{ cart.currency.iso_code }}'})}</span>
           </div>
         </div>
       </article>`).join('');

@@ -63,7 +63,7 @@
     "name": "Announcement Bar",
     "settings": [
       {"type":"checkbox","id":"show_announcement","label":"Show Announcement Bar","default":true},
-      {"type":"text","id":"announcement_text","label":"Announcement Text","default":"🎉 Free shipping on orders over $75 — Use code FREESHIP"},
+      {"type":"text","id":"announcement_text","label":"Announcement Text","default":"🎉 Free shipping on all orders — Use code FREESHIP"},
       {"type":"url","id":"announcement_link","label":"Announcement Link"},
       {"type":"text","id":"announcement_link_text","label":"Announcement Link Text","default":"Shop Now"}
     ]

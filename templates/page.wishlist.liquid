@@ -98,7 +98,7 @@
             <div class="wishlist-item__info">
               <p class="wishlist-item__vendor">${p.vendor || ''}</p>
               <a href="${p.url}" class="wishlist-item__title">${p.title}</a>
-              <p class="wishlist-item__price">${p.price ? '{{ "$" }}' + (p.price / 100).toFixed(2) : ''}</p>
+              <p class="wishlist-item__price">${p.price ? (p.price / 100).toLocaleString('en-US',{style:'currency',currency:'{{ cart.currency.iso_code }}'}) : ''}</p>
               <div class="wishlist-item__actions">
                 <button class="btn btn--primary btn--sm btn--full" onclick="quickAddToCart(${p.variants?.[0]?.id || p.id}, '${p.title.replace(/'/g, "\\'")}')">
                   Add to Cart

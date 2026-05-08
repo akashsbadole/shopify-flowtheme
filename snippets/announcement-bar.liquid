@@ -1,6 +1,6 @@
 <div class="announcement-bar" role="status">
   <div style="display:flex;align-items:center;justify-content:center;gap:16px;position:relative">
-    <span>{{ settings.announcement_text | default: '🎉 Free shipping on orders over $75 — Use code FREESHIP' }}</span>
+    <span>{% if settings.announcement_text != blank %}{{ settings.announcement_text }}{% else %}🎉 Free shipping on orders over {{ settings.free_shipping_threshold | times: 100 | money }}{% endif %}</span>
     {%- if settings.announcement_link != blank -%}
       <a href="{{ settings.announcement_link }}" style="color:white;font-weight:700;text-decoration:underline">
         {{ settings.announcement_link_text | default: 'Shop Now' }}
