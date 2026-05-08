@@ -1,97 +1,94 @@
-<div class="page-wishlist" style="padding:60px 20px;max-width:960px;margin:0 auto;text-align:center">
-<h1 style="font-size:32px;font-weight:800;margin-bottom:24px">My Wishlist</h1>
+<div class="page-wishlist" style="padding:60px 20px;max-width:1200px;margin:0 auto">
+<h1 style="font-size:32px;font-weight:800;margin-bottom:24px;text-align:center">My Wishlist</h1>
 <div id="wishlist-container">
-<div class="wishlist-empty" id="wishlist-empty" style="padding:40px">
-<span class="material-symbols-outlined" style="font-size:48px;color:#ccc">favorite_border</span>
-<p style="margin:16px 0;color:#666">Your wishlist is empty</p>
-<a href="/" style="background:#0052FF;color:#fff;padding:12px 24px;border-radius:4px;text-decoration:none;display:inline-block">Continue Shopping</a>
+<div id="wishlist-empty" style="text-align:center;padding:60px 20px;display:none">
+<span class="material-symbols-outlined" style="font-size:64px;color:#ccc">favorite_border</span>
+<p style="margin:16px 0;color:#666;font-size:18px">Your wishlist is empty</p>
+<a href="/collections/all" style="background:#0052FF;color:#fff;padding:14px 28px;border-radius:4px;text-decoration:none;display:inline-block">Browse Products</a>
 </div>
-<div class="wishlist-grid" id="wishlist-grid" style="display:none;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:30px"></div>
+<div id="wishlist-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:24px"></div>
 </div>
 </div>
 
 <script>
 (function() {
-  const key = 'flowtheme_wishlist';
+  const STORAGE_KEY = 'flowtheme_wishlist';
   const grid = document.getElementById('wishlist-grid');
   const empty = document.getElementById('wishlist-empty');
 
   async function loadWishlist() {
-    const ids = JSON.parse(localStorage.getItem(key) || '[]');
-    console.log('Wishlist IDs:', ids);
-    if (ids.length === 0) {
-      empty.style.display = '';
+    const productIds = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    console.log('Wishlist IDs:', productIds);
+    
+    if (productIds.length === 0) {
+      empty.style.display = 'block';
       grid.style.display = 'none';
       return;
     }
 
     empty.style.display = 'none';
     grid.style.display = 'grid';
-    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px"><span class="material-symbols-outlined" style="font-size:32px;color:#ccc">autorenew</span></div>';
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px"><span class="material-symbols-outlined" style="font-size:40px;color:#ccc;animation:spin 1s linear infinite">autorenew</span></div>';
 
     try {
-      const handles = ids.join(',');
-      const res = await fetch(`/search?q=${encodeURIComponent(handles)}&type=product&view=json`);
-      const data = await res.json();
-      console.log('Search results:', data);
-      const products = data.results || data.products || [];
+      const products = [];
+      for (const id of productIds) {
+        try {
+          const res = await fetch(`/products/${id}.js`);
+          if (res.ok) {
+            const p = await res.json();
+            products.push(p);
+          }
+        } catch(e) {}
+      }
+
+      console.log('Loaded products:', products);
 
       if (products.length === 0) {
-        grid.style.display = 'none';
-        empty.style.display = '';
+        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px"><p>No products found</p></div>';
         return;
       }
 
-      const productMap = {};
-      products.forEach(p => { productMap[p.id] = p; });
-
-      grid.innerHTML = ids.map(id => {
-        const p = productMap[id];
-        if (!p) return '';
+      grid.innerHTML = products.map(p => {
         const price = p.price ? (p.price / 100).toLocaleString('en-US',{style:'currency',currency:'{{ cart.currency.iso_code }}'}) : '';
-        return `
-          <div class="wishlist-item" data-id="${p.id}" style="border:1px solid #eee;border-radius:8px;overflow:hidden">
-            <button class="wishlist-item__remove" data-remove="${p.id}" style="position:absolute;top:10px;right:10px;width:28px;height:28px;border-radius:50%;background:#fff;border:none;cursor:pointer">
-              <span class="material-symbols-outlined" style="font-size:16px">close</span>
-            </button>
-            <a href="${p.url}" style="display:block;aspect-ratio:1;background:#f5f5f5">
-              <img src="${p.featured_image || p.images?.[0]?.src || ''}" alt="${p.title}" style="width:100%;height:100%;object-fit:cover">
-            </a>
-            <div style="padding:12px">
-              <p style="font-size:11px;color:#888;text-transform:uppercase;margin-bottom:4px">${p.vendor || ''}</p>
-              <a href="${p.url}" style="font-size:14px;font-weight:600;color:#333;text-decoration:none;display:block;margin-bottom:8px">${p.title}</a>
-              <p style="font-size:16px;font-weight:700;color:#0052FF">${price}</p>
-              <button class="btn btn--primary btn--sm" onclick="quickAddToCart(${p.variants?.[0]?.id || p.id}, '${p.title.replace(/'/g, "\\'")}')" style="margin-top:12px;width:100%;padding:10px;background:#0052FF;color:#fff;border:none;border-radius:4px;cursor:pointer">Add to Cart</button>
+        const comparePrice = p.compare_at_price ? (p.compare_at_price / 100).toLocaleString('en-US',{style:'currency',currency:'{{ cart.currency.iso_code }}'}) : '';
+        const image = p.featured_image ? p.featured_image.src : '';
+        const variantId = p.variants[0] ? p.variants[0].id : p.id;
+        
+        return `<div class="wishlist-item" style="border:1px solid #eee;border-radius:12px;overflow:hidden;position:relative">
+          <button onclick="removeFromWishlist(${p.id})" style="position:absolute;top:10px;right:10px;z-index:2;width:32px;height:32px;border-radius:50%;background:#fff;border:none;cursor:pointer;box-shadow:0 2px8px rgba(0,0,0,0.1)">
+            <span class="material-symbols-outlined" style="font-size:18px;color:#666">close</span>
+          </button>
+          <a href="${p.url}" style="display:block;aspect-ratio:1;background:#f9f9f9">
+            <img src="${image}" alt="${p.title}" style="width:100%;height:100%;object-fit:cover">
+          </a>
+          <div style="padding:16px">
+            <p style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px">${p.vendor || ''}</p>
+            <a href="${p.url}" style="font-size:14px;font-weight:600;color:#222;text-decoration:none;display:block;margin-bottom:8px;line-height:1.3">${p.title}</a>
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+              <span style="font-size:16px;font-weight:700;color:#0052FF">${price}</span>
+              ${comparePrice && parseFloat(p.compare_at_price) > parseFloat(p.price) ? `<span style="font-size:13px;color:#888;text-decoration:line-through">${comparePrice}</span>` : ''}
             </div>
-          </div>`;
+            <button onclick="quickAddToCart(${variantId}, '${p.title.replace(/'/g, "\\'")}')" style="width:100%;padding:12px;background:#0052FF;color:#fff;border:none;border-radius:6px;font-weight:600;cursor:pointer">Add to Cart</button>
+          </div>
+        </div>`;
       }).join('');
 
-      grid.addEventListener('click', function(e) {
-        const btn = e.target.closest('[data-remove]');
-        if (btn) {
-          e.preventDefault();
-          const id = btn.dataset.remove;
-          let items = JSON.parse(localStorage.getItem(key) || '[]');
-          items = items.filter(i => i !== id);
-          localStorage.setItem(key, JSON.stringify(items));
-          btn.closest('.wishlist-item').remove();
-          if (items.length === 0) {
-            grid.style.display = 'none';
-            empty.style.display = '';
-          }
-          const countEl = document.querySelector('[data-wishlist-count]');
-          if (countEl) countEl.textContent = items.length;
-        }
-      });
-
     } catch (err) {
-      console.error('Wishlist load error:', err);
-      grid.style.display = 'none';
-      empty.style.display = '';
+      console.error('Error loading wishlist:', err);
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px"><p>Error loading wishlist</p></div>';
     }
   }
 
+  window.removeFromWishlist = function(id) {
+    let items = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    items = items.filter(i => i !== id);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    loadWishlist();
+    const countEl = document.querySelector('[data-wishlist-count]');
+    if (countEl) countEl.textContent = items.length;
+  };
+
   document.addEventListener('DOMContentLoaded', loadWishlist);
-  document.addEventListener('flowtheme:wishlist-updated', loadWishlist);
 })();
 </script>

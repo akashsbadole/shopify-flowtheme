@@ -1148,3 +1148,28 @@ window.quickAddToCart = async function(variantId, productName) {
     Toast.show('Could not add to cart', 'error');
   }
 };
+
+/* ============================================================
+   RECENTLY VIEWED TRACKING
+   ============================================================ */
+(function() {
+  const STORAGE_KEY = 'flowtheme_recently_viewed';
+  const MAX_ITEMS = 12;
+  
+  function trackViewedProduct() {
+    const productHandle = {{ product.handle | json }};
+    if (!productHandle) return;
+    
+    let viewed = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    viewed = viewed.filter(h => h !== productHandle);
+    viewed.unshift(productHandle);
+    viewed = viewed.slice(0, MAX_ITEMS);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(viewed));
+  }
+  
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', trackViewedProduct);
+  } else {
+    trackViewedProduct();
+  }
+})();

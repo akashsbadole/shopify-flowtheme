@@ -87,6 +87,12 @@
         "t3": {"type":"testimonial","settings":{"rating":5,"title":"Worth every penny","review":"Premium quality at a fair price. Customer support was responsive and the returns process was seamless.","author":"Priya R.","location":"Toronto, CA","verified":true}}
       }
     },
+    "recently_viewed": {
+      "type": "recently-viewed",
+      "settings": {
+        "title": "Recently Viewed"
+      }
+    },
     "newsletter": {
       "type": "newsletter",
       "settings": {
@@ -109,5 +115,5 @@
       }
     }
   },
-  "order": ["hero","trust_badges","featured_collections","featured_products","countdown","image_text","testimonials","newsletter","promo"]
+  "order": ["hero","trust_badges","featured_collections","featured_products","countdown","image_text","testimonials","recently_viewed","newsletter","promo"]
 }
