@@ -154,7 +154,8 @@
       {"type":"link_list","id":"footer_menu_3","label":"Footer Menu 3"},
       {"type":"text","id":"footer_menu_label_3","label":"Footer Menu 3 Label","default":"Company"},
       {"type":"text","id":"newsletter_text","label":"Newsletter Description","default":"Get early access to new arrivals and exclusive offers."},
-      {"type":"checkbox","id":"show_powered_by","label":"Show 'Powered by Shopify'","default":false}
+      {"type":"checkbox","id":"show_powered_by","label":"Show 'Powered by Shopify'","default":false},
+      {"type":"checkbox","id":"show_flowtheme_credit","label":"Show 'Theme by Appixen' Credit","default":true,"info":"Credit the FlowTheme developer. Since this is a free theme, a small credit link helps support development."}
     ]
   },
   {
