@@ -659,7 +659,12 @@ class QuickView {
       const btn = e.target.closest('[data-quick-view]');
       if (btn) {
         e.preventDefault();
-        await this.open(btn.dataset.quickView, btn.dataset.handle);
+        const productUrl = btn.dataset.quickView || btn.getAttribute('href') || '';
+        if (productUrl && productUrl !== 'undefined') {
+          await this.open(productUrl, btn.dataset.handle);
+        } else {
+          console.warn('Quick View: Product URL not available');
+        }
       }
       if (e.target === this.overlay || e.target.closest('.modal__close')) {
         this.close();
@@ -672,7 +677,7 @@ class QuickView {
   }
 
   async open(productUrl, handle) {
-    if (!this.overlay || !this.modal) return;
+    if (!this.overlay || !this.modal || !productUrl || productUrl === 'undefined') return;
     this.modal.innerHTML = `
       <div style="display:flex;align-items:center;justify-content:center;height:300px">
         <span class="material-symbols-outlined" style="font-size:40px;color:var(--color-border);animation:spin 1s linear infinite">autorenew</span>
@@ -729,12 +734,12 @@ class Wishlist {
     if (countEl) countEl.textContent = this.items.length;
   }
 
-  toggle(productId, btn) {
-    if (this.has(productId)) {
-      this.items = this.items.filter(id => id !== productId);
+  toggle(productHandle, btn) {
+    if (this.has(productHandle)) {
+      this.items = this.items.filter(h => h !== productHandle);
       Toast.show('Removed from wishlist', 'info');
     } else {
-      this.items.push(productId);
+      this.items.push(productHandle);
       Toast.show('Added to wishlist', 'success');
     }
     localStorage.setItem(this.key, JSON.stringify(this.items));
@@ -742,15 +747,15 @@ class Wishlist {
     FlowTheme.emit('wishlist-updated', { items: this.items });
   }
 
-  has(productId) {
-    return this.items.includes(productId);
+  has(productHandle) {
+    return this.items.includes(productHandle);
   }
 
   syncUI() {
     FlowTheme.qsa('[data-wishlist-toggle]').forEach(btn => {
-      const id = btn.dataset.wishlistToggle;
+      const handle = btn.dataset.wishlistToggle;
       const icon = btn.querySelector('.material-symbols-outlined');
-      if (this.has(id)) {
+      if (this.has(handle)) {
         btn.setAttribute('aria-pressed', 'true');
         if (icon) icon.classList.add('fill');
       } else {
@@ -955,7 +960,7 @@ class CookieConsent {
    ============================================================ */
 class ViewToggle {
   constructor() {
-    this.btns = FlowTheme.qsa('.view-toggle__btn');
+    this.btns = FlowTheme.qsa('.view-toggle');
     this.grid = FlowTheme.qs('.product-grid');
     if (!this.btns.length || !this.grid) return;
     this.init();
@@ -970,9 +975,23 @@ class ViewToggle {
         if (view === 'list') {
           this.grid.style.gridTemplateColumns = '1fr';
           this.grid.querySelectorAll('.product-card').forEach(c => c.style.display = 'flex');
+          // Change to list layout - make cards full width
+          this.grid.querySelectorAll('.product-card').forEach(card => {
+            card.style.display = 'flex';
+            card.style.flexDirection = 'column';
+            const image = card.querySelector('.product-card__image');
+            if (image) image.style.height = '200px';
+          });
         } else {
           this.grid.style.gridTemplateColumns = '';
           this.grid.querySelectorAll('.product-card').forEach(c => c.style.display = '');
+          // Reset to grid layout
+          this.grid.querySelectorAll('.product-card').forEach(card => {
+            card.style.display = '';
+            card.style.flexDirection = '';
+            const image = card.querySelector('.product-card__image');
+            if (image) image.style.height = '';
+          });
         }
       });
     });
@@ -1148,28 +1167,3 @@ window.quickAddToCart = async function(variantId, productName) {
     Toast.show('Could not add to cart', 'error');
   }
 };
-
-/* ============================================================
-   RECENTLY VIEWED TRACKING
-   ============================================================ */
-(function() {
-  const STORAGE_KEY = 'flowtheme_recently_viewed';
-  const MAX_ITEMS = 12;
-  
-  function trackViewedProduct() {
-    const productHandle = {{ product.handle | json }};
-    if (!productHandle) return;
-    
-    let viewed = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-    viewed = viewed.filter(h => h !== productHandle);
-    viewed.unshift(productHandle);
-    viewed = viewed.slice(0, MAX_ITEMS);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(viewed));
-  }
-  
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', trackViewedProduct);
-  } else {
-    trackViewedProduct();
-  }
-})();

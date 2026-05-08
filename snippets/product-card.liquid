@@ -30,7 +30,7 @@
       <span class="product-card__badge product-card__badge--new">New</span>
     {%- endif -%}
     <!-- Wishlist -->
-    <button class="product-card__wishlist" data-wishlist-toggle="{{ product.id }}" aria-label="Add to wishlist" aria-pressed="false">
+    <button class="product-card__wishlist" data-wishlist-toggle="{{ product.handle }}" aria-label="Add to wishlist" aria-pressed="false">
       <span class="material-symbols-outlined" style="font-size:18px">favorite</span>
     </button>
     <!-- Quick actions -->
@@ -41,7 +41,7 @@
           Add to Cart
         </button>
       {%- endif -%}
-      <button class="btn btn--secondary btn--full btn--sm" data-quick-view="{{ product.url }}" data-handle="{{ product.handle }}" style="margin-top:8px">
+      <button class="btn btn--secondary btn--full btn--sm" data-quick-view="{{ product.url | default: '/products/' | append: product.handle }}" data-handle="{{ product.handle }}" style="margin-top:8px">
         Quick View
       </button>
     </div>

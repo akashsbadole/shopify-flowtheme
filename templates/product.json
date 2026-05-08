@@ -8,7 +8,8 @@
         "show_vendor": true,
         "show_sku": false,
         "show_trust_badges": true,
-        "show_share_buttons": true
+        "show_share_buttons": true,
+        "show_reviews": true
       }
     },
     "recommended": {

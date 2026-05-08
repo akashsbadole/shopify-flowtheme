@@ -1,0 +1,1536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlowTheme Documentation - Shopify Theme</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #64748b;
+            --accent: #f97316;
+            --bg-light: #f8fafc;
+            --bg-dark: #0f172a;
+            --text-dark: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --sidebar-width: 280px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--text-dark);
+            line-height: 1.6;
+            background: #fff;
+        }
+        .doc-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--bg-dark);
+            color: #fff;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            padding: 24px 0;
+            z-index: 100;
+        }
+        .sidebar::-webkit-scrollbar { width: 6px; }
+        .sidebar::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
+        .sidebar-header {
+            padding: 0 24px 24px;
+            border-bottom: 1px solid #1e293b;
+            margin-bottom: 16px;
+        }
+        .sidebar-logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .sidebar-logo span { color: var(--accent); }
+        .sidebar-version {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+        .nav-group { margin-bottom: 8px; }
+        .nav-group-title {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #64748b;
+            padding: 8px 24px;
+        }
+        .nav-link {
+            display: block;
+            padding: 8px 24px;
+            color: #cbd5e1;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .nav-link:hover, .nav-link.active {
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+            border-left: 3px solid var(--accent);
+            padding-left: 21px;
+        }
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 32px 48px;
+            max-width: 1200px;
+        }
+        .doc-header {
+            margin-bottom: 40px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+        .doc-header h1 {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+        .doc-header p {
+            font-size: 18px;
+            color: var(--text-light);
+        }
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+        .badge-free { background: #d1fae5; color: #065f46; }
+        .badge-version { background: #dbeafe; color: #1e40af; }
+        section {
+            margin-bottom: 64px;
+            scroll-margin-top: 24px;
+        }
+        h2 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        h2 .icon { font-size: 24px; }
+        h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin: 32px 0 16px;
+        }
+        h4 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin: 24px 0 12px;
+        }
+        p { margin-bottom: 16px; color: #475569; }
+        ul, ol { margin-bottom: 16px; padding-left: 24px; }
+        li { margin-bottom: 8px; color: #475569; }
+        a { color: var(--primary); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin: 24px 0;
+        }
+        .card {
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.3s;
+        }
+        .card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.08); transform: translateY(-2px); }
+        .card h4 { margin-top: 0; color: var(--text-dark); }
+        .card .card-icon { font-size: 32px; margin-bottom: 12px; }
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin: 24px 0;
+        }
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 16px;
+            background: var(--bg-light);
+            border-radius: 8px;
+        }
+        .feature-item .check { color: var(--success); font-weight: bold; }
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            margin: 16px 0;
+        }
+        .code-block code { color: #fbbf24; }
+        .code-block .comment { color: #64748b; }
+        .step-list {
+            counter-reset: step;
+            list-style: none;
+            padding: 0;
+        }
+        .step-list li {
+            position: relative;
+            padding-left: 48px;
+            margin-bottom: 24px;
+            counter-increment: step;
+        }
+        .step-list li::before {
+            content: counter(step);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 32px;
+            height: 32px;
+            background: var(--primary);
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+            background: #fff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th {
+            background: var(--bg-light);
+            padding: 14px 16px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-dark);
+            border-bottom: 2px solid var(--border);
+        }
+        td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+        }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: var(--bg-light); }
+        .note {
+            background: #eff6ff;
+            border-left: 4px solid var(--primary);
+            padding: 16px 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 20px 0;
+        }
+        .note.warning {
+            background: #fef3c7;
+            border-left-color: var(--warning);
+        }
+        .note.success {
+            background: #ecfdf5;
+            border-left-color: var(--success);
+        }
+        .note.danger {
+            background: #fef2f2;
+            border-left-color: var(--danger);
+        }
+        .note-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .toc {
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            margin: 24px 0;
+        }
+        .toc-title {
+            font-weight: 600;
+            margin-bottom: 16px;
+            font-size: 16px;
+        }
+        .toc-list {
+            list-style: none;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 8px;
+        }
+        .toc-list a {
+            display: block;
+            padding: 8px 12px;
+            background: #fff;
+            border-radius: 6px;
+            font-size: 14px;
+            border: 1px solid var(--border);
+        }
+        .toc-list a:hover { background: var(--primary); color: #fff; text-decoration: none; }
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin: 24px 0;
+        }
+        .demo-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+        .demo-card:hover { box-shadow: 0 8px 30px rgba(0,0,0,0.12); }
+        .demo-preview {
+            height: 160px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 48px;
+        }
+        .demo-info { padding: 20px; }
+        .demo-info h4 { margin: 0 0 8px; }
+        .demo-info p { font-size: 14px; margin-bottom: 12px; }
+        .demo-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .file-tree {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 14px;
+            margin: 16px 0;
+        }
+        .file-tree .folder { color: #60a5fa; }
+        .file-tree .file { color: #a5b4fc; }
+        .file-tree .tab { display: inline-block; width: 20px; }
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            margin: 24px 0;
+        }
+        .app-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .app-card h4 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0 0 12px;
+        }
+        .app-category {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            margin-left: auto;
+        }
+        .app-category.reviews { background: #fce7f3; color: #be185d; }
+        .app-category.email { background: #dbeafe; color: #1d4ed8; }
+        .app-category.upsell { background: #d1fae5; color: #065f46; }
+        .app-category.chat { background: #fef3c7; color: #92400e; }
+        .changelog-item {
+            border-left: 3px solid var(--primary);
+            padding: 20px 24px;
+            background: var(--bg-light);
+            border-radius: 0 12px 12px 0;
+            margin-bottom: 24px;
+        }
+        .changelog-version {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+        .changelog-date {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 12px;
+        }
+        .changelog-list {
+            list-style: none;
+            padding: 0;
+        }
+        .changelog-list li {
+            padding-left: 20px;
+            position: relative;
+        }
+        .changelog-list li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+        }
+        .support-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin: 24px 0;
+        }
+        .support-card {
+            text-align: center;
+            padding: 32px 24px;
+            background: var(--bg-light);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+        .support-icon { font-size: 40px; margin-bottom: 16px; }
+        .support-card h4 { margin-bottom: 12px; }
+        .faq-item {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+        .faq-question {
+            background: var(--bg-light);
+            padding: 16px 20px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .faq-answer {
+            padding: 16px 20px;
+            border-top: 1px solid var(--border);
+            display: none;
+        }
+        .faq-item.active .faq-answer { display: block; }
+        .faq-item.active .faq-toggle { transform: rotate(180deg); }
+        .faq-toggle { transition: transform 0.3s; }
+        .mobile-toggle {
+            display: none;
+            position: fixed;
+            top: 16px;
+            left: 16px;
+            z-index: 1000;
+            background: var(--bg-dark);
+            color: #fff;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .back-to-top {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 48px;
+            height: 48px;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+        .back-to-top.visible { opacity: 1; }
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+            }
+            .sidebar.open { transform: translateX(0); }
+            .main-content {
+                margin-left: 0;
+                padding: 24px;
+            }
+            .mobile-toggle { display: flex; }
+        }
+    </style>
+</head>
+<body>
+    <button class="mobile-toggle" onclick="toggleSidebar()">☰</button>
+    
+    <div class="doc-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="#intro" class="sidebar-logo">Flow<span>Theme</span></a>
+                <div class="sidebar-version">Documentation v1.0.0</div>
+            </div>
+            
+            <nav class="nav-group">
+                <div class="nav-group-title">Getting Started</div>
+                <a href="#intro" class="nav-link">Introduction</a>
+                <a href="#installation" class="nav-link">Installation Guide</a>
+                <a href="#post-setup" class="nav-link">Post-Installation Setup</a>
+            </nav>
+            
+            <nav class="nav-group">
+                <div class="nav-group-title">Customization</div>
+                <a href="#theme-editor" class="nav-link">Theme Editor</a>
+                <a href="#global-settings" class="nav-link">Global Settings</a>
+                <a href="#sections" class="nav-link">Sections</a>
+                <a href="#templates" class="nav-link">Templates</a>
+                <a href="#niche-presets" class="nav-link">Niche Presets</a>
+            </nav>
+            
+            <nav class="nav-group">
+                <div class="nav-group-title">Advanced</div>
+                <a href="#file-structure" class="nav-link">File Structure</a>
+                <a href="#customization" class="nav-link">Advanced Customization</a>
+                <a href="#translations" class="nav-link">Translations</a>
+            </nav>
+            
+            <nav class="nav-group">
+                <div class="nav-group-title">Resources</div>
+                <a href="#integrations" class="nav-link">App Integrations</a>
+                <a href="#performance" class="nav-link">Performance</a>
+                <a href="#troubleshooting" class="nav-link">Troubleshooting</a>
+                <a href="#faq" class="nav-link">FAQ</a>
+                <a href="#changelog" class="nav-link">Changelog</a>
+                <a href="#support" class="nav-link">Support</a>
+            </nav>
+        </aside>
+        
+        <main class="main-content">
+            <div class="doc-header">
+                <h1>FlowTheme Documentation</h1>
+                <p>A modern, highly customizable Shopify 2.0 theme for e-commerce stores</p>
+                <span class="badge badge-free">Free & Open Source</span>
+                <span class="badge badge-version">v1.0.0</span>
+                <span class="badge badge-version">MIT License</span>
+            </div>
+            
+            <div class="toc">
+                <div class="toc-title">Quick Navigation</div>
+                <ul class="toc-list">
+                    <li><a href="#intro">Introduction</a></li>
+                    <li><a href="#installation">Installation</a></li>
+                    <li><a href="#theme-editor">Theme Editor</a></li>
+                    <li><a href="#sections">Sections</a></li>
+                    <li><a href="#integrations">Integrations</a></li>
+                    <li><a href="#support">Support</a></li>
+                </ul>
+            </div>
+            
+            <section id="intro">
+                <h2><span class="icon">📌</span> Introduction</h2>
+                
+                <p><strong>FlowTheme</strong> is a modern, highly customizable, and performance-optimized Shopify 2.0 theme designed for multi-niche e-commerce stores. Built with Shopify's Online Store 2.0 architecture, it supports JSON templates, app blocks, and dynamic data sources out of the box.</p>
+                
+                <h3>Theme Information</h3>
+                <table>
+                    <tr><th>Property</th><th>Value</th></tr>
+                    <tr><td>Theme Name</td><td>FlowTheme</td></tr>
+                    <tr><td>Version</td><td>1.0.0</td></tr>
+                    <tr><td>Author</td><td>Appixen</td></tr>
+                    <tr><td>License</td><td>MIT</td></tr>
+                    <tr><td>Framework</td><td>Shopify 2.0 (Online Store 2.0)</td></tr>
+                </table>
+                
+                <h3>Target Audience</h3>
+                <div class="card-grid">
+                    <div class="card">
+                        <div class="card-icon">👗</div>
+                        <h4>Fashion Brands</h4>
+                        <p>Perfect for clothing stores with size charts, color swatches, and lookbook sections.</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">💻</div>
+                        <h4>Tech Stores</h4>
+                        <p>Ideal for electronics with comparison tables and detailed spec sections.</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">💎</div>
+                        <h4>Luxury Brands</h4>
+                        <p>Elegant design for high-end products with minimalist layouts.</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">📦</div>
+                        <h4>Dropshippers</h4>
+                        <p>Quick setup and conversion-optimized for fast-paced dropshipping.</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">🏪</div>
+                        <h4>Local Businesses</h4>
+                        <p>Perfect for local shops with booking forms and pickup options.</p>
+                    </div>
+                </div>
+                
+                <h3>Key Features</h3>
+                <div class="feature-list">
+                    <div class="feature-item"><span class="check">✓</span><div><strong>Shopify 2.0 Ready</strong><br>Full JSON templates & section blocks</div></div>
+                    <div class="feature-item"><span class="check">✓</span><div><strong>Mobile-First Design</strong><br>Fully responsive layouts</div></div>
+                    <div class="feature-item"><span class="check">✓</span><div><strong>Performance Optimized</strong><br>Lazy loading & critical CSS</div></div>
+                    <div class="feature-item"><span class="check">✓</span><div><strong>Advanced Cart</strong><br>Drawer, Page, or Modal options</div></div>
+                    <div class="feature-item"><span class="check">✓</span><div><strong>5 Niche Presets</strong><br>Pre-configured styling</div></div>
+                    <div class="feature-item"><span class="check">✓</span><div><strong>26 Built-in Sections</strong><br>Hero, Testimonials, etc.</div></div>
+                    <div class="feature-item"><span class="check">✓</span><div><strong>5 Google Fonts</strong><br>Premium typography options</div></div>
+                    <div class="feature-item"><span class="check">✓</span><div><strong>GDPR Ready</strong><br>Cookie consent banner</div></div>
+                </div>
+                
+                <h3>Live Demo & Support</h3>
+                <div class="demo-grid">
+                    <div class="demo-card">
+                        <div class="demo-preview">🏠</div>
+                        <div class="demo-info">
+                            <h4>Homepage Demo</h4>
+                            <p>Preview the default homepage layout</p>
+                            <a href="#" class="demo-link">View Demo →</a>
+                        </div>
+                    </div>
+                    <div class="demo-card">
+                        <div class="demo-preview">👕</div>
+                        <div class="demo-info">
+                            <h4>Fashion Niche</h4>
+                            <p>Fashion store preset demo</p>
+                            <a href="#" class="demo-link">View Demo →</a>
+                        </div>
+                    </div>
+                    <div class="demo-card">
+                        <div class="demo-preview">💻</div>
+                        <div class="demo-info">
+                            <h4>Tech Niche</h4>
+                            <p>Electronics store preset demo</p>
+                            <a href="#" class="demo-link">View Demo →</a>
+                        </div>
+                    </div>
+                    <div class="demo-card">
+                        <div class="demo-preview">💎</div>
+                        <div class="demo-info">
+                            <h4>Luxury Niche</h4>
+                            <p>Premium brand preset demo</p>
+                            <a href="#" class="demo-link">View Demo →</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="note">
+                    <div class="note-title">💡 Support Contact</div>
+                    <p>For questions or support, visit <a href="http://appixen.com/shopify" target="_blank">appixen.com/shopify</a></p>
+                </div>
+            </section>
+            
+            <section id="installation">
+                <h2><span class="icon">📥</span> Installation Guide</h2>
+                
+                <h3>A. Prerequisites</h3>
+                <ul>
+                    <li><strong>Shopify Store</strong> - Any Shopify plan (Basic, Professional, etc.)</li>
+                    <li><strong>Basic Knowledge</strong> - Familiarity with Shopify admin interface</li>
+                    <li><strong>Optional</strong> - Code editor for advanced customizations (VS Code recommended)</li>
+                    <li><strong>Shopify CLI</strong> - For local development (optional but recommended)</li>
+                </ul>
+                
+                <h3>B. Download the Theme</h3>
+                <ol class="step-list">
+                    <li>Download the theme ZIP file from the source</li>
+                    <li>Extract the files to access the theme package</li>
+                    <li>Ensure the folder contains: <code>config/</code>, <code>sections/</code>, <code>snippets/</code>, etc.</li>
+                </ol>
+                
+                <h3>C. Upload to Shopify</h3>
+                <div class="note">
+                    <div class="note-title">📝 Method 1: Shopify Admin (Manual Upload)</div>
+                    <ol>
+                        <li>Log in to your <a href="https://shopify.com/admin" target="_blank">Shopify Admin</a></li>
+                        <li>Navigate to <strong>Online Store → Themes</strong></li>
+                        <li>Click <strong>Add theme</strong> → <strong>Upload zip file</strong></li>
+                        <li>Select the <code>flowtheme-v1.0.0.zip</code> file</li>
+                        <li>Wait for upload to complete</li>
+                    </ol>
+                </div>
+                
+                <div class="note">
+                    <div class="note-title">💻 Method 2: Shopify CLI (Recommended for Developers)</div>
+                    <ol>
+                        <li>Install Shopify CLI: <code>npm install -g @shopify/cli @shopify/theme</code></li>
+                        <li>Navigate to your theme directory: <code>cd flowtheme</code></li>
+                        <li>Connect to your store: <code>shopify auth login</code></li>
+                        <li>Start development: <code>shopify theme dev</code></li>
+                        <li>Open the local URL provided in terminal</li>
+                    </ol>
+                </div>
+                
+                <h3>D. Activate the Theme</h3>
+                <ol class="step-list">
+                    <li>After uploading, locate the theme in your theme library</li>
+                    <li>Click <strong>Actions</strong> → <strong>Preview</strong> to test</li>
+                    <li>Once satisfied, click <strong>Actions</strong> → <strong>Publish</strong></li>
+                </ol>
+                
+                <div class="note warning">
+                    <div class="note-title">⚠️ Important</div>
+                    <p>Do NOT delete your current live theme until you've confirmed the new theme works correctly!</p>
+                </div>
+            </section>
+            
+            <section id="post-setup">
+                <h2><span class="icon">🚀</span> Post-Installation Setup</h2>
+                
+                <h3>Required Settings</h3>
+                <ol class="step-list">
+                    <li><strong>Configure Navigation</strong> - Go to <code>Online Store → Navigation</code> and set up your menus</li>
+                    <li><strong>Upload Logo</strong> - Go to Theme Editor → Header → Upload your logo</li>
+                    <li><strong>Set Up Collections</strong> - Create collections and add products</li>
+                    <li><strong>Configure Footer</strong> - Add links, social icons, and newsletter signup</li>
+                    <li><strong>Enable Sections</strong> - Add sections to your homepage via Theme Editor</li>
+                </ol>
+                
+                <h3>Recommended Apps</h3>
+                <table>
+                    <tr>
+                        <th>App Category</th>
+                        <th>Recommended Apps</th>
+                        <th>Purpose</th>
+                    </tr>
+                    <tr>
+                        <td>Reviews</td>
+                        <td>Loox, Judge.me, Shopify Reviews</td>
+                        <td>Product reviews & ratings</td>
+                    </tr>
+                    <tr>
+                        <td>Email Marketing</td>
+                        <td>Klaviyo, Mailchimp, Omnisend</td>
+                        <td>Email campaigns & automation</td>
+                    </tr>
+                    <tr>
+                        <td>Upsells</td>
+                        <td>ReConvert, Zipify, Candy Rack</td>
+                        <td>Post-purchase upsells</td>
+                    </tr>
+                    <tr>
+                        <td>Live Chat</td>
+                        <td>Tawk.to, Gorgias, Freshdesk</td>
+                        <td>Customer support</td>
+                    </tr>
+                    <tr>
+                        <td>SEO</td>
+                        <td>Smart SEO, Yoast</td>
+                        <td>Search optimization</td>
+                    </tr>
+                </table>
+            </section>
+            
+            <section id="theme-editor">
+                <h2><span class="icon">⚙️</span> Theme Editor & Customization</h2>
+                
+                <h3>A. Accessing Theme Editor</h3>
+                <ol class="step-list">
+                    <li>Go to <strong>Shopify Admin → Online Store → Themes</strong></li>
+                    <li>Click <strong>Customize</strong> on FlowTheme</li>
+                    <li>The Theme Editor will open with sidebar panels</li>
+                </ol>
+                
+                <h3>B. Theme Editor Panels</h3>
+                <table>
+                    <tr><th>Panel</th><th>Description</th></tr>
+                    <tr><td><strong>Homepage</strong></td><td>Customize homepage sections and layout</td></tr>
+                    <tr><td><strong>Template</strong></td><td>Switch between different page templates</td></tr>
+                    <tr><td><strong>Sections</strong></td><td>Add, remove, and reorder sections</td></tr>
+                    <tr><td><strong>Theme Settings</strong></td><td>Global colors, fonts, buttons, and more</td></tr>
+                </table>
+            </section>
+            
+            <section id="global-settings">
+                <h2><span class="icon">🎨</span> Global Settings</h2>
+                
+                <h3>A. Colors & Typography</h3>
+                <div class="card-grid">
+                    <div class="card">
+                        <h4>Color Settings</h4>
+                        <ul>
+                            <li>Primary color</li>
+                            <li>Secondary color</li>
+                            <li>Surface/Background</li>
+                            <li>Text colors</li>
+                            <li>Border colors</li>
+                            <li>Sale/Discount badges</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>Typography Settings</h4>
+                        <ul>
+                            <li>Heading fonts (5 options)</li>
+                            <li>Body fonts</li>
+                            <li>Base font sizes</li>
+                            <li>Line height</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <h4>Available Font Families</h4>
+                <ul>
+                    <li><strong>Plus Jakarta Sans</strong> - Modern, clean (Default)</li>
+                    <li><strong>Inter</strong> - Highly legible, tech-friendly</li>
+                    <li><strong>DM Sans</strong> - Friendly, approachable</li>
+                    <li><strong>Playfair Display</strong> - Elegant, luxury</li>
+                    <li><strong>Space Grotesk</strong> - Bold, modern</li>
+                </ul>
+                
+                <h3>B. Layout Options</h3>
+                <ul>
+                    <li><strong>Container Width</strong> - Full width, large, medium, small</li>
+                    <li><strong>Spacing</strong> - Section padding controls</li>
+                    <li><strong>Grid Styles</strong> - Grid columns, product cards per row</li>
+                    <li><strong>Border Radius</strong> - Buttons, cards, images</li>
+                </ul>
+                
+                <h3>C. Header & Footer Settings</h3>
+                <div class="card-grid">
+                    <div class="card">
+                        <h4>Header Options</h4>
+                        <ul>
+                            <li>Header style (Default, Centered, Minimal)</li>
+                            <li>Logo upload & width adjustment</li>
+                            <li>Navigation menu selection</li>
+                            <li>Mega menu with images</li>
+                            <li>Announcement bar toggle</li>
+                            <li>Sticky header on scroll</li>
+                            <li>Mobile hamburger menu</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>Footer Options</h4>
+                        <ul>
+                            <li>Newsletter signup form</li>
+                            <li>Social media icons</li>
+                            <li>Payment icons</li>
+                            <li>Footer columns/menus</li>
+                            <li>Copyright text</li>
+                            <li>Back to top button</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <h3>D. Cart Settings</h3>
+                <div class="card-grid">
+                    <div class="card">
+                        <h4>Cart Type Options</h4>
+                        <ul>
+                            <li><strong>Slide-out Drawer</strong> - Most popular</li>
+                            <li><strong>Cart Page</strong> - Full page checkout</li>
+                            <li><strong>Modal Popup</strong> - Popup notification</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>Cart Features</h4>
+                        <ul>
+                            <li>Free shipping progress bar</li>
+                            <li>Cart notes</li>
+                            <li>Quantity selectors</li>
+                            <li>Remove item buttons</li>
+                            <li>Continue shopping link</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="sections">
+                <h2><span class="icon">🧩</span> Built-in Sections</h2>
+                
+                <p>FlowTheme includes 26 built-in sections that you can add, customize, and arrange from the Theme Editor.</p>
+                
+                <h3>A. Homepage Sections</h3>
+                <table>
+                    <tr><th>Section</th><th>Description</th><th>Key Options</th></tr>
+                    <tr><td><strong>Hero</strong></td><td>Full-width banner with image/video</td><td>Background, overlay, text alignment, CTA button</td></tr>
+                    <tr><td><strong>Featured Collections</strong></td><td>Showcase collection grid</td><td>Collection selection, grid layout, hover effects</td></tr>
+                    <tr><td><strong>Featured Products</strong></td><td>Product showcase</td><td>Product selection, card style, add to cart</td></tr>
+                    <tr><td><strong>Image with Text</strong></td><td>Side-by-side image & content</td><td>Image position, content alignment, button</td></tr>
+                    <tr><td><strong>Rich Text</strong></td><td>Text content block</td><td>Content, text alignment, max width</td></tr>
+                    <tr><td><strong>Newsletter</strong></td><td>Email signup section</td><td>Heading, description, button text</td></tr>
+                    <tr><td><strong>Testimonials</strong></td><td>Customer reviews carousel</td><td>Layout style, auto-rotate, navigation</td></tr>
+                    <tr><td><strong>Lookbook</strong></td><td>Gallery-style showcase</td><td>Grid/masonry layout, hover effects</td></tr>
+                </table>
+                
+                <h3>B. Announcement & Promo Sections</h3>
+                <table>
+                    <tr><th>Section</th><th>Description</th><th>Key Options</th></tr>
+                    <tr><td><strong>Announcement Bar</strong></td><td>Top scrolling bar</td><td>Text, link, dismissible, speed</td></tr>
+                    <tr><td><strong>Countdown Banner</strong></td><td>Countdown timer</td><td>End date, background, colors</td></tr>
+                    <tr><td><strong>Promo Banner</strong></td><td>Promotional banner</td><td>Image, text overlay, CTA button</td></tr>
+                </table>
+                
+                <h3>C. E-commerce Sections</h3>
+                <table>
+                    <tr><th>Section</th><th>Description</th><th>Key Options</th></tr>
+                    <tr><td><strong>Main Collection</strong></td><td>Collection page layout</td><td>Sidebar filters, grid layout, sort options</td></tr>
+                    <tr><td><strong>Main Product</strong></td><td>Product detail page</td><td>Gallery style, sticky bar, size chart</td></tr>
+                    <tr><td><strong>Main Cart</strong></td><td>Cart page</td><td>Layout, upsell section</td></tr>
+                    <tr><td><strong>Recommended Products</strong></td><td>Related products</td><td>Selection method, title, grid</td></tr>
+                    <tr><td><strong>Upsell Bundle</strong></td><td>Bundle offers</td><td>Products, discount type</td></tr>
+                    <tr><td><strong>Wishlist Section</strong></td><td>Wishlist page</td><td>Custom page template</td></tr>
+                    <tr><td><strong>Recently Viewed</strong></td><td>Recent products</td><td>Title, product count</td></tr>
+                </table>
+                
+                <h3>D. Trust & Conversion Sections</h3>
+                <table>
+                    <tr><th>Section</th><th>Description</th><th>Key Options</th></tr>
+                    <tr><td><strong>Trust Badges</strong></td><td>Icons & security badges</td><td>Icon selection, text, layout</td></tr>
+                    <tr><td><strong>Tech Comparison</strong></td><td>Product comparison table</td><td>Products, features, specs</td></tr>
+                    <tr><td><strong>VIP Section</strong></td><td>Membership/VIP section</td><td>Benefits, pricing, CTA</td></tr>
+                    <tr><td><strong>Booking Form</strong></td><td>Appointment booking</td><td>Date picker, service selection</td></tr>
+                    <tr><td><strong>Cookie Banner</strong></td><td>GDPR consent</td><td>Message, button text, policy link</td></tr>
+                </table>
+                
+                <h3>E. Blog & Page Sections</h3>
+                <table>
+                    <tr><th>Section</th><th>Description</th><th>Key Options</th></tr>
+                    <tr><td><strong>Main Blog</strong></td><td>Blog listing page</td><td>Layout, posts per page</td></tr>
+                    <tr><td><strong>Main Article</strong></td><td>Blog article page</td><td>Related posts, share buttons</td></tr>
+                    <tr><td><strong>Main Page</strong></td><td>Custom pages</td><td>Full-width content</td></tr>
+                    <tr><td><strong>Main 404</strong></td><td>Error page</td><td>Message, search bar</td></tr>
+                </table>
+                
+                <h3>F. Other Sections</h3>
+                <table>
+                    <tr><th>Section</th><th>Description</th></tr>
+                    <tr><td><strong>Search Overlay</strong></td><td>Predictive search popup</td></tr>
+                    <tr><td><strong>Cart Drawer</strong></td><td>Slide-out cart panel</td></tr>
+                    <tr><td><strong>Header</strong></td><td>Site header & navigation</td></tr>
+                    <tr><td><strong>Footer</strong></td><td>Site footer</td></tr>
+                    <tr><td><strong>Spacer</strong></td><td>Empty spacing block</td></tr>
+                </table>
+            </section>
+            
+            <section id="templates">
+                <h2><span class="icon">📄</span> Pre-Built Templates</h2>
+                
+                <p>FlowTheme includes JSON templates for all major Shopify pages. Each template can be customized independently.</p>
+                
+                <h3>Available Templates</h3>
+                <table>
+                    <tr><th>Template</th><th>File</th><th>Description</th></tr>
+                    <tr><td><strong>Homepage</strong></td><td>index.json</td><td>Main store homepage</td></tr>
+                    <tr><td><strong>Product Page</strong></td><td>product.json</td><td>Individual product detail</td></tr>
+                    <tr><td><strong>Quick View</strong></td><td>product.quick-view.json</td><td>Popup product modal</td></tr>
+                    <tr><td><strong>Collection</strong></td><td>collection.json</td><td>Product listing grid</td></tr>
+                    <tr><td><strong>List Collections</strong></td><td>list-collections.json</td><td>All collections page</td></tr>
+                    <tr><td><strong>Cart Page</strong></td><td>cart.json</td><td>Shopping cart (if using cart page)</td></tr>
+                    <tr><td><strong>Blog</strong></td><td>blog.json</td><td>Blog listing</td></tr>
+                    <tr><td><strong>Article</strong></td><td>article.json</td><td>Blog post</td></tr>
+                    <tr><td><strong>Search Results</strong></td><td>search.json</td><td>Search results page</td></tr>
+                    <tr><td><strong>Page</strong></td><td>page.json</td><td>Custom info pages</td></tr>
+                    <tr><td><strong>Wishlist</strong></td><td>page.wishlist.json</td><td>Wishlist page</td></tr>
+                    <tr><td><strong>404 Error</strong></td><td>404.json</td><td>Page not found</td></tr>
+                    <tr><td><strong>Password</strong></td><td>password.json</td><td>Store password page</td></tr>
+                </table>
+                
+                <h3>Customer Account Templates</h3>
+                <table>
+                    <tr><th>Template</th><th>File</th><th>Description</th></tr>
+                    <tr><td><strong>Login</strong></td><td>customers/login.json.liquid</td><td>Customer login page</td></tr>
+                    <tr><td><strong>Register</strong></td><td>customers/register.json.liquid</td><td>New customer registration</td></tr>
+                    <tr><td><strong>Account</strong></td><td>customers/account.json.liquid</td><td>Customer dashboard</td></tr>
+                    <tr><td><strong>Addresses</strong></td><td>customers/addresses.json.liquid</td><td>Address management</td></tr>
+                </table>
+                
+                <h3>Assigning Templates</h3>
+                <ol class="step-list">
+                    <li>Go to <strong>Shopify Admin → Online Store → Pages</strong> (or Products/Collections)</li>
+                    <li>Click on the page you want to edit</li>
+                    <li>In the <strong>Templates</strong> section, select a template from the dropdown</li>
+                    <li>Click <strong>Save</strong></li>
+                </ol>
+            </section>
+            
+            <section id="niche-presets">
+                <h2><span class="icon">🎯</span> Niche-Specific Presets</h2>
+                
+                <p>FlowTheme includes 5 pre-configured niche presets that apply optimized settings for your specific industry.</p>
+                
+                <h3>Available Presets</h3>
+                <div class="card-grid">
+                    <div class="card">
+                        <h4>👗 Fashion</h4>
+                        <ul>
+                            <li>Size charts on product pages</li>
+                            <li>Color swatches for variants</li>
+                            <li>Lookbook gallery section</li>
+                            <li>Fashion-focused typography</li>
+                            <li>Sale badge styling</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>💻 Tech</h4>
+                        <ul>
+                            <li>Tech comparison tables</li>
+                            <li>Specification sections</li>
+                            <li>Dark mode options</li>
+                            <li>Product comparison features</li>
+                            <li>Tech-focused layout</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>💎 Luxury</h4>
+                        <ul>
+                            <li>Elegant typography (Playfair)</li>
+                            <li>Minimal, spacious layout</li>
+                            <li>Premium visual style</li>
+                            <li>VIP membership section</li>
+                            <li>High-end color palette</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>📦 Dropshipping</h4>
+                        <ul>
+                            <li>Quick-add-to-cart</li>
+                            <li>Conversion-focused layout</li>
+                            <li>Urgency countdown timers</li>
+                            <li>Trust badges prominent</li>
+                            <li>Fast checkout optimized</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>🏪 Local Business</h4>
+                        <ul>
+                            <li>Booking form section</li>
+                            <li>Store pickup options</li>
+                            <li>Local SEO friendly</li>
+                            <li>Contact information prominent</li>
+                            <li>Service listings</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <h3>Applying a Niche Preset</h3>
+                <ol class="step-list">
+                    <li>Go to <strong>Theme Editor → Theme Settings</strong></li>
+                    <li>Find <strong>Niche Presets</strong> section</li>
+                    <li>Select your industry preset</li>
+                    <li>Settings will auto-adjust to preset values</li>
+                    <li>Fine-tune individual settings as needed</li>
+                </ol>
+            </section>
+            
+            <section id="file-structure">
+                <h2><span class="icon">🗂️</span> File Structure</h2>
+                
+                <div class="file-tree">
+<span class="folder">flowtheme/</span>
+<span class="tab"></span><span class="folder">assets/</span>
+<span class="tab"></span><span class="tab"></span>theme.css
+<span class="tab"></span><span class="tab"></span>theme.js
+<span class="tab"></span><span class="tab"></span>fonts.css.liquid
+<span class="tab"></span><span class="tab"></span>material-icons.css.liquid
+<span class="tab"></span><span class="folder">config/</span>
+<span class="tab"></span><span class="tab"></span>settings_schema.json
+<span class="tab"></span><span class="tab"></span>settings_data.json
+<span class="tab"></span><span class="folder">layout/</span>
+<span class="tab"></span><span class="tab"></span>theme.liquid
+<span class="tab"></span><span class="tab"></span>password.liquid
+<span class="tab"></span><span class="folder">locales/</span>
+<span class="tab"></span><span class="tab"></span>en.default.json
+<span class="tab"></span><span class="folder">sections/</span>
+<span class="tab"></span><span class="tab"></span>hero.liquid
+<span class="tab"></span><span class="tab"></span>featured-products.liquid
+<span class="tab"></span><span class="tab"></span>... (26 section files)
+<span class="tab"></span><span class="folder">snippets/</span>
+<span class="tab"></span><span class="tab"></span>product-card.liquid
+<span class="tab"></span><span class="tab"></span>header.liquid
+<span class="tab"></span><span class="tab"></span>footer.liquid
+<span class="tab"></span><span class="tab"></span>... (10 snippet files)
+<span class="tab"></span><span class="folder">templates/</span>
+<span class="tab"></span><span class="tab"></span>index.json
+<span class="tab"></span><span class="tab"></span>product.json
+<span class="tab"></span><span class="tab"></span>collection.json
+<span class="tab"></span><span class="tab"></span>... (13 template files)
+                </div>
+                
+                <h3>Key Files Explained</h3>
+                <table>
+                    <tr><th>Folder</th><th>Description</th></tr>
+                    <tr><td><strong>assets/</strong></td><td>CSS, JavaScript, fonts, and images</td></tr>
+                    <tr><td><strong>config/</strong></td><td>Theme editor settings schema</td></tr>
+                    <tr><td><strong>layout/</strong></td><td>Base HTML layout templates (theme.liquid)</td></tr>
+                    <tr><td><strong>locales/</strong></td><td>Translation and language files</td></tr>
+                    <tr><td><strong>sections/</strong></td><td>Reusable section blocks (26 files)</td></tr>
+                    <tr><td><strong>snippets/</strong></td><td>Small reusable components (10 files)</td></tr>
+                    <tr><td><strong>templates/</strong></td><td>JSON page templates (13 files)</td></tr>
+                </table>
+            </section>
+            
+            <section id="customization">
+                <h2><span class="icon">🛠️</span> Advanced Customization</h2>
+                
+                <h3>A. For Non-Developers</h3>
+                <h4>Using the Theme Editor</h4>
+                <ul>
+                    <li>All visual customizations available via Theme Editor</li>
+                    <li>Drag-and-drop section reordering</li>
+                    <li>No code knowledge required</li>
+                    <li>Live preview while editing</li>
+                </ul>
+                
+                <h4>Adding/Removing Sections</h4>
+                <ol class="step-list">
+                    <li>Open Theme Editor</li>
+                    <li>Click <strong>Add section</strong> in the sidebar</li>
+                    <li>Browse available sections by category</li>
+                    <li>Click to add, drag to reorder</li>
+                    <li>Click the section header to access settings</li>
+                    <li>Click the trash icon to remove</li>
+                </ol>
+                
+                <h3>B. For Developers</h3>
+                <h4>Editing Code</h4>
+                <ul>
+                    <li>Use <strong>Shopify Admin → Themes → Edit code</strong></li>
+                    <li>Or use <strong>Shopify CLI</strong> with your code editor</li>
+                    <li>Files use <strong>Liquid</strong> templating language</li>
+                    <li>CSS in <code>assets/theme.css</code></li>
+                    <li>JavaScript in <code>assets/theme.js</code></li>
+                </ul>
+                
+                <h4>Custom CSS</h4>
+                <div class="code-block">
+<code>&lt;!-- Add to theme.liquid before &lt;/head&gt; --&gt;
+&lt;style&gt;
+  .my-custom-class {
+    color: #ff0000;
+    font-size: 18px;
+  }
+&lt;/style&gt;
+</code>
+                </div>
+                
+                <h4>Custom JavaScript</h4>
+                <div class="code-block">
+<code>&lt;!-- Add to theme.liquid before &lt;/body&gt; --&gt;
+&lt;script&gt;
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('FlowTheme loaded!');
+  });
+&lt;/script&gt;
+</code>
+                </div>
+                
+                <h3>C. Common Customizations</h3>
+                <table>
+                    <tr><th>Customization</th><th>How to Do It</th></tr>
+                    <tr><td><strong>Add custom font</strong></td><td>Upload font to assets/, add @font-face in CSS</td></tr>
+                    <tr><td><strong>Change cart icon</strong></td><td>Edit snippets/header.liquid</td></tr>
+                    <tr><td><strong>Modify product layout</strong></td><td>Edit sections/main-product.liquid</td></tr>
+                    <tr><td><strong>Add new section</strong></td><td>Create in sections/, register in config/</td></tr>
+                    <tr><td><strong>Custom animations</strong></td><td>Add CSS keyframes in theme.css</td></tr>
+                </table>
+            </section>
+            
+            <section id="translations">
+                <h2><span class="icon">🌐</span> Multi-Language Support</h2>
+                
+                <p>FlowTheme supports translations and multi-language stores through Shopify's built-in translation system.</p>
+                
+                <h3>Translating Content</h3>
+                <ol class="step-list">
+                    <li>Go to <strong>Shopify Admin → Store Languages</strong></li>
+                    <li>Add a new language or select existing</li>
+                    <li>Navigate to <strong>Online Store → Themes → Translate theme</strong></li>
+                    <li>Translate each string displayed</li>
+                    <li>Save and publish changes</li>
+                </ol>
+                
+                <h3>Translation Files</h3>
+                <p>Theme strings are stored in <code>locales/en.default.json</code>. You can create additional locale files:</p>
+                <div class="code-block">
+<code>locales/
+  ├── en.default.json      (English - default)
+  ├── es.json              (Spanish)
+  ├── fr.json              (French)
+  ├── de.json              (German)
+  └── ja.json              (Japanese)
+</code>
+                </div>
+                
+                <div class="note">
+                    <div class="note-title">💡 Tip</div>
+                    <p>Use Shopify's built-in translation editor for the easiest experience - it handles all locale file updates automatically.</p>
+                </div>
+            </section>
+            
+            <section id="integrations">
+                <h2><span class="icon">🔌</span> App Integrations</h2>
+                
+                <h3>Compatible Apps</h3>
+                <div class="app-grid">
+                    <div class="app-card">
+                        <h4>Loox <span class="app-category reviews">Reviews</span></h4>
+                        <p>Photo reviews with beautiful gallery display. Easy integration via app embed section.</p>
+                    </div>
+                    <div class="app-card">
+                        <h4>Judge.me <span class="app-category reviews">Reviews</span></h4>
+                        <p>Review platform with Q&A, ratings, and social proof widgets.</p>
+                    </div>
+                    <div class="app-card">
+                        <h4>Klaviyo <span class="app-category email">Email</span></h4>
+                        <p>Email marketing automation. Integrates with newsletter section and popup forms.</p>
+                    </div>
+                    <div class="app-card">
+                        <h4>Mailchimp <span class="app-category email">Email</span></h4>
+                        <p>Email campaigns connected to the newsletter signup section.</p>
+                    </div>
+                    <div class="app-card">
+                        <h4>ReConvert <span class="app-category upsell">Upsell</span></h4>
+                        <p>Post-purchase upsells and thank you page optimization.</p>
+                    </div>
+                    <div class="app-card">
+                        <h4>Zipify <span class="app-category upsell">Upsell</span></h4>
+                        <p>One-click upsells and checkout optimization.</p>
+                    </div>
+                    <div class="app-card">
+                        <h4>Tawk.to <span class="app-category chat">Chat</span></h4>
+                        <p>Free live chat for customer support. Add the script in theme.liquid.</p>
+                    </div>
+                    <div class="app-card">
+                        <h4>Gorgias <span class="app-category chat">Chat</span></h4>
+                        <p>Customer support platform with live chat and help desk features.</p>
+                    </div>
+                </div>
+                
+                <h3>Adding App Scripts</h3>
+                <ol class="step-list">
+                    <li>Go to <strong>Shopify Admin → Themes → Edit code</strong></li>
+                    <li>Open <code>layout/theme.liquid</code></li>
+                    <li>Paste app script before <code>&lt;/body&gt;</code> tag</li>
+                    <li>Save the file</li>
+                </ol>
+                
+                <h3>Troubleshooting App Conflicts</h3>
+                <ul>
+                    <li>If an app doesn't display correctly, check for JavaScript errors in browser console</li>
+                    <li>Some apps require adding their own section - look in Shopify's app block settings</li>
+                    <li>Clear theme cache after adding new apps</li>
+                    <li>Contact app support if issues persist</li>
+                </ul>
+            </section>
+            
+            <section id="performance">
+                <h2><span class="icon">🚀</span> Performance Optimization</h2>
+                
+                <h3>Built-in Optimizations</h3>
+                <div class="feature-list">
+                    <div class="feature-item"><span class="check">✓</span><div><strong>Lazy Loading</strong><br>Images load on scroll</div></div>
+                    <div class="feature-item"><span class="check">✓</span><div><strong>Critical CSS</strong><br>Inlined for faster render</div></div>
+                    <div class="feature-item"><span class="check">✓</span><div><strong>Font Preloading</strong><br>Faster font loading</div></div>
+                    <div class="feature-item"><span class="check">✓</span><div><strong>Minified Assets</strong><br>Optimized file sizes</div></div>
+                    <div class="feature-item"><span class="check">✓</span><div><strong>Modern Code</strong><br>No jQuery dependency</div></div>
+                    <div class="feature-item"><span class="check">✓</span><div><strong>System Fonts</strong><br>Fast fallback options</div></div>
+                </div>
+                
+                <h3>Further Improvements</h3>
+                <table>
+                    <tr><th>Optimization</th><th>How To</th></tr>
+                    <tr><td><strong>Image Optimization</strong></td><td>Use Shopify CDN, WebP format, compress images before upload</td></tr>
+                    <tr><td><strong>Reduce App Bloat</strong></td><td>Limit installed apps, remove unused ones</td></tr>
+                    <tr><td><strong>Theme Updates</strong></td><td>Keep theme updated for performance improvements</td></tr>
+                    <tr><td><strong>Code Splitting</strong></td><td>Only load CSS/JS for sections in use</td></tr>
+                </table>
+                
+                <h3>Core Web Vitals Tips</h3>
+                <ul>
+                    <li><strong>LCP (Largest Contentful Paint)</strong> - Optimize hero images, use WebP, preconnect to image CDN</li>
+                    <li><strong>FID (First Input Delay)</strong> - Minimize JavaScript blocking, defer non-critical scripts</li>
+                    <li><strong>CLS (Cumulative Layout Shift)</strong> - Set image dimensions, avoid dynamic content loading</li>
+                </ul>
+            </section>
+            
+            <section id="troubleshooting">
+                <h2><span class="icon">🐛</span> Troubleshooting</h2>
+                
+                <h3>Common Issues & Fixes</h3>
+                <table>
+                    <tr>
+                        <th>Issue</th>
+                        <th>Cause</th>
+                        <th>Solution</th>
+                    </tr>
+                    <tr>
+                        <td>Theme not loading</td>
+                        <td>Missing files or incorrect upload</td>
+                        <td>Re-upload the .zip file, ensure folder structure is intact</td>
+                    </tr>
+                    <tr>
+                        <td>Sections not appearing</td>
+                        <td>Not added in Theme Editor</td>
+                        <td>Go to Theme Editor → Add section → Select section</td>
+                    </tr>
+                    <tr>
+                        <td>Mobile layout broken</td>
+                        <td>Custom CSS conflicts</td>
+                        <td>Reset mobile styles, use proper media queries</td>
+                    </tr>
+                    <tr>
+                        <td>Slow loading</td>
+                        <td>Unoptimized images</td>
+                        <td>Compress images, use Shopify CDN, enable lazy loading</td>
+                    </tr>
+                    <tr>
+                        <td>Fonts not loading</td>
+                        <td>Missing font files or connection issues</td>
+                        <td>Verify Google Fonts link, upload custom fonts to assets/</td>
+                    </tr>
+                    <tr>
+                        <td>Cart not updating</td>
+                        <td>JavaScript errors</td>
+                        <td>Check browser console, disable conflicting apps</td>
+                    </tr>
+                    <tr>
+                        <td>Images not showing</td>
+                        <td>Incorrect image URLs</td>
+                        <td>Use Shopify's {{ image | image_url }} filter</td>
+                    </tr>
+                    <tr>
+                        <td>Custom CSS not applying</td>
+                        <td>Cache issues or syntax errors</td>
+                        <td>Clear browser cache, check CSS syntax</td>
+                    </tr>
+                    <tr>
+                        <td>Mobile menu not working</td>
+                        <td>JavaScript conflicts</td>
+                        <td>Check console for errors, disable third-party apps</td>
+                    </tr>
+                    <tr>
+                        <td>App not working</td>
+                        <td>Incompatible app or missing setup</td>
+                        <td>Check app documentation, contact app support</td>
+                    </tr>
+                </table>
+            </section>
+            
+            <section id="faq">
+                <h2><span class="icon">❓</span> FAQ</h2>
+                
+                <div class="faq-item">
+                    <div class="faq-question">How do I update FlowTheme? <span class="faq-toggle">▼</span></div>
+                    <div class="faq-answer">
+                        <p>Download the latest version from the source, then upload and publish it via Shopify Admin → Themes. Note: Customizations made directly to theme files may be overwritten during updates. For custom code, consider using Shopify CLI and Git for version control.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">Can I use FlowTheme on multiple stores? <span class="faq-toggle">▼</span></div>
+                    <div class="faq-answer">
+                        <p>Yes! FlowTheme is licensed under MIT License, which allows unlimited use on any number of Shopify stores. It's completely free for personal and commercial use.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">Is FlowTheme compatible with Shopify's latest features? <span class="faq-toggle">▼</span></div>
+                    <div class="faq-answer">
+                        <p>FlowTheme is built on Shopify 2.0 (Online Store 2.0) architecture, which is Shopify's current standard. It supports all modern features including JSON templates, app blocks, and dynamic data sources. As Shopify updates, we'll keep the theme updated.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">How do I add a new language? <span class="faq-toggle">▼</span></div>
+                    <div class="faq-answer">
+                        <p>Go to Shopify Admin → Store Languages → Add language. Then navigate to Online Store → Themes → Translate theme to translate all theme strings. You can also create locale JSON files directly in the locales/ folder.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">Can I remove the "Powered by Shopify" footer? <span class="faq-toggle">▼</span></div>
+                    <div class="faq-answer">
+                        <p>Yes, this is controlled in Shopify Admin → Settings → Store Details → Copyright. You can customize or remove this text. The theme does not add any additional branding.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">How do I add a custom section? <span class="faq-toggle">▼</span></div>
+                    <div class="faq-answer">
+                        <p>For developers: Create a new .liquid file in the sections/ folder, then register it in config/settings_schema.json. For non-developers: Use the Theme Editor to add any of the 26 built-in sections, or consider using a section-building app from Shopify App Store.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">Does FlowTheme support RTL (Right-to-Left) languages? <span class="faq-toggle">▼</span></div>
+                    <div class="faq-answer">
+                        <p>Basic RTL support is available. Enable it via Theme Editor → Theme Settings, or add RTL CSS to your custom stylesheet. Arabic and Hebrew languages will need additional styling adjustments.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">How do I enable the wishlist feature? <span class="faq-toggle">▼</span></div>
+                    <div class="faq-answer">
+                        <p>FlowTheme includes a wishlist template (page.wishlist.liquid). Assign it to a page via Shopify Admin → Pages, then link to it from your navigation or product cards. For full functionality, consider integrating a wishlist app.</p>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="changelog">
+                <h2><span class="icon">📝</span> Changelog</h2>
+                
+                <div class="changelog-item">
+                    <div class="changelog-version">v1.0.0</div>
+                    <div class="changelog-date">Initial Release</div>
+                    <ul class="changelog-list">
+                        <li>Initial release of FlowTheme</li>
+                        <li>Built on Shopify 2.0 architecture</li>
+                        <li>26 built-in sections</li>
+                        <li>10 reusable snippets</li>
+                        <li>5 niche presets (Fashion, Tech, Luxury, Dropshipping, Local Business)</li>
+                        <li>5 Google Font options</li>
+                        <li>3 header layout styles</li>
+                        <li>Advanced cart system (Drawer/Page/Modal)</li>
+                        <li>Mobile-first responsive design</li>
+                        <li>Performance optimizations (lazy loading, critical CSS)</li>
+                        <li>GDPR-compliant cookie banner</li>
+                        <li>Multi-language support</li>
+                    </ul>
+                </div>
+            </section>
+            
+            <section id="support">
+                <h2><span class="icon">📞</span> Support & Resources</h2>
+                
+                <h3>Support Channels</h3>
+                <div class="support-grid">
+                    <div class="support-card">
+                        <div class="support-icon">🌐</div>
+                        <h4>Website</h4>
+                        <p>Visit our website for documentation, tutorials, and updates.</p>
+                        <a href="http://appixen.com/shopify" target="_blank">appixen.com/shopify</a>
+                    </div>
+                    <div class="support-card">
+                        <div class="support-icon">📧</div>
+                        <h4>Email Support</h4>
+                        <p>Get help via email. Response time: 24-48 hours on weekdays.</p>
+                        <a href="mailto:support@appixen.com">support@appixen.com</a>
+                    </div>
+                    <div class="support-card">
+                        <div class="support-icon">📖</div>
+                        <h4>Documentation</h4>
+                        <p>You're already here! Use the navigation to explore all topics.</p>
+                        <a href="#">Current Documentation</a>
+                    </div>
+                </div>
+                
+                <h3>Additional Resources</h3>
+                <table>
+                    <tr><th>Resource</th><th>Link</th></tr>
+                    <tr><td>Shopify Official Docs</td><td><a href="https://shopify.dev/docs/themes" target="_blank">shopify.dev/docs/themes</a></td></tr>
+                    <tr><td>Shopify Community</td><td><a href="https://community.shopify.com" target="_blank">community.shopify.com</a></td></tr>
+                    <tr><td>Liquid Template Reference</td><td><a href="https://shopify.dev/docs/api/liquid" target="_blank">shopify.dev/docs/api/liquid</a></td></tr>
+                </table>
+                
+                <div class="note success">
+                    <div class="note-title">💡 Pro Tip</div>
+                    <p>Before contacting support, check the Troubleshooting section above. Most common issues have quick solutions listed there.</p>
+                </div>
+            </section>
+            
+            <footer style="margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--border); text-align: center; color: var(--text-light);">
+                <p><strong>FlowTheme</strong> v1.0.0 | MIT License | Built by <a href="http://appixen.com" target="_blank">Appixen</a></p>
+                <p style="margin-top: 8px;">Documentation last updated: May 2026</p>
+            </footer>
+        </main>
+    </div>
+    
+    <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
+    
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+        
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        window.addEventListener('scroll', function() {
+            var backToTop = document.getElementById('backToTop');
+            if (window.pageYOffset > 300) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+            }
+        });
+        
+        document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                var target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                    document.getElementById('sidebar').classList.remove('open');
+                }
+            });
+        });
+        
+        document.querySelectorAll('.faq-item').forEach(function(item) {
+            item.querySelector('.faq-question').addEventListener('click', function() {
+                document.querySelectorAll('.faq-item').forEach(function(i) {
+                    if (i !== item) i.classList.remove('active');
+                });
+                item.classList.toggle('active');
+            });
+        });
+        
+        var navLinks = document.querySelectorAll('.nav-link');
+        window.addEventListener('scroll', function() {
+            var scrollPos = window.pageYOffset;
+            document.querySelectorAll('section').forEach(function(section) {
+                var top = section.offsetTop - 100;
+                var bottom = top + section.offsetHeight;
+                if (scrollPos >= top && scrollPos < bottom) {
+                    navLinks.forEach(function(link) {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === '#' + section.id) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

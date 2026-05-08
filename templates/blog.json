@@ -11,7 +11,18 @@
         "show_author": true,
         "show_date": true
       }
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {
+        "eyebrow": "Stay in the loop",
+        "title": "Get Early Access & Exclusive Offers",
+        "subtitle": "Join our newsletter for product drops, styling tips, and member-only discounts.",
+        "btn_label": "Subscribe",
+        "success_text": "Thanks for subscribing!",
+        "note": "No spam, unsubscribe at any time."
+      }
     }
   },
-  "order": ["main"]
+  "order": ["main", "newsletter"]
 }

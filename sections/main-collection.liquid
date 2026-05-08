@@ -57,6 +57,17 @@
         <div class="collection-toolbar">
           <span class="collection-toolbar__count">{{ collection.products_count | pluralize: 'product', 'products' }}</span>
 
+          {%- if section.settings.enable_view_toggle -%}
+          <div class="collection-toolbar__view">
+            <button type="button" class="view-toggle active" data-view="grid" aria-label="Grid view" title="Grid view">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h8v8H3V3zm0 10h8v8H3v-8zm10-10h8v8h-8V3zm0 10h8v8h-8v-8z"/></svg>
+            </button>
+            <button type="button" class="view-toggle" data-view="list" aria-label="List view" title="List view">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3 4h18v2H3V4zm0 7h18v2H3v-2zm0 7h18v2H3v-2z"/></svg>
+            </button>
+          </div>
+          {%- endif -%}
+
           {%- if section.settings.enable_sorting -%}
           <div class="collection-toolbar__sort">
             <label for="sort-by" style="font-size:13px;font-weight:600;color:var(--color-text-medium)">Sort by:</label>
@@ -132,6 +143,12 @@
       "type": "checkbox",
       "id": "enable_sorting",
       "label": "Enable sorting",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_view_toggle",
+      "label": "Enable grid/list view toggle",
       "default": true
     },
     {
