@@ -27,7 +27,7 @@
           {%- if section.settings.image != blank -%}
             <img src="{{ section.settings.image | image_url: width: 900 }}" alt="{{ section.settings.title | escape }}" width="900" height="1125" loading="lazy" style="width:100%;height:100%;object-fit:cover">
           {%- else -%}
-            {%- render 'image-placeholder', icon_size: 64, caption: 'Add an image' -%}
+            {%- render 'image-placeholder', fallback: 'centered', icon: 'image', icon_size: 64, caption: 'Add an image', fallback_icon: 'image', fallback_caption: 'Add an image' -%}
           {%- endif -%}
         </div>
       {%- else -%}
@@ -35,7 +35,7 @@
           {%- if section.settings.image != blank -%}
             <img src="{{ section.settings.image | image_url: width: 900 }}" alt="{{ section.settings.title | escape }}" width="900" height="1125" loading="lazy" style="width:100%;height:100%;object-fit:cover">
           {%- else -%}
-            {%- render 'image-placeholder', icon_size: 64, caption: 'Add an image' -%}
+            {%- render 'image-placeholder', fallback: 'centered', icon: 'image', icon_size: 64, caption: 'Add an image', fallback_icon: 'image', fallback_caption: 'Add an image' -%}
           {%- endif -%}
         </div>
         <div>

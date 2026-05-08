@@ -26,13 +26,12 @@
                 {%- endif -%}
               </div>
             {%- else -%}
-              <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:var(--color-text-medium, #888);padding:24px;text-align:center">
-                <span class="material-symbols-outlined" style="font-size:48px;color:var(--color-border, #ddd)">collections</span>
-                <span style="font-size:22px;font-weight:800;letter-spacing:-0.02em;color:var(--color-text-high)">{{ block.settings.label | default: col.title }}</span>
-                {%- if block.settings.subtitle != blank -%}
-                  <span style="font-size:13px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase">{{ block.settings.subtitle }}</span>
-                {%- endif -%}
-              </div>
+              {%- render 'image-placeholder', fallback: 'centered', icon: 'collections', icon_size: 48, caption: block.settings.label | default: col.title, fallback_icon: 'collections', fallback_caption: block.settings.label | default: col.title -%}
+              {%- if block.settings.subtitle != blank and settings.show_demo_placeholders == false -%}
+                <div style="position:absolute;bottom:28px;left:24px;right:24px">
+                  <p style="font-size:13px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--color-text-medium)">{{ block.settings.subtitle }}</p>
+                </div>
+              {%- endif -%}
             {%- endif -%}
           </a>
           {%- endif -%}

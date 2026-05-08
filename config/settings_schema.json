@@ -171,5 +171,11 @@
       {"type":"checkbox","id":"enable_critical_css","label":"Inline Critical CSS","default":true},
       {"type":"checkbox","id":"preload_fonts","label":"Preload Key Fonts","default":true}
     ]
+  },
+  {
+    "name": "Demo Mode",
+    "settings": [
+      {"type":"checkbox","id":"show_demo_placeholders","label":"Show Image Placeholders","default":false,"info":"Show placeholder images when no image is selected. Turn OFF for production."}
+    ]
   }
 ]

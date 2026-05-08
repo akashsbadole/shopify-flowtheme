@@ -32,7 +32,7 @@
         {%- if article.image -%}
           <img src="{{ article.image | image_url: width: 1200 }}" alt="{{ article.image.alt | escape | default: article.title }}" width="1200" height="675" style="width:100%;height:100%;object-fit:cover" loading="eager">
         {%- else -%}
-          {%- render 'image-placeholder', icon_size: 64, caption: article.title -%}
+          {%- render 'image-placeholder', fallback: 'gradient', icon: 'article', icon_size: 64, caption: article.title, fallback_icon: 'article', fallback_caption: article.title -%}
         {%- endif -%}
       </div>
 
@@ -84,7 +84,7 @@
                   {%- if related.image -%}
                     <img src="{{ related.image | image_url: width: 600 }}" alt="{{ related.title | escape }}" width="600" height="450" loading="lazy">
                   {%- else -%}
-                    {%- render 'image-placeholder', icon_size: 32 -%}
+                    {%- render 'image-placeholder', fallback: 'icon', icon: 'article', icon_size: 32 -%}
                   {%- endif -%}
                 </a>
                 {%- if related.tags.size > 0 -%}

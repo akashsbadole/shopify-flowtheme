@@ -35,17 +35,16 @@
               </div>
             </div>
           {%- else -%}
-            <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;padding:24px;text-align:center">
-              <span class="material-symbols-outlined" style="font-size:64px;color:var(--color-text-low)">collections</span>
-              <h3 style="font-size:22px;font-weight:800;letter-spacing:-0.02em;color:var(--color-text-high)">{{ collection.title }}</h3>
-              {%- if collection.description != blank -%}
-                <p style="font-size:13px;color:var(--color-text-medium);line-height:1.5">{{ collection.description | strip_html | truncate: 100 }}</p>
-              {%- endif -%}
+            {%- render 'image-placeholder', fallback: 'centered', icon: 'collections', icon_size: 64, caption: collection.title, fallback_icon: 'collections', fallback_caption: collection.title -%}
+            {%- if collection.description != blank and settings.show_demo_placeholders == false -%}
+              <p style="font-size:13px;color:var(--color-text-medium);line-height:1.5;padding:0 24px">{{ collection.description | strip_html | truncate: 100 }}</p>
+            {%- endif -%}
+            {%- if settings.show_demo_placeholders == false -%}
               <div style="display:flex;align-items:center;justify-content:center;gap:8px">
                 <span style="font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-text-medium)">{{ collection.all_products_count }} product{{ collection.all_products_count | pluralize }}</span>
                 <span class="material-symbols-outlined" style="color:var(--color-text-medium);font-size:18px">arrow_forward</span>
               </div>
-            </div>
+            {%- endif -%}
           {%- endif -%}
         </a>
         {%- endif -%}

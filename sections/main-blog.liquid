@@ -23,7 +23,7 @@
             {%- if article.image -%}
               <img src="{{ article.image | image_url: width: 600 }}" alt="{{ article.image.alt | escape | default: article.title }}" loading="lazy" width="600" height="375">
             {%- else -%}
-              {%- render 'image-placeholder', icon_size: 48, icon: 'article' -%}
+              {%- render 'image-placeholder', fallback: 'icon', icon: 'article', icon_size: 48, fallback_icon: 'article' -%}
             {%- endif -%}
           </a>
 

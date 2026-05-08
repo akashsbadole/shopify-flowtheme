@@ -1,6 +1,35 @@
+{%- comment -%}
+  Renders an image placeholder when demo mode is enabled.
+  Shows fallback when demo mode is disabled.
+  Usage: {% render 'image-placeholder', icon: 'collections', fallback: 'gradient', icon_size: 48, caption: 'Add Image' %}
+  Parameters:
+    - icon: Material icon name (default: 'image')
+    - icon_size: Font size for icon
+    - caption: Text to show
+    - fallback: Type of fallback when demo mode is off ('icon', 'gradient', 'none')
+    - fallback_icon: Icon for fallback (default: same as icon)
+    - fallback_caption: Caption for fallback (default: same as caption)
+{%- endcomment -%}
+{%- if settings.show_demo_placeholders -%}
 <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--color-surface-low, #f5f3f3);flex-direction:column;gap:8px;color:var(--color-text-medium, #888)">
   <span class="material-symbols-outlined" style="font-size:{{ icon_size | default: 48 }}px;color:var(--color-border, #ddd)">{{ icon | default: 'image' }}</span>
   {%- if caption != blank -%}
     <span style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em">{{ caption }}</span>
   {%- endif -%}
 </div>
+{%- elsif fallback == 'icon' -%}
+<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:{% if gradient_fallback == true %}linear-gradient(135deg,var(--color-surface-low),var(--color-surface-high)){% else %}var(--color-surface-low){% endif %}">
+  <span class="material-symbols-outlined" style="font-size:{{ icon_size | default: 48 }}px;color:var(--color-text-low)">{{ fallback_icon | default: icon | default: 'image' }}</span>
+</div>
+{%- elsif fallback == 'gradient' -%}
+<div style="width:100%;height:100%;background:linear-gradient(135deg,var(--color-surface-low),var(--color-surface-high));display:flex;align-items:center;justify-content:center">
+  <span class="material-symbols-outlined" style="font-size:{{ icon_size | default: 48 }}px;color:var(--color-text-low)">{{ fallback_icon | default: icon | default: 'image' }}</span>
+</div>
+{%- elsif fallback == 'centered' -%}
+<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;padding:16px;text-align:center;background:var(--color-surface-low)">
+  <span class="material-symbols-outlined" style="font-size:{{ icon_size | default: 48 }}px;color:var(--color-text-low)">{{ fallback_icon | default: icon | default: 'image' }}</span>
+  {%- if fallback_caption != blank -%}
+    <span style="font-size:14px;font-weight:600;color:var(--color-text-high)">{{ fallback_caption }}</span>
+  {%- endif -%}
+</div>
+{%- endif -%}
