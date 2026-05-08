@@ -61,6 +61,8 @@
                     <a href="{{ result.url }}" class="blog-card__image">
                       {%- if result.image -%}
                         <img src="{{ result.image | image_url: width: 600 }}" alt="{{ result.title | escape }}" width="600" height="450" loading="lazy">
+                      {%- else -%}
+                        {%- render 'image-placeholder', icon_size: 32 -%}
                       {%- endif -%}
                     </a>
                     <p class="blog-card__category">Article</p>

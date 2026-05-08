@@ -28,11 +28,13 @@
       </div>
 
       <!-- Featured Image -->
-      {%- if article.image -%}
-        <div style="aspect-ratio:16/9;border-radius:var(--radius-md);overflow:hidden;margin-bottom:40px">
+      <div style="aspect-ratio:16/9;border-radius:var(--radius-md);overflow:hidden;margin-bottom:40px">
+        {%- if article.image -%}
           <img src="{{ article.image | image_url: width: 1200 }}" alt="{{ article.image.alt | escape | default: article.title }}" width="1200" height="675" style="width:100%;height:100%;object-fit:cover" loading="eager">
-        </div>
-      {%- endif -%}
+        {%- else -%}
+          {%- render 'image-placeholder', icon_size: 64, caption: article.title -%}
+        {%- endif -%}
+      </div>
 
       <!-- Content -->
       <div class="rte" style="font-size:16px;line-height:1.8;color:var(--color-text-high)">
@@ -81,6 +83,8 @@
                 <a href="{{ related.url }}" class="blog-card__image">
                   {%- if related.image -%}
                     <img src="{{ related.image | image_url: width: 600 }}" alt="{{ related.title | escape }}" width="600" height="450" loading="lazy">
+                  {%- else -%}
+                    {%- render 'image-placeholder', icon_size: 32 -%}
                   {%- endif -%}
                 </a>
                 {%- if related.tags.size > 0 -%}
