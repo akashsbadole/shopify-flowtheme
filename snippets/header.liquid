@@ -51,7 +51,7 @@
         </button>
 
         <!-- Wishlist -->
-        <a href="{{ routes.root_url }}pages/wishlist" class="header__icon-btn" aria-label="Wishlist">
+        <a href="{{ routes.root_url }}" class="header__icon-btn" aria-label="Wishlist" onclick="document.querySelector('.wishlist-page, #wishlist-container') ? document.querySelector('.wishlist-page, #wishlist-container').scrollIntoView({behavior:'smooth'}) : alert('Add Wishlist section to your page in Theme Editor'); return false;">
           <span class="material-symbols-outlined">favorite</span>
           {%- if settings.show_wishlist_count -%}
             <span class="header__cart-count" data-wishlist-count style="background:#dc2626">0</span>
