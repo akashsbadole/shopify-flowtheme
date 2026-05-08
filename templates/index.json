@@ -7,6 +7,7 @@
         "eyebrow": "New Collection 2025",
         "title": "The Future\nof Commerce",
         "subtitle": "Discover premium products crafted for the modern world. Shop the latest arrivals.",
+        "image_url": "https://images.pexels.com/photos/7462340/pexels-photo-7462340.png",
         "btn_primary_label": "Shop Now",
         "btn_primary_link": "/collections/all",
         "btn_secondary_label": "View Lookbook",
@@ -45,7 +46,7 @@
       "settings": {
         "title": "Featured Products",
         "view_all_link": "/collections/all",
-        "product_limit": 8,
+        "product_limit": 4,
         "columns": "4"
       }
     },
@@ -54,7 +55,7 @@
       "settings": {
         "eyebrow": "Flash Sale",
         "title": "Sale Ends In",
-        "end_time": "2025-12-31T23:59:59",
+        "end_time": "2026-12-31T23:59:59",
         "btn_label": "Shop Sale",
         "btn_link": "/collections/sale"
       }

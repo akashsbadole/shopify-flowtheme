@@ -5,6 +5,10 @@
   if section.settings.video_url != blank
     assign has_video = true
   endif
+  assign bg_image = section.settings.image | image_url: width: 2000
+  if section.settings.image_url != blank
+    assign bg_image = section.settings.image_url
+  endif
 -%}
 
 {%- if layout == 'split' -%}
@@ -28,8 +32,8 @@
         </div>
       </div>
       <div class="hero__split-media">
-        {%- if section.settings.image != blank -%}
-          <img src="{{ section.settings.image | image_url: width: 1200 }}" alt="{{ section.settings.title | escape }}" width="1200" height="1500" loading="eager" style="width:100%;height:100%;object-fit:cover">
+        {%- if bg_image != blank -%}
+          <img src="{{ bg_image }}" alt="{{ section.settings.title | escape }}" width="1200" height="1500" loading="eager" style="width:100%;height:100%;object-fit:cover">
         {%- else -%}
           {%- render 'image-placeholder', fallback: 'gradient', icon: 'photo_camera', icon_size: 64 -%}
         {%- endif -%}
@@ -66,8 +70,8 @@
         <video autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover">
           <source src="{{ section.settings.video_url }}" type="video/mp4">
         </video>
-      {%- elsif section.settings.image != blank -%}
-        <img src="{{ section.settings.image | image_url: width: 2000 }}" alt="{{ section.settings.title | escape }}" width="2000" height="1333" loading="eager" fetchpriority="high" style="width:100%;height:100%;object-fit:cover">
+      {%- elsif bg_image != blank -%}
+        <img src="{{ bg_image }}" alt="{{ section.settings.title | escape }}" width="2000" height="1333" loading="eager" fetchpriority="high" style="width:100%;height:100%;object-fit:cover">
       {%- else -%}
         <div style="width:100%;height:100%;background:linear-gradient(135deg,#18181b 0%,#27272a 100%)"></div>
       {%- endif -%}
@@ -108,7 +112,8 @@
     {"type":"text","id":"eyebrow","label":"Eyebrow Text","default":"New Collection 2025"},
     {"type":"text","id":"title","label":"Headline","default":"The Future of\nCommerce"},
     {"type":"textarea","id":"subtitle","label":"Subheadline","default":"Discover premium products crafted for the modern world."},
-    {"type":"image_picker","id":"image","label":"Background Image"},
+    {"type":"image_picker","id":"image","label":"Background Image (Shopify)"},
+    {"type":"text","id":"image_url","label":"Background Image URL (External)","info":"Paste an external image URL like Pexels"},
     {"type":"url","id":"video_url","label":"Video URL (mp4)"},
     {"type":"range","id":"overlay_opacity","min":0,"max":0.9,"step":0.1,"label":"Overlay Opacity","default":0.5},
     {"type":"select","id":"text_align","label":"Text Alignment","default":"left","options":[{"value":"left","label":"Left"},{"value":"center","label":"Center"}]},

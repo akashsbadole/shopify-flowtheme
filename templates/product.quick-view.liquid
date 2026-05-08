@@ -54,6 +54,7 @@
                   style="background-color:{{ value | handle | replace: '-', '' }};width:32px;height:32px;border-radius:50%;border:2px solid var(--color-border);cursor:pointer;transition:all 0.2s"
                   data-value="{{ value | escape }}"
                   data-option-index="{{ forloop.index0 }}"
+                  data-color-swatch="true"
                   title="{{ value }}"
                   aria-label="{{ value }}">
                 </button>
@@ -61,11 +62,14 @@
             </div>
             <input type="hidden" name="options[{{ option.name | escape }}]" value="{{ option.selected_value | escape }}">
           {%- else -%}
-            <div class="variant-selector" data-option-index="{{ forloop.index0 }}">
+            <div class="variant-selector" data-option-index="{{ forloop.index0 }}" style="display:flex;flex-wrap:wrap;gap:8px">
               {%- for value in option.values -%}
                 <button type="button"
                   class="variant-btn {% if value == option.selected_value %}active{% endif %}"
                   data-option-index="{{ forloop.index0 }}"
+                  data-value="{{ value | escape }}"
+                  data-variant-btn="true"
+                  data-group="{{ forloop.index0 }}"
                   style="padding:8px 16px;border:1px solid var(--color-border);background:white;border-radius:var(--radius-sm);cursor:pointer;font-size:13px;font-weight:600;transition:all 0.2s">
                   {{ value }}
                 </button>
@@ -79,16 +83,16 @@
       {%- if settings.show_quantity -%}
         <p class="product-info__variant-label" style="font-size:13px;font-weight:600;color:var(--color-text-medium);margin:16px 0 8px">Quantity</p>
         <div style="margin-bottom:16px">
-          <div class="qty-selector" style="width:auto">
-            <button type="button" class="qty-selector__btn" data-action="dec">−</button>
-            <input class="qty-selector__input" type="number" name="quantity" value="1" min="1" readonly style="width:48px">
-            <button type="button" class="qty-selector__btn" data-action="inc">+</button>
+          <div class="qty-selector" style="width:auto;display:flex;align-items:center;border:1px solid var(--color-border);border-radius:6px;overflow:hidden">
+            <button type="button" class="qty-selector__btn" data-action="dec" style="padding:8px 12px;background:none;border:none;cursor:pointer;font-size:18px">−</button>
+            <input class="qty-selector__input" type="number" name="quantity" value="1" min="1" readonly style="width:48px;border:none;text-align:center;outline:none">
+            <button type="button" class="qty-selector__btn" data-action="inc" style="padding:8px 12px;background:none;border:none;cursor:pointer;font-size:18px">+</button>
           </div>
         </div>
       {%- endif -%}
 
       <div class="product-info__actions" style="margin-top:20px">
-        <button type="submit" class="btn btn--primary btn--lg" id="qv-add-to-cart-btn" style="flex:1;justify-content:center" data-atc-btn>
+        <button type="submit" class="btn btn--primary btn--lg" id="qv-add-to-cart-btn" style="flex:1;justify-content:center;display:flex;align-items:center;gap:8px" data-atc-btn>
           <span class="material-symbols-outlined" style="font-size:20px">shopping_cart</span>
           Add to Cart
         </button>

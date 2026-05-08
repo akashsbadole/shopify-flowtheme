@@ -1,0 +1,19 @@
+{%- comment -%}
+  Renders a placeholder product card (for demo/preview).
+  Usage: {% render 'product-card-placeholder' %}
+{%- endcomment -%}
+<article class="product-card">
+  <div class="product-card__media">
+    <div style="aspect-ratio:3/4;background:linear-gradient(135deg,#e2e8f0 0%,#cbd5e1 100%);display:flex;align-items:center;justify-content:center">
+      <span class="material-symbols-outlined" style="font-size:48px;color:#94a3b8">image</span>
+    </div>
+    <span class="product-card__badge product-card__badge--new">New</span>
+  </div>
+  <div class="product-card__info">
+    <p class="product-card__vendor">Store Name</p>
+    <a href="#" class="product-card__title">Sample Product</a>
+    <div class="product-card__pricing">
+      <span class="product-card__price">$49.00</span>
+    </div>
+  </div>
+</article>

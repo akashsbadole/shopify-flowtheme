@@ -12,18 +12,38 @@
       <p style="font-size:16px;color:var(--color-text-medium);margin-top:-24px;margin-bottom:32px;max-width:560px">{{ section.settings.description }}</p>
     {%- endif -%}
     <div class="product-grid product-grid--{{ section.settings.columns }}">
+      {%- assign has_products = false -%}
       {%- if section.settings.collection != blank -%}
         {%- assign collection = collections[section.settings.collection] -%}
         {%- for product in collection.products limit: section.settings.product_limit -%}
           {%- render 'product-card', product: product -%}
-        {%- endfor -%}
-      {%- else -%}
-        {%- for block in section.blocks -%}
-          {%- if block.type == 'product' and block.settings.product != blank -%}
-            {%- render 'product-card', product: block.settings.product -%}
-          {%- endif -%}
+          {%- assign has_products = true -%}
         {%- endfor -%}
       {%- endif -%}
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'product' -%}
+            {%- if block.settings.product != blank -%}
+              {%- render 'product-card', product: block.settings.product -%}
+              {%- assign has_products = true -%}
+            {%- endif -%}
+          {%- when 'collection' -%}
+            {%- assign col = collections[block.settings.collection] -%}
+            {%- if col != blank -%}
+              {%- for product in col.products limit: block.settings.limit -%}
+                {%- render 'product-card', product: product -%}
+                {%- assign has_products = true -%}
+              {%- endfor -%}
+            {%- endif -%}
+        {%- endcase -%}
+      {%- endfor -%}
+      {%- unless has_products -%}
+        {%- if section.settings.show_demo_products -%}
+          {%- for i in (1..8) -%}
+            {%- render 'product-card-placeholder' -%}
+          {%- endfor -%}
+        {%- endif -%}
+      {%- endunless -%}
     </div>
   </div>
 </section>
@@ -51,12 +71,12 @@
     {
       "type": "collection",
       "id": "collection",
-      "label": "Collection"
+      "label": "Primary Collection"
     },
     {
       "type": "range",
       "id": "product_limit",
-      "label": "Number of products to show",
+      "label": "Products from primary collection",
       "min": 4,
       "max": 12,
       "step": 2,
@@ -74,6 +94,12 @@
       ]
     },
     {
+      "type": "checkbox",
+      "id": "show_demo_products",
+      "label": "Show placeholder products when empty",
+      "default": true
+    },
+    {
       "type": "color",
       "id": "background",
       "label": "Background color",
@@ -83,17 +109,37 @@
   "blocks": [
     {
       "type": "product",
-      "name": "Product",
+      "name": "Individual Product",
       "settings": [
         {
           "type": "product",
           "id": "product",
-          "label": "Product"
+          "label": "Select Product"
+        }
+      ]
+    },
+    {
+      "type": "collection",
+      "name": "Collection",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        },
+        {
+          "type": "range",
+          "id": "limit",
+          "label": "Products to show",
+          "min": 1,
+          "max": 8,
+          "step": 1,
+          "default": 4
         }
       ]
     }
   ],
-  "max_blocks": 12,
+  "max_blocks": 20,
   "presets": [
     {
       "name": "Featured Products",

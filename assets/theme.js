@@ -292,6 +292,8 @@ class ProductForm {
     this.form    = form;
     this.btn     = form.querySelector('[data-atc-btn], .product-info__actions .btn--primary, form[action*="/cart/add"] button[type="submit"]');
     this.variantInput = form.querySelector('[name="id"]');
+    this.priceEl = form.querySelector('[id*="product-price"], .product-info__price, #qv-product-price');
+    this.compareEl = form.querySelector('[id*="compare-price"], .product-info__compare, #qv-compare-price');
     if (!this.form) return;
     this.init();
   }
@@ -342,16 +344,13 @@ class ProductForm {
   }
 
   updateVariantId() {
-    // Collect option values
     const options = {};
     this.form.querySelectorAll('input[name^="options["]').forEach(input => {
       const match = input.name.match(/options\[(.+)\]/);
       if (match) options[match[1]] = input.value;
     });
 
-    // Find matching variant from JSON
-    const product = this.form.closest('.product-info')?.dataset;
-    if (!product || !window.productVariants) return;
+    if (!window.productVariants) return;
 
     const matching = Object.values(window.productVariants).find(v => {
       return Object.entries(options).every(([key, val]) =>
@@ -361,20 +360,16 @@ class ProductForm {
 
     if (matching) {
       this.variantInput.value = matching.id;
-      // Update price
-      const priceEl = document.getElementById('product-price');
-      if (priceEl) {
-        priceEl.textContent = FlowTheme.formatMoney(matching.price);
-        priceEl.dataset.price = matching.price;
+      if (this.priceEl) {
+        this.priceEl.textContent = FlowTheme.formatMoney(matching.price);
+        this.priceEl.dataset.price = matching.price;
       }
-      // Update compare price
-      const compareEl = document.getElementById('compare-price');
-      if (compareEl) {
+      if (this.compareEl) {
         if (matching.compare_at_price > matching.price) {
-          compareEl.textContent = FlowTheme.formatMoney(matching.compare_at_price);
-          compareEl.style.display = '';
+          this.compareEl.textContent = FlowTheme.formatMoney(matching.compare_at_price);
+          this.compareEl.style.display = '';
         } else {
-          compareEl.style.display = 'none';
+          this.compareEl.style.display = 'none';
         }
       }
     }
@@ -501,13 +496,21 @@ class Accordion {
    ============================================================ */
 class CountdownTimer {
   constructor(el) {
-    this.el      = el;
-    this.endTime = new Date(el.dataset.end).getTime();
+    this.el = el;
+    const endAttr = el.dataset.end;
+    if (!endAttr || endAttr === 'undefined' || endAttr === 'null') {
+      this.el.style.display = 'none';
+      return;
+    }
+    this.endTime = new Date(endAttr).getTime();
     this.daysEl  = el.querySelector('[data-days]');
     this.hrsEl   = el.querySelector('[data-hours]');
     this.minsEl  = el.querySelector('[data-minutes]');
     this.secsEl  = el.querySelector('[data-seconds]');
-    if (isNaN(this.endTime)) return;
+    if (isNaN(this.endTime)) {
+      this.el.style.display = 'none';
+      return;
+    }
     this.tick();
     this.interval = setInterval(() => this.tick(), 1000);
   }
@@ -659,11 +662,16 @@ class QuickView {
       const btn = e.target.closest('[data-quick-view]');
       if (btn) {
         e.preventDefault();
-        const productUrl = btn.dataset.quickView || btn.getAttribute('href') || '';
-        if (productUrl && productUrl !== 'undefined') {
-          await this.open(productUrl, btn.dataset.handle);
+        e.stopPropagation();
+        const productUrl = btn.getAttribute('href') || btn.dataset.quickView || '';
+        const handle = btn.dataset.handle || productUrl.split('/products/')[1] || '';
+        
+        if (productUrl && productUrl !== 'undefined' && handle) {
+          await this.open(productUrl, handle);
+        } else if (handle) {
+          await this.open(`/products/${handle}`, handle);
         } else {
-          console.warn('Quick View: Product URL not available');
+          console.warn('Quick View: No product URL or handle available');
         }
       }
       if (e.target === this.overlay || e.target.closest('.modal__close')) {
@@ -677,7 +685,13 @@ class QuickView {
   }
 
   async open(productUrl, handle) {
-    if (!this.overlay || !this.modal || !productUrl || productUrl === 'undefined') return;
+    if (!this.overlay || !this.modal) return;
+    const url = productUrl && productUrl !== 'undefined' ? productUrl : (handle ? `/products/${handle}` : null);
+    if (!url) {
+      console.warn('Quick View: No valid URL');
+      return;
+    }
+
     this.modal.innerHTML = `
       <div style="display:flex;align-items:center;justify-content:center;height:300px">
         <span class="material-symbols-outlined" style="font-size:40px;color:var(--color-border);animation:spin 1s linear infinite">autorenew</span>
@@ -686,21 +700,40 @@ class QuickView {
     document.body.style.overflow = 'hidden';
 
     try {
-      const res  = await fetch(`${productUrl}?view=quick-view`);
+      const fetchUrl = url.includes('?') ? `${url}&view=quick-view` : `${url}?view=quick-view`;
+      const res = await fetch(fetchUrl);
       const html = await res.text();
       const doc  = new DOMParser().parseFromString(html, 'text/html');
-      const content = doc.querySelector('.quick-view-content') || doc.body;
-      this.modal.innerHTML = `<button class="modal__close" aria-label="Close">✕</button>${content.innerHTML}`;
-      FlowTheme.trapFocus(this.modal);
-
-      // Re-init components inside modal
+      const content = doc.querySelector('.quick-view-content') || doc.querySelector('.product-info') || doc.body;
+      this.modal.innerHTML = `<button class="modal__close" aria-label="Close" style="position:absolute;top:12px;right:12px;width:36px;height:36px;border-radius:50%;border:none;background:var(--color-surface-low);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;z-index:1">✕</button>${content.innerHTML}`;
+      
       const form = this.modal.querySelector('.product-form');
       if (form) new ProductForm(form);
-      const gallery = this.modal.querySelector('.product-gallery');
-      if (gallery) new ProductGallery(gallery);
-      this.modal.querySelectorAll('.accordion').forEach(a => new Accordion(a));
+      
+      this.modal.querySelectorAll('.variant-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const group = btn.dataset.group || btn.closest('.variant-selector').dataset.optionIndex;
+          btn.closest('.variant-selector').querySelectorAll('.variant-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const optionInput = form.querySelector(`input[name="options[${btn.dataset.optionIndex || group}]"]`);
+          if (optionInput) optionInput.value = btn.dataset.value;
+        });
+      });
+      
+      this.modal.querySelectorAll('.color-swatch-btn').forEach(swatch => {
+        swatch.addEventListener('click', () => {
+          swatch.closest('.color-swatch-selector').querySelectorAll('.color-swatch-btn').forEach(s => s.classList.remove('active'));
+          swatch.classList.add('active');
+          const optionInput = form.querySelector('input[name="options[Color]"]');
+          if (optionInput) optionInput.value = swatch.dataset.value;
+        });
+      });
+      
+      FlowTheme.trapFocus(this.modal);
+
     } catch (err) {
-      this.modal.innerHTML = `<div style="padding:40px;text-align:center"><p>Could not load product. <a href="${productUrl}">View full page</a></p></div>`;
+      console.error('Quick View error:', err);
+      this.modal.innerHTML = `<div style="padding:40px;text-align:center"><p style="margin-bottom:16px">Could not load product.</p><a href="${url}" class="btn btn--primary">View full page</a></div>`;
     }
   }
 
