@@ -1,0 +1,142 @@
+{% comment %}
+  Wishlist Page Template
+  Accessed via: /pages/wishlist
+{% endcomment %}
+
+<style>
+.wishlist-page { max-width: 960px; margin: 0 auto; padding: 40px 0 80px; }
+.wishlist-page__header { text-align: center; margin-bottom: 48px; }
+.wishlist-page__title { font-size: 32px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 8px; }
+.wishlist-page__subtitle { color: var(--color-text-medium); font-size: 15px; }
+.wishlist-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.wishlist-item { position: relative; background: white; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--color-border); transition: all var(--transition-fast); }
+.wishlist-item:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.08); transform: translateY(-2px); }
+.wishlist-item__image { aspect-ratio: 1; background: var(--color-surface-low); overflow: hidden; }
+.wishlist-item__image img { width: 100%; height: 100%; object-fit: cover; }
+.wishlist-item__info { padding: 16px; }
+.wishlist-item__vendor { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-text-medium); margin-bottom: 4px; }
+.wishlist-item__title { font-size: 14px; font-weight: 700; color: var(--color-text-high); margin-bottom: 8px; display: block; text-decoration: none; }
+.wishlist-item__title:hover { color: var(--color-primary); }
+.wishlist-item__price { font-size: 16px; font-weight: 800; color: var(--color-primary); }
+.wishlist-item__actions { display: flex; gap: 8px; margin-top: 12px; }
+.wishlist-item__remove { position: absolute; top: 12px; right: 12px; width: 28px; height: 28px; border-radius: 50%; background: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: all var(--transition-fast); }
+.wishlist-item__remove:hover { background: var(--color-surface-high); }
+.wishlist-empty { text-align: center; padding: 80px 24px; }
+.wishlist-empty__icon { font-size: 64px; color: var(--color-border); margin-bottom: 24px; }
+.wishlist-empty__title { font-size: 24px; font-weight: 800; margin-bottom: 8px; }
+.wishlist-empty__subtitle { color: var(--color-text-medium); margin-bottom: 32px; }
+@media (max-width: 768px) {
+  .wishlist-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .wishlist-page__title { font-size: 24px; }
+}
+</style>
+
+<div class="wishlist-page">
+  <div class="wishlist-page__header">
+    <h1 class="wishlist-page__title">My Wishlist</h1>
+    <p class="wishlist-page__subtitle">Save your favorite items for later</p>
+  </div>
+
+  <div id="wishlist-container">
+    <!-- Populated by JavaScript -->
+    <div class="wishlist-empty" id="wishlist-empty">
+      <span class="material-symbols-outlined wishlist-empty__icon">favorite_border</span>
+      <h2 class="wishlist-empty__title">Your wishlist is empty</h2>
+      <p class="wishlist-empty__subtitle">Start adding items you love by clicking the heart icon on any product.</p>
+      <a href="/collections/all" class="btn btn--primary">Browse Products</a>
+    </div>
+    <div class="wishlist-grid" id="wishlist-grid" style="display:none"></div>
+  </div>
+</div>
+
+<script>
+(function() {
+  const key = 'flowtheme_wishlist';
+  const grid = document.getElementById('wishlist-grid');
+  const empty = document.getElementById('wishlist-empty');
+
+  async function loadWishlist() {
+    const ids = JSON.parse(localStorage.getItem(key) || '[]');
+    if (ids.length === 0) {
+      empty.style.display = '';
+      grid.style.display = 'none';
+      return;
+    }
+
+    empty.style.display = 'none';
+    grid.style.display = 'grid';
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px"><span class="material-symbols-outlined" style="font-size:32px;color:var(--color-border);animation:spin 1s linear infinite;display:block">autorenew</span></div>';
+
+    try {
+      // Fetch products via Shopify Search API
+      const handles = ids.join(',');
+      const res = await fetch(`/search?q=${encodeURIComponent(handles)}&type=product&view=json`);
+      const data = await res.json();
+      const products = data.results || data.products || [];
+
+      if (products.length === 0) {
+        grid.style.display = 'none';
+        empty.style.display = '';
+        return;
+      }
+
+      // Map local IDs to products
+      const productMap = {};
+      products.forEach(p => { productMap[p.id] = p; });
+
+      grid.innerHTML = ids.map(id => {
+        const p = productMap[id];
+        if (!p) return '';
+        return `
+          <div class="wishlist-item" data-id="${p.id}">
+            <button class="wishlist-item__remove" data-remove="${p.id}" aria-label="Remove from wishlist">
+              <span class="material-symbols-outlined" style="font-size:16px">close</span>
+            </button>
+            <a href="${p.url}" class="wishlist-item__image">
+              <img src="${p.featured_image || p.images?.[0]?.src || ''}" alt="${p.title}" loading="lazy">
+            </a>
+            <div class="wishlist-item__info">
+              <p class="wishlist-item__vendor">${p.vendor || ''}</p>
+              <a href="${p.url}" class="wishlist-item__title">${p.title}</a>
+              <p class="wishlist-item__price">${p.price ? '{{ "$" }}' + (p.price / 100).toFixed(2) : ''}</p>
+              <div class="wishlist-item__actions">
+                <button class="btn btn--primary btn--sm btn--full" onclick="quickAddToCart(${p.variants?.[0]?.id || p.id}, '${p.title.replace(/'/g, "\\'")}')">
+                  Add to Cart
+                </button>
+              </div>
+            </div>
+          </div>`;
+      }).join('');
+
+      // Bind remove buttons
+      grid.addEventListener('click', function(e) {
+        const btn = e.target.closest('[data-remove]');
+        if (btn) {
+          e.preventDefault();
+          const id = btn.dataset.remove;
+          let items = JSON.parse(localStorage.getItem(key) || '[]');
+          items = items.filter(i => i !== id);
+          localStorage.setItem(key, JSON.stringify(items));
+          btn.closest('.wishlist-item').remove();
+          if (items.length === 0) {
+            grid.style.display = 'none';
+            empty.style.display = '';
+          }
+          // Update header count
+          const countEl = document.querySelector('[data-wishlist-count]');
+          if (countEl) countEl.textContent = items.length;
+        }
+      });
+
+    } catch (err) {
+      console.error('Wishlist load error:', err);
+      // Fallback: show empty state
+      grid.style.display = 'none';
+      empty.style.display = '';
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', loadWishlist);
+  document.addEventListener('flowtheme:wishlist-updated', loadWishlist);
+})();
+</script>

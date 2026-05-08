@@ -1,13 +1,13 @@
-<div class="search-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:250;opacity:0;visibility:hidden;transition:all 0.25s;backdrop-filter:blur(4px)">
-  <div style="background:white;max-width:640px;margin:80px auto 0;border-radius:8px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.3)">
+<div class="search-overlay">
+  <div style="background:white;width:100%;max-width:640px;margin-top:0;border-radius:12px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.3);align-self:flex-start">
     <div style="display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--color-border)">
-      <span class="material-symbols-outlined" style="color:var(--color-text-medium)">search</span>
-      <input class="search-overlay__input" type="search" placeholder="Search products..." style="flex:1;border:none;outline:none;font-size:16px;font-family:var(--font-family);color:var(--color-text-high)" aria-label="Search">
-      <button class="search-overlay__close" style="background:none;border:none;cursor:pointer;color:var(--color-text-medium);display:flex;align-items:center" aria-label="Close search">
+      <span class="material-symbols-outlined" style="color:var(--color-text-medium);flex-shrink:0">search</span>
+      <input class="search-overlay__input" type="search" placeholder="Search products..." aria-label="Search">
+      <button class="search-overlay__close" aria-label="Close search">
         <span class="material-symbols-outlined">close</span>
       </button>
     </div>
-    <div class="search-overlay__results" style="max-height:400px;overflow-y:auto"></div>
+    <div class="search-overlay__results"></div>
     <div style="padding:12px 20px;background:var(--color-surface-low);border-top:1px solid var(--color-border)">
       <p style="font-size:12px;color:var(--color-text-medium)">Press <kbd style="background:white;border:1px solid var(--color-border);border-radius:3px;padding:1px 6px;font-size:11px">ESC</kbd> to close</p>
     </div>

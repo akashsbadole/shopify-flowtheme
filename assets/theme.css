@@ -401,6 +401,23 @@ ul, ol {
   opacity: 1;
 }
 
+.share-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
+  color: var(--color-text-medium);
+  transition: all var(--transition-fast);
+  background: var(--color-surface-low);
+}
+
+.share-btn:hover {
+  background: var(--color-surface-high);
+  color: var(--color-text-high);
+}
+
 .header__cart-count {
   position: absolute;
   top: 4px;
@@ -2259,6 +2276,73 @@ ul, ol {
 }
 
 /* ============================================================
+   SEARCH OVERLAY
+   ============================================================ */
+.search-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: var(--z-modal);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 10vh;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.25s;
+  backdrop-filter: blur(4px);
+}
+
+.search-overlay.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.search-overlay__input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  font-family: var(--font-family);
+  color: var(--color-text-high);
+  padding: 16px 0;
+}
+
+.search-overlay__results {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.search-overlay__close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text-medium);
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  transition: color var(--transition-fast);
+}
+
+.search-overlay__close:hover {
+  color: var(--color-text-high);
+}
+
+.search-result-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--color-border);
+  transition: background var(--transition-fast);
+  text-decoration: none;
+}
+
+.search-result-item:hover {
+  background: var(--color-surface-high);
+}
+
+/* ============================================================
    QUICK VIEW MODAL
    ============================================================ */
 .modal-overlay {
@@ -3069,9 +3153,25 @@ ul, ol {
   .site-header,
   .site-footer,
   .cart-drawer,
+  .search-overlay,
   .modal-overlay,
   .back-to-top,
   .toast-container {
     display: none !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .search-overlay {
+    padding-top: 0;
+    align-items: stretch;
+  }
+  .search-overlay > div {
+    max-width: 100%;
+    border-radius: 0;
+    height: 100%;
+  }
+  .search-overlay__results {
+    max-height: calc(100vh - 200px);
   }
 }

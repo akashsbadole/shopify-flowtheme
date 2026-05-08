@@ -5,7 +5,7 @@
 **FlowTheme** is a modern, highly customizable, and performance-optimized Shopify 2.0 theme designed for multi-niche e-commerce stores. Built with Shopify's Online Store 2.0 architecture, it supports JSON templates, app blocks, and dynamic data sources out of the box.
 
 - **Version:** 1.0.0
-- **Author:** FlowTheme Studio
+- **Author:** Appixen
 - **License:** MIT
 
 ---
@@ -119,8 +119,7 @@ shopify theme pull
 
 ## 🤝 Support & Documentation
 
-- **Docs:** [https://flowtheme.dev/docs](https://flowtheme.dev/docs)
-- **Support:** [https://flowtheme.dev/support](https://flowtheme.dev/support)
+- **Website:** [http://appixen.com/shopify](http://appixen.com/shopify)
 
 ---
 

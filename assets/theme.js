@@ -290,7 +290,7 @@ class CartDrawer {
 class ProductForm {
   constructor(form) {
     this.form    = form;
-    this.btn     = form.querySelector('[data-atc-btn]');
+    this.btn     = form.querySelector('[data-atc-btn], .product-info__actions .btn--primary, form[action*="/cart/add"] button[type="submit"]');
     this.variantInput = form.querySelector('[name="id"]');
     if (!this.form) return;
     this.init();
@@ -305,7 +305,7 @@ class ProductForm {
     });
 
     // Color swatches
-    FlowTheme.qsa('[data-color-swatch]', this.form).forEach(swatch => {
+    FlowTheme.qsa('[data-color-swatch], .color-swatch-btn', this.form).forEach(swatch => {
       swatch.addEventListener('click', () => this.selectColor(swatch));
     });
 
@@ -316,22 +316,23 @@ class ProductForm {
   }
 
   selectVariant(btn) {
-    const group = btn.dataset.group;
-    FlowTheme.qsa(`[data-variant-btn][data-group="${group}"]`, this.form)
+    const group = btn.dataset.group || btn.closest('.variant-selector').dataset.optionIndex;
+    FlowTheme.qsa(`[data-variant-btn][data-group="${group}"], .variant-selector[data-option-index="${group}"] .variant-btn`, this.form)
       .forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     this.updateVariantId();
   }
 
   selectColor(swatch) {
-    FlowTheme.qsa('[data-color-swatch]', this.form)
-      .forEach(s => s.classList.remove('active'));
+    const container = swatch.closest('.color-swatch-selector');
+    FlowTheme.qsa('[data-color-swatch], .color-swatch-btn', container).forEach(s => s.classList.remove('active'));
     swatch.classList.add('active');
     this.updateVariantId();
   }
 
   changeQty(btn) {
-    const input = FlowTheme.qs('.qty-selector__input', this.form);
+    const container = btn.closest('.qty-selector') || this.form;
+    const input = FlowTheme.qs('.qty-selector__input', container);
     if (!input) return;
     let val = parseInt(input.value) || 1;
     const action = btn.dataset.action;
@@ -341,8 +342,42 @@ class ProductForm {
   }
 
   updateVariantId() {
-    // In a real Shopify theme this would use variant data from JSON
-    // For demo: keep variantInput.value as-is
+    // Collect option values
+    const options = {};
+    this.form.querySelectorAll('input[name^="options["]').forEach(input => {
+      const match = input.name.match(/options\[(.+)\]/);
+      if (match) options[match[1]] = input.value;
+    });
+
+    // Find matching variant from JSON
+    const product = this.form.closest('.product-info')?.dataset;
+    if (!product || !window.productVariants) return;
+
+    const matching = Object.values(window.productVariants).find(v => {
+      return Object.entries(options).every(([key, val]) =>
+        v.options[key.toLowerCase()] === val.toLowerCase()
+      );
+    });
+
+    if (matching) {
+      this.variantInput.value = matching.id;
+      // Update price
+      const priceEl = document.getElementById('product-price');
+      if (priceEl) {
+        priceEl.textContent = FlowTheme.formatMoney(matching.price);
+        priceEl.dataset.price = matching.price;
+      }
+      // Update compare price
+      const compareEl = document.getElementById('compare-price');
+      if (compareEl) {
+        if (matching.compare_at_price > matching.price) {
+          compareEl.textContent = FlowTheme.formatMoney(matching.compare_at_price);
+          compareEl.style.display = '';
+        } else {
+          compareEl.style.display = 'none';
+        }
+      }
+    }
   }
 
   async onSubmit(e) {
@@ -360,9 +395,12 @@ class ProductForm {
       await CartDrawer.addItem(variantId, qty);
       Toast.show('Added to cart!', 'success');
       // Open cart drawer
-      document.querySelector('.cart-drawer')?.classList.add('open');
-      document.querySelector('.cart-drawer-overlay')?.classList.add('open');
-      document.body.style.overflow = 'hidden';
+      const cartDrawer = document.querySelector('.cart-drawer');
+      if (cartDrawer) {
+        cartDrawer.classList.add('open');
+        document.querySelector('.cart-drawer-overlay')?.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }
       FlowTheme.emit('cart-updated');
     } catch (err) {
       Toast.show(err.message || 'Could not add to cart', 'error');
@@ -581,9 +619,10 @@ class SearchOverlay {
       return;
     }
     try {
-      const res  = await fetch(`/search/suggest.json?q=${encodeURIComponent(q)}&resources[type]=product&resources[limit]=6`);
+      const res  = await fetch(`/search?q=${encodeURIComponent(q)}&type=product&view=json&limit=6`);
       const data = await res.json();
-      this.renderResults(data.resources?.results?.products || []);
+      const products = data.results || data.products || [];
+      this.renderResults(products);
     } catch (_) {}
   }
 
@@ -595,7 +634,7 @@ class SearchOverlay {
     }
     this.results.innerHTML = products.map(p => `
       <a href="${p.url}" class="search-result-item" style="display:flex;align-items:center;gap:16px;padding:12px 24px;border-bottom:1px solid var(--color-border);transition:background var(--transition-fast)">
-        <img src="${p.featured_image?.url || ''}" alt="${p.title}" style="width:56px;height:56px;object-fit:cover;border-radius:4px;background:var(--color-surface-low)">
+        <img src="${p.featured_image || p.images?.[0]?.src || ''}" alt="${p.title}" style="width:56px;height:56px;object-fit:cover;border-radius:4px;background:var(--color-surface-low)">
         <div>
           <p style="font-size:14px;font-weight:600;color:var(--color-text-high)">${p.title}</p>
           <p style="font-size:13px;color:var(--color-text-medium)">${FlowTheme.formatMoney(p.price)}</p>
@@ -649,9 +688,12 @@ class QuickView {
       this.modal.innerHTML = `<button class="modal__close" aria-label="Close">✕</button>${content.innerHTML}`;
       FlowTheme.trapFocus(this.modal);
 
-      // Re-init product form inside modal
+      // Re-init components inside modal
       const form = this.modal.querySelector('.product-form');
       if (form) new ProductForm(form);
+      const gallery = this.modal.querySelector('.product-gallery');
+      if (gallery) new ProductGallery(gallery);
+      this.modal.querySelectorAll('.accordion').forEach(a => new Accordion(a));
     } catch (err) {
       this.modal.innerHTML = `<div style="padding:40px;text-align:center"><p>Could not load product. <a href="${productUrl}">View full page</a></p></div>`;
     }
@@ -682,6 +724,9 @@ class Wishlist {
       }
     });
     this.syncUI();
+    // Update header count on init
+    const countEl = FlowTheme.qs('[data-wishlist-count]');
+    if (countEl) countEl.textContent = this.items.length;
   }
 
   toggle(productId, btn) {

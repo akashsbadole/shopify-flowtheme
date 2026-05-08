@@ -106,7 +106,7 @@
         <div style="height:1px;background:var(--color-border);margin-bottom:24px"></div>
 
         <!-- Variant Form -->
-        {%- form 'product', product, id: 'product-form', data-product-form: true -%}
+        {%- form 'product', product, id: 'product-form', data-product-form: true, class: 'product-form' -%}
           {%- unless product.has_only_default_variant -%}
             {%- for option in product.options_with_values -%}
               <p class="product-info__variant-label">
@@ -123,7 +123,7 @@
                       class="color-swatch-btn {% if value == option.selected_value %}active{% endif %}"
                       style="background-color:{{ value | handle | replace: '-', '' }};"
                       data-value="{{ value | escape }}"
-                      onclick="selectColor(this, {{ forloop.index0 }})"
+                      data-option-index="{{ forloop.index0 }}"
                       title="{{ value }}"
                       aria-label="{{ value }}">
                     </button>
@@ -135,7 +135,7 @@
                   {%- for value in option.values -%}
                     <button type="button"
                       class="variant-btn {% if value == option.selected_value %}active{% endif %}"
-                      onclick="selectVariant(this, {{ forloop.index0 }})">
+                      data-option-index="{{ forloop.index0 }}">
                       {{ value }}
                     </button>
                   {%- endfor -%}
@@ -150,15 +150,15 @@
               <p class="product-info__variant-label">Quantity</p>
               <div style="margin-bottom:24px">
                 <div class="qty-selector">
-                  <button type="button" class="qty-selector__btn" onclick="changeQty(-1)">âˆ’</button>
+                  <button type="button" class="qty-selector__btn" data-action="dec">−</button>
                   <input class="qty-selector__input" type="number" name="quantity" value="1" min="1" id="qty-input" readonly>
-                  <button type="button" class="qty-selector__btn" onclick="changeQty(1)">+</button>
+                  <button type="button" class="qty-selector__btn" data-action="inc">+</button>
                 </div>
               </div>
             {%- endif -%}
 
             <div class="product-info__actions">
-              <button type="submit" class="btn btn--primary btn--lg" id="add-to-cart-btn" style="flex:1;justify-content:center">
+              <button type="submit" class="btn btn--primary btn--lg" id="add-to-cart-btn" style="flex:1;justify-content:center" data-atc-btn>
                 <span class="material-symbols-outlined" style="font-size:20px">shopping_cart</span>
                 Add to Cart
               </button>
@@ -251,15 +251,18 @@
         {%- if section.settings.show_share_buttons -%}
           <div style="display:flex;align-items:center;gap:12px;margin-top:24px;padding-top:20px;border-top:1px solid var(--color-border)">
             <span style="font-size:13px;font-weight:600;color:var(--color-text-medium)">Share:</span>
-            <a href="https://www.facebook.com/sharer/sharer.php?u={{ canonical_url | url_encode }}" target="_blank" rel="noopener" class="header__icon-btn" style="width:32px;height:32px" aria-label="Share on Facebook">
-              <span class="material-symbols-outlined" style="font-size:16px">share</span>
+            <a href="https://www.facebook.com/sharer/sharer.php?u={{ canonical_url | url_encode }}" target="_blank" rel="noopener" class="share-btn" aria-label="Share on Facebook">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
             </a>
-            <a href="https://twitter.com/intent/tweet?url={{ canonical_url | url_encode }}&text={{ product.title | url_encode }}" target="_blank" rel="noopener" class="header__icon-btn" style="width:32px;height:32px" aria-label="Share on Twitter">
-              <span class="material-symbols-outlined" style="font-size:16px">tag</span>
+            <a href="https://twitter.com/intent/tweet?url={{ canonical_url | url_encode }}&text={{ product.title | url_encode }}" target="_blank" rel="noopener" class="share-btn" aria-label="Share on Twitter">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg>
             </a>
-            <a href="https://pinterest.com/pin/create/button/?url={{ canonical_url | url_encode }}&media={{ product.featured_image | image_url: width: 600 }}&description={{ product.title | url_encode }}" target="_blank" rel="noopener" class="header__icon-btn" style="width:32px;height:32px" aria-label="Share on Pinterest">
-              <span class="material-symbols-outlined" style="font-size:16px">pinterest</span>
+            <a href="https://pinterest.com/pin/create/button/?url={{ canonical_url | url_encode }}&media={{ product.featured_image | image_url: width: 600 }}&description={{ product.title | url_encode }}" target="_blank" rel="noopener" class="share-btn" aria-label="Share on Pinterest">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.992 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 0 1 .083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.631-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg>
             </a>
+            <button type="button" class="share-btn" onclick="navigator.clipboard.writeText(window.location.href)" aria-label="Copy link">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            </button>
           </div>
         {%- endif -%}
       </div>
@@ -268,56 +271,73 @@
 </div>
 
 <script>
+// Variant data for dynamic selection
+window.productVariants = {
+  {%- for variant in product.variants -%}
+    "{{ variant.id }}": {
+      id: {{ variant.id }},
+      price: {{ variant.price }},
+      compare_at_price: {{ variant.compare_at_price | default: 0 }},
+      available: {{ variant.available | json }},
+      options: {
+        {%- for option in variant.options -%}
+          "{{ product.options[forloop.index0] | downcase }}": {{ variant.options[forloop.index0] | json }}{% unless forloop.last %},{% endunless %}
+        {%- endfor -%}
+      }
+    }{% unless forloop.last %},{% endunless %}
+  {%- endfor -%}
+};
+
 function switchMedia(src, zoomSrc, el) {
-  document.querySelector('#main-image').src = src;
-  document.querySelector('#main-image').dataset.zoom = zoomSrc;
+  const mainImg = document.querySelector('#main-image');
+  if (mainImg) {
+    mainImg.src = src;
+    mainImg.dataset.zoom = zoomSrc;
+  }
   document.querySelectorAll('.product-gallery__thumb').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
 }
 
-function selectColor(btn, index) {
-  const container = btn.closest('.color-swatch-selector');
-  container.querySelectorAll('.color-swatch-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  const input = document.getElementById('option-' + btn.closest('.color-swatch-selector').dataset.optionIndex);
-  // Update hidden input and form
-  const name = btn.closest('.color-swatch-selector').parentElement.querySelector('.product-info__variant-label').textContent.trim().split('\n')[0].trim();
-  document.querySelector('input[name="options[' + name + ']"]').value = btn.dataset.value;
-}
-
-function selectVariant(btn, index) {
-  const container = btn.closest('.variant-selector');
-  container.querySelectorAll('.variant-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  const label = btn.closest('.variant-selector').parentElement.querySelector('.product-info__variant-label').textContent.trim();
-  document.querySelector('input[name="options[' + label + ']"]').value = btn.textContent.trim();
-}
-
-function changeQty(delta) {
-  const input = document.getElementById('qty-input');
-  let val = parseInt(input.value) + delta;
-  if (val < 1) val = 1;
-  input.value = val;
-}
-
-function toggleAccordion(btn) {
-  const content = btn.nextElementSibling;
-  const icon = btn.querySelector('.material-symbols-outlined');
-  content.classList.toggle('open');
-  icon.style.transform = content.classList.contains('open') ? 'rotate(0)' : 'rotate(-90deg)';
-}
-
-// Sticky buy bar
-const stickyBar = document.getElementById('sticky-buy-bar');
-if (stickyBar) {
-  window.addEventListener('scroll', () => {
-    const productForm = document.getElementById('product-form');
-    if (productForm) {
-      const rect = productForm.getBoundingClientRect();
-      stickyBar.classList.toggle('visible', rect.bottom < 0);
+// Event delegation for variant selection (works with Quick View too)
+document.addEventListener('click', function(e) {
+  // Color swatches
+  if (e.target.matches('.color-swatch-btn')) {
+    const btn = e.target;
+    const container = btn.closest('.color-swatch-selector');
+    container.querySelectorAll('.color-swatch-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    
+    const name = container.parentElement.querySelector('.product-info__variant-label').textContent.trim();
+    const input = container.closest('form').querySelector(`input[name="options[${name}]"]`);
+    if (input) input.value = btn.dataset.value;
+    
+    // Trigger variant update
+    const form = container.closest('.product-form');
+    if (form && window.FlowTheme) {
+      const productForm = new ProductForm(form);
+      productForm.updateVariantId();
     }
-  });
-}
+  }
+  
+  // Variant buttons
+  if (e.target.matches('.variant-btn')) {
+    const btn = e.target;
+    const container = btn.closest('.variant-selector');
+    container.querySelectorAll('.variant-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    
+    const label = container.parentElement.querySelector('.product-info__variant-label').textContent.trim();
+    const input = container.closest('form').querySelector(`input[name="options[${label}]"]`);
+    if (input) input.value = btn.textContent.trim();
+    
+    // Trigger variant update
+    const form = container.closest('.product-form');
+    if (form && window.FlowTheme) {
+      const productForm = new ProductForm(form);
+      productForm.updateVariantId();
+    }
+  }
+});
 </script>
 
 {% schema %}

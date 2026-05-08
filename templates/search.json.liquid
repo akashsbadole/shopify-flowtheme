@@ -1,0 +1,31 @@
+{%- layout none -%}
+{%- paginate search.results by 6 -%}
+{
+  "results": [
+    {%- for product in search.results -%}
+      {
+        "id": {{ product.id }},
+        "title": {{ product.title | json }},
+        "handle": {{ product.handle | json }},
+        "url": "{{ shop.url }}{{ product.url }}",
+        "vendor": {{ product.vendor | json }},
+        "price": {{ product.price }},
+        "price_min": {{ product.price_min }},
+        "price_max": {{ product.price_max }},
+        "compare_at_price": {{ product.compare_at_price | default: 0 }},
+        "featured_image": "{{ product.featured_image | image_url: width: 120 }}",
+        "images": [
+          {%- for image in product.images limit: 3 -%}
+            { "src": "{{ image | image_url: width: 120 }}" }{% unless forloop.last %},{% endunless %}
+          {%- endfor -%}
+        ],
+        "variants": [
+          {%- for variant in product.variants limit: 1 -%}
+            { "id": {{ variant.id }}, "title": {{ variant.title | json }}, "price": {{ variant.price }} }{% unless forloop.last %},{% endunless %}
+          {%- endfor -%}
+        ]
+      }{% unless forloop.last %},{% endunless %}
+    {%- endfor -%}
+  ]
+}
+{%- endpaginate -%}

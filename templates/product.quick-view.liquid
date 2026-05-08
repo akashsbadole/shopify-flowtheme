@@ -1,0 +1,118 @@
+{% comment %}
+  Quick View alternate template for products.
+  Accessed via: /products/handle?view=quick-view
+{% endcomment %}
+
+<div class="quick-view-content" style="display:grid;grid-template-columns:1fr 1fr;gap:32px">
+  <!-- Product Image -->
+  <div class="product-gallery">
+    <div class="product-gallery__main" id="qv-main-image">
+      {%- if product.featured_media -%}
+        <img src="{{ product.featured_media | image_url: width: 800 }}" alt="{{ product.featured_media.alt | escape }}" style="width:100%;height:auto;border-radius:var(--radius-lg)">
+      {%- else -%}
+        <div style="width:100%;aspect-ratio:1;display:flex;align-items:center;justify-content:center;background:var(--color-surface-low);border-radius:var(--radius-lg)">
+          <span class="material-symbols-outlined" style="font-size:64px;color:var(--color-border)">image</span>
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+
+  <!-- Product Info -->
+  <div class="product-info">
+    {%- if product.vendor != blank -%}
+      <p class="product-info__vendor" style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--color-text-medium);margin-bottom:8px">
+        {{ product.vendor }}
+      </p>
+    {%- endif -%}
+
+    <h2 style="font-size:24px;font-weight:800;letter-spacing:-0.02em;margin-bottom:12px;line-height:1.2">{{ product.title }}</h2>
+
+    <!-- Pricing -->
+    <div class="product-info__pricing" style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+      <span class="product-info__price" id="qv-product-price" style="font-size:20px;font-weight:800;color:var(--color-primary)" data-price="{{ product.selected_or_first_available_variant.price }}">
+        {{ product.selected_or_first_available_variant.price | money }}
+      </span>
+      {%- if product.selected_or_first_available_variant.compare_at_price > product.selected_or_first_available_variant.price -%}
+        <span class="product-info__compare" id="qv-compare-price" style="font-size:14px;color:var(--color-text-medium);text-decoration:line-through">{{ product.selected_or_first_available_variant.compare_at_price | money }}</span>
+        <span class="product-info__sale-badge" style="background:var(--color-primary);color:white;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700">Sale</span>
+      {%- endif -%}
+    </div>
+
+    <!-- Product Form -->
+    {%- form 'product', product, id: 'qv-product-form', data-product-form: true, class: 'product-form' -%}
+      {%- unless product.has_only_default_variant -%}
+        {%- for option in product.options_with_values -%}
+          <p class="product-info__variant-label" style="font-size:13px;font-weight:600;color:var(--color-text-medium);margin:16px 0 8px">
+            {{ option.name }}
+          </p>
+
+          {%- if option.name contains 'Color' -%}
+            <div class="color-swatch-selector" data-option-index="{{ forloop.index0 }}">
+              {%- for value in option.values -%}
+                <button type="button"
+                  class="color-swatch-btn {% if value == option.selected_value %}active{% endif %}"
+                  style="background-color:{{ value | handle | replace: '-', '' }};width:32px;height:32px;border-radius:50%;border:2px solid var(--color-border);cursor:pointer;transition:all 0.2s"
+                  data-value="{{ value | escape }}"
+                  data-option-index="{{ forloop.index0 }}"
+                  title="{{ value }}"
+                  aria-label="{{ value }}">
+                </button>
+              {%- endfor -%}
+            </div>
+            <input type="hidden" name="options[{{ option.name | escape }}]" value="{{ option.selected_value | escape }}">
+          {%- else -%}
+            <div class="variant-selector" data-option-index="{{ forloop.index0 }}">
+              {%- for value in option.values -%}
+                <button type="button"
+                  class="variant-btn {% if value == option.selected_value %}active{% endif %}"
+                  data-option-index="{{ forloop.index0 }}"
+                  style="padding:8px 16px;border:1px solid var(--color-border);background:white;border-radius:var(--radius-sm);cursor:pointer;font-size:13px;font-weight:600;transition:all 0.2s">
+                  {{ value }}
+                </button>
+              {%- endfor -%}
+            </div>
+            <input type="hidden" name="options[{{ option.name | escape }}]" value="{{ option.selected_value | escape }}">
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endunless -%}
+
+      {%- if settings.show_quantity -%}
+        <p class="product-info__variant-label" style="font-size:13px;font-weight:600;color:var(--color-text-medium);margin:16px 0 8px">Quantity</p>
+        <div style="margin-bottom:16px">
+          <div class="qty-selector" style="width:auto">
+            <button type="button" class="qty-selector__btn" data-action="dec">−</button>
+            <input class="qty-selector__input" type="number" name="quantity" value="1" min="1" readonly style="width:48px">
+            <button type="button" class="qty-selector__btn" data-action="inc">+</button>
+          </div>
+        </div>
+      {%- endif -%}
+
+      <div class="product-info__actions" style="margin-top:20px">
+        <button type="submit" class="btn btn--primary btn--lg" id="qv-add-to-cart-btn" style="flex:1;justify-content:center" data-atc-btn>
+          <span class="material-symbols-outlined" style="font-size:20px">shopping_cart</span>
+          Add to Cart
+        </button>
+      </div>
+
+      <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+    {%- endform -%}
+  </div>
+</div>
+
+<script>
+window.productVariants = {
+  {%- for variant in product.variants -%}
+    "{{ variant.id }}": {
+      id: {{ variant.id }},
+      price: {{ variant.price }},
+      compare_at_price: {{ variant.compare_at_price | default: 0 }},
+      available: {{ variant.available | json }},
+      options: {
+        {%- for option in variant.options -%}
+          "{{ product.options[forloop.index0] | downcase }}": {{ variant.options[forloop.index0] | json }}{% unless forloop.last %},{% endunless %}
+        {%- endfor -%}
+      }
+    }{% unless forloop.last %},{% endunless %}
+  {%- endfor -%}
+};
+</script>

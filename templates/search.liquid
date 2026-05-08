@@ -34,69 +34,97 @@
         </div>
       {%- else -%}
         <p style="font-size:15px;color:var(--color-text-medium);margin-bottom:32px">
-          Showing <strong>{{ search.results_count }}</strong> results for "<strong>{{ search.terms }}</strong>"
+          Showing <strong>{{ search.results.size }}</strong> results for "<strong>{{ search.terms }}</strong>"
         </p>
 
-        <!-- Filter by type -->
-        <div class="tabs" style="margin-bottom:40px">
-          <button class="tab-btn active">All ({{ search.results_count }})</button>
-          {%- assign product_count = 0 -%}
-          {%- assign article_count = 0 -%}
-          {%- for result in search.results -%}
-            {%- if result.object_type == 'product' -%}{%- assign product_count = product_count | plus: 1 -%}{%- endif -%}
-            {%- if result.object_type == 'article' -%}{%- assign article_count = article_count | plus: 1 -%}{%- endif -%}
-          {%- endfor -%}
-          {%- if product_count > 0 -%}<button class="tab-btn">Products ({{ product_count }})</button>{%- endif -%}
-          {%- if article_count > 0 -%}<button class="tab-btn">Articles ({{ article_count }})</button>{%- endif -%}
-        </div>
-
-        <div class="product-grid">
-          {%- for result in search.results -%}
-            {%- if result.object_type == 'product' -%}
-              {%- render 'product-card', product: result -%}
-            {%- elsif result.object_type == 'article' -%}
-              <article class="blog-card">
-                <a href="{{ result.url }}" class="blog-card__image">
-                  {%- if result.image -%}
-                    <img src="{{ result.image | image_url: width: 600 }}" alt="{{ result.title | escape }}" loading="lazy">
-                  {%- endif -%}
-                </a>
-                <p class="blog-card__category">Article</p>
-                <a href="{{ result.url }}" class="blog-card__title">{{ result.title }}</a>
-                <p class="blog-card__excerpt">{{ result.body | strip_html | truncate: 140 }}</p>
-              </article>
-            {%- endif -%}
-          {%- endfor -%}
-        </div>
-
-        {%- if paginate.pages > 1 -%}
-          <nav class="pagination">
-            {%- if paginate.previous -%}
-              <a href="{{ paginate.previous.url }}" class="pagination__btn"><span class="material-symbols-outlined" style="font-size:16px">chevron_left</span></a>
-            {%- endif -%}
-            {%- for part in paginate.parts -%}
-              {%- if part.is_link -%}
-                <a href="{{ part.url }}" class="pagination__btn">{{ part.title }}</a>
-              {%- else -%}
-                <span class="pagination__btn {% if part.title == paginate.current_page %}active{% endif %}">{{ part.title }}</span>
-              {%- endif -%}
+        {%- paginate search.results by 24 -%}
+          <!-- Filter by type tabs -->
+          <div class="tabs" style="margin-bottom:40px">
+            <button class="tab-btn active" data-filter="all">All ({{ search.results_count }})</button>
+            {%- assign product_count = 0 -%}
+            {%- assign article_count = 0 -%}
+            {%- for result in search.results -%}
+              {%- if result.object_type == 'product' -%}{%- assign product_count = product_count | plus: 1 -%}{%- endif -%}
+              {%- if result.object_type == 'article' -%}{%- assign article_count = article_count | plus: 1 -%}{%- endif -%}
             {%- endfor -%}
-            {%- if paginate.next -%}
-              <a href="{{ paginate.next.url }}" class="pagination__btn"><span class="material-symbols-outlined" style="font-size:16px">chevron_right</span></a>
-            {%- endif -%}
-          </nav>
-        {%- endif -%}
+            {%- if product_count > 0 -%}<button class="tab-btn" data-filter="product">Products ({{ product_count }})</button>{%- endif -%}
+            {%- if article_count > 0 -%}<button class="tab-btn" data-filter="article">Articles ({{ article_count }})</button>{%- endif -%}
+          </div>
+
+          <div class="product-grid" id="search-results-grid">
+            {%- for result in search.results -%}
+              <div class="search-result" data-type="{{ result.object_type }}">
+                {%- if result.object_type == 'product' -%}
+                  {%- render 'product-card', product: result -%}
+                {%- elsif result.object_type == 'article' -%}
+                  <article class="blog-card">
+                    <a href="{{ result.url }}" class="blog-card__image">
+                      {%- if result.image -%}
+                        <img src="{{ result.image | image_url: width: 600 }}" alt="{{ result.title | escape }}" loading="lazy">
+                      {%- endif -%}
+                    </a>
+                    <p class="blog-card__category">Article</p>
+                    <a href="{{ result.url }}" class="blog-card__title">{{ result.title }}</a>
+                    <p class="blog-card__excerpt">{{ result.excerpt_or_content | strip_html | truncate: 140 }}</p>
+                  </article>
+                {%- elsif result.object_type == 'page' -%}
+                  <a href="{{ result.url }}" style="display:block;padding:24px;border:1px solid var(--color-border);border-radius:var(--radius-lg);background:white;text-decoration:none;transition:all var(--transition-fast)">
+                    <p style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--color-text-medium);margin-bottom:8px">Page</p>
+                    <h3 style="font-size:18px;font-weight:700;color:var(--color-text-high);margin-bottom:8px">{{ result.title }}</h3>
+                    <p style="font-size:14px;color:var(--color-text-medium)">{{ result.body | strip_html | truncate: 100 }}</p>
+                  </a>
+                {%- endif -%}
+              </div>
+            {%- endfor -%}
+          </div>
+
+          {%- if paginate.pages > 1 -%}
+            <nav class="pagination">
+              {%- if paginate.previous -%}
+                <a href="{{ paginate.previous.url }}" class="pagination__btn"><span class="material-symbols-outlined" style="font-size:16px">chevron_left</span></a>
+              {%- endif -%}
+              {%- for part in paginate.parts -%}
+                {%- if part.is_link -%}
+                  <a href="{{ part.url }}" class="pagination__btn">{{ part.title }}</a>
+                {%- else -%}
+                  <span class="pagination__btn {% if part.title == paginate.current_page %}active{% endif %}">{{ part.title }}</span>
+                {%- endif -%}
+              {%- endfor -%}
+              {%- if paginate.next -%}
+                <a href="{{ paginate.next.url }}" class="pagination__btn"><span class="material-symbols-outlined" style="font-size:16px">chevron_right</span></a>
+              {%- endif -%}
+            </nav>
+          {%- endif -%}
+        {%- endpaginate -%}
       {%- endif -%}
     {%- else -%}
       <!-- Search suggestions -->
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
-        {%- for block in section.blocks -%}
-          <a href="{{ block.settings.link }}" style="display:flex;align-items:center;gap:12px;padding:16px;border:1px solid var(--color-border);border-radius:4px;background:white;transition:border-color 0.15s">
-            <span class="material-symbols-outlined" style="color:var(--color-primary)">{{ block.settings.icon | default: 'search' }}</span>
-            <span style="font-size:14px;font-weight:600">{{ block.settings.label }}</span>
-          </a>
-        {%- endfor -%}
-      </div>
+      {%- if section.blocks.size > 0 -%}
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+          {%- for block in section.blocks -%}
+            <a href="{{ block.settings.link | default: '#' }}" style="display:flex;align-items:center;gap:12px;padding:16px;border:1px solid var(--color-border);border-radius:4px;background:white;transition:border-color 0.15s" {{ block.shopify_attributes }}>
+              <span class="material-symbols-outlined" style="color:var(--color-primary)">{{ block.settings.icon | default: 'search' }}</span>
+              <span style="font-size:14px;font-weight:600">{{ block.settings.label }}</span>
+            </a>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
     {%- endif -%}
   </div>
 </div>
+
+<script>
+(function() {
+  // Tab filtering for search results
+  document.querySelectorAll('.tab-btn[data-filter]').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.tab-btn[data-filter]').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      const filter = this.dataset.filter;
+      document.querySelectorAll('.search-result').forEach(item => {
+        item.style.display = (filter === 'all' || item.dataset.type === filter) ? '' : 'none';
+      });
+    });
+  });
+})();
+</script>
