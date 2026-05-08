@@ -107,14 +107,7 @@
         "btn_label": "Claim Offer",
         "btn_link": "/collections/all"
       }
-    },
-    "wishlist_section": {
-      "type": "wishlist-section",
-      "settings": {
-        "title": "My Wishlist",
-        "subtitle": "Your saved items"
-      }
     }
   },
-  "order": ["hero","trust_badges","featured_collections","featured_products","countdown","image_text","testimonials","newsletter","promo","wishlist"]
+  "order": ["hero","trust_badges","featured_collections","featured_products","countdown","image_text","testimonials","newsletter","promo"]
 }
