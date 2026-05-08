@@ -3172,3 +3172,22 @@ ul, ol {
     max-height: calc(100vh - 200px);
   }
 }
+
+/* Additional Checkout Buttons */
+.cart-drawer__footer .additional-checkout-buttons {
+  margin-bottom: 12px;
+}
+.cart-drawer__footer .additional-checkout-buttons input[type="image"] {
+  width: 100%;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  transition: all 0.2s ease;
+}
+.cart-drawer__footer .additional-checkout-buttons input[type="image"]:hover {
+  border-color: var(--color-primary);
+  transform: translateY(-1px);
+}
+.cart-drawer__footer .additional-checkout-buttons .dynamic-checkout-button__title {
+  display: none;
+}
