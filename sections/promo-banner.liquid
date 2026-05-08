@@ -1,0 +1,30 @@
+<section class="section section--sm">
+  <div class="container">
+    <div class="promo-banner">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="text-label" style="color:rgba(255,255,255,0.7);margin-bottom:12px">{{ section.settings.eyebrow }}</p>
+      {%- endif -%}
+      <h2 class="promo-banner__title">{{ section.settings.title | default: 'Limited Time Offer' }}</h2>
+      {%- if section.settings.subtitle != blank -%}
+        <p class="promo-banner__sub">{{ section.settings.subtitle }}</p>
+      {%- endif -%}
+      {%- if section.settings.btn_label != blank -%}
+        <a href="{{ section.settings.btn_link }}" class="btn btn--primary btn--lg">{{ section.settings.btn_label }}</a>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Promo Banner",
+  "settings": [
+    {"type":"text","id":"eyebrow","label":"Eyebrow"},
+    {"type":"text","id":"title","label":"Title","default":"Get 20% Off Your First Order"},
+    {"type":"text","id":"subtitle","label":"Subtitle","default":"Use code WELCOME20 at checkout"},
+    {"type":"text","id":"btn_label","label":"Button Label","default":"Shop Now"},
+    {"type":"url","id":"btn_link","label":"Button Link"}
+  ],
+  "presets":[{"name":"Promo Banner"}]
+}
+{% endschema %}

@@ -1,0 +1,113 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "settings": {
+        "layout": "centered",
+        "eyebrow": "New Collection 2025",
+        "title": "The Future\nof Commerce",
+        "subtitle": "Discover premium products crafted for the modern world. Shop the latest arrivals.",
+        "btn_primary_label": "Shop Now",
+        "btn_primary_link": "/collections/all",
+        "btn_secondary_label": "View Lookbook",
+        "btn_secondary_link": "/blogs/news",
+        "min_height": 85,
+        "overlay_opacity": 0.5,
+        "text_align": "center"
+      }
+    },
+    "trust_badges": {
+      "type": "trust-badges",
+      "block_order": ["badge1","badge2","badge3","badge4"],
+      "blocks": {
+        "badge1": {"type":"badge","settings":{"icon":"local_shipping","title":"Free Shipping","subtitle":"On orders over $75"}},
+        "badge2": {"type":"badge","settings":{"icon":"cached","title":"Free Returns","subtitle":"30-day hassle-free"}},
+        "badge3": {"type":"badge","settings":{"icon":"lock","title":"Secure Checkout","subtitle":"SSL encrypted"}},
+        "badge4": {"type":"badge","settings":{"icon":"support_agent","title":"24/7 Support","subtitle":"Always here"}}
+      }
+    },
+    "featured_collections": {
+      "type": "featured-collections",
+      "settings": {
+        "title": "Shop by Category",
+        "columns": 3
+      },
+      "block_order": ["col1","col2","col3"],
+      "blocks": {
+        "col1": {"type":"collection","settings":{"label":"New Arrivals","subtitle":"Latest drops"}},
+        "col2": {"type":"collection","settings":{"label":"Best Sellers","subtitle":"Fan favorites"}},
+        "col3": {"type":"collection","settings":{"label":"Sale","subtitle":"Up to 50% off"}}
+      }
+    },
+    "featured_products": {
+      "type": "featured-products",
+      "settings": {
+        "title": "Featured Products",
+        "view_all_link": "/collections/all",
+        "product_limit": 8,
+        "columns": "4"
+      }
+    },
+    "countdown": {
+      "type": "countdown-banner",
+      "settings": {
+        "eyebrow": "Flash Sale",
+        "title": "Sale Ends In",
+        "end_time": "2025-12-31T23:59:59",
+        "btn_label": "Shop Sale",
+        "btn_link": "/collections/sale"
+      }
+    },
+    "image_text": {
+      "type": "image-with-text",
+      "settings": {
+        "eyebrow": "Our Story",
+        "title": "Crafted with Purpose",
+        "text": "Every product we create starts with a simple question: how can we make something genuinely better? We combine premium materials with thoughtful design to deliver products that stand the test of time.",
+        "btn_label": "Learn More",
+        "btn_link": "/pages/about"
+      },
+      "block_order": ["f1","f2","f3"],
+      "blocks": {
+        "f1": {"type":"feature","settings":{"icon":"verified","title":"Premium Materials","text":"Sourced from the world's finest suppliers."}},
+        "f2": {"type":"feature","settings":{"icon":"eco","title":"Sustainably Made","text":"We care about our planet as much as our products."}},
+        "f3": {"type":"feature","settings":{"icon":"handshake","title":"Lifetime Guarantee","text":"We stand behind everything we make."}}
+      }
+    },
+    "testimonials": {
+      "type": "testimonials",
+      "settings": {
+        "title": "What Our Customers Say",
+        "columns": "3"
+      },
+      "block_order": ["t1","t2","t3"],
+      "blocks": {
+        "t1": {"type":"testimonial","settings":{"rating":5,"title":"Absolutely love it!","review":"The quality blew me away. Fast shipping and the packaging was beautiful. Will definitely order again.","author":"Sarah M.","location":"New York, USA","verified":true}},
+        "t2": {"type":"testimonial","settings":{"rating":5,"title":"Best purchase this year","review":"Finally a store that delivers on its promises. The product exceeded every expectation.","author":"James K.","location":"London, UK","verified":true}},
+        "t3": {"type":"testimonial","settings":{"rating":5,"title":"Worth every penny","review":"Premium quality at a fair price. Customer support was responsive and the returns process was seamless.","author":"Priya R.","location":"Toronto, CA","verified":true}}
+      }
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {
+        "eyebrow": "Stay in the loop",
+        "title": "Get Early Access & Exclusive Offers",
+        "subtitle": "Join our newsletter for product drops, styling tips, and member-only discounts.",
+        "btn_label": "Subscribe",
+        "success_text": "Thanks for subscribing!",
+        "note": "No spam, unsubscribe at any time."
+      }
+    },
+    "promo": {
+      "type": "promo-banner",
+      "settings": {
+        "eyebrow": "Limited Time",
+        "title": "Get 20% Off Your First Order",
+        "subtitle": "Use code WELCOME20 at checkout — valid for new customers only.",
+        "btn_label": "Claim Offer",
+        "btn_link": "/collections/all"
+      }
+    }
+  },
+  "order": ["hero","trust_badges","featured_collections","featured_products","countdown","image_text","testimonials","newsletter","promo"]
+}

@@ -1,0 +1,95 @@
+<section class="section">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 480px;gap:60px;align-items:start">
+      <div>
+        <p class="text-label" style="color:var(--color-primary);margin-bottom:16px">{{ section.settings.eyebrow | default: 'Book Your Appointment' }}</p>
+        <h2 class="text-h1" style="margin-bottom:20px">{{ section.settings.title | default: 'Schedule a Visit' }}</h2>
+        <p style="font-size:16px;color:var(--color-text-medium);line-height:1.7;margin-bottom:32px">{{ section.settings.description }}</p>
+        {%- if section.settings.address != blank -%}
+          <div style="display:flex;gap:12px;margin-bottom:16px">
+            <span class="material-symbols-outlined" style="color:var(--color-primary);margin-top:2px">location_on</span>
+            <p style="font-size:14px;color:var(--color-text-medium)">{{ section.settings.address }}</p>
+          </div>
+        {%- endif -%}
+        {%- if section.settings.phone != blank -%}
+          <div style="display:flex;gap:12px;margin-bottom:16px">
+            <span class="material-symbols-outlined" style="color:var(--color-primary)">phone</span>
+            <a href="tel:{{ section.settings.phone }}" style="font-size:14px;color:var(--color-text-medium)">{{ section.settings.phone }}</a>
+          </div>
+        {%- endif -%}
+        {%- if section.settings.hours != blank -%}
+          <div style="display:flex;gap:12px">
+            <span class="material-symbols-outlined" style="color:var(--color-primary)">schedule</span>
+            <p style="font-size:14px;color:var(--color-text-medium)">{{ section.settings.hours }}</p>
+          </div>
+        {%- endif -%}
+      </div>
+      <div class="booking-form">
+        <h3 class="booking-form__title">Book Now</h3>
+        {%- form 'contact' -%}
+          <div class="form-field">
+            <label class="form-label">Full Name</label>
+            <input class="form-input" type="text" name="contact[name]" placeholder="Your name" required>
+          </div>
+          <div class="form-field">
+            <label class="form-label">Email</label>
+            <input class="form-input" type="email" name="contact[email]" placeholder="your@email.com" required>
+          </div>
+          <div class="form-field">
+            <label class="form-label">Phone</label>
+            <input class="form-input" type="tel" name="contact[phone]" placeholder="+1 234 567 890">
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+            <div class="form-field">
+              <label class="form-label">Date</label>
+              <input class="form-input" type="date" name="contact[date]" required>
+            </div>
+            <div class="form-field">
+              <label class="form-label">Time</label>
+              <select class="form-select" name="contact[time]">
+                <option>9:00 AM</option><option>10:00 AM</option><option>11:00 AM</option>
+                <option>12:00 PM</option><option>1:00 PM</option><option>2:00 PM</option>
+                <option>3:00 PM</option><option>4:00 PM</option><option>5:00 PM</option>
+              </select>
+            </div>
+          </div>
+          {%- if section.settings.show_service -%}
+            <div class="form-field">
+              <label class="form-label">Service</label>
+              <select class="form-select" name="contact[service]">
+                {%- for block in section.blocks -%}
+                  <option>{{ block.settings.service }}</option>
+                {%- endfor -%}
+              </select>
+            </div>
+          {%- endif -%}
+          <div class="form-field">
+            <label class="form-label">Notes</label>
+            <textarea class="form-textarea" name="contact[body]" placeholder="Any special requests or questions?"></textarea>
+          </div>
+          <button type="submit" class="btn btn--primary btn--full btn--lg">
+            <span class="material-symbols-outlined" style="font-size:18px">event</span>
+            Confirm Booking
+          </button>
+        {%- endform -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Booking Form",
+  "settings": [
+    {"type":"text","id":"eyebrow","label":"Eyebrow"},
+    {"type":"text","id":"title","label":"Title","default":"Schedule a Visit"},
+    {"type":"textarea","id":"description","label":"Description"},
+    {"type":"text","id":"address","label":"Address"},
+    {"type":"text","id":"phone","label":"Phone"},
+    {"type":"text","id":"hours","label":"Hours","default":"Mon–Fri: 9am–6pm"},
+    {"type":"checkbox","id":"show_service","label":"Show Service Dropdown","default":true}
+  ],
+  "blocks":[{"type":"service","name":"Service Option","settings":[{"type":"text","id":"service","label":"Service Name","default":"Consultation"}]}],
+  "presets":[{"name":"Booking Form"}]
+}
+{% endschema %}

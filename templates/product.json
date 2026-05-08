@@ -1,0 +1,24 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "settings": {
+        "enable_zoom": true,
+        "enable_sticky_atc": true,
+        "show_vendor": true,
+        "show_sku": false,
+        "show_trust_badges": true,
+        "show_share_buttons": true
+      }
+    },
+    "recommended": {
+      "type": "recommended-products",
+      "settings": {
+        "title": "You May Also Like",
+        "limit": 4,
+        "columns": "4"
+      }
+    }
+  },
+  "order": ["main", "recommended"]
+}

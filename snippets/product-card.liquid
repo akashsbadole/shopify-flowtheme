@@ -1,0 +1,69 @@
+{%- comment -%}
+  Renders a product card.
+  Usage: {% render 'product-card', product: product %}
+{%- endcomment -%}
+<article class="product-card">
+  <div class="product-card__media">
+    <a href="{{ product.url }}">
+      {%- if product.featured_image -%}
+        <img
+          src="{{ product.featured_image | image_url: width: 600 }}"
+          alt="{{ product.featured_image.alt | escape | default: product.title }}"
+          loading="lazy"
+          width="600"
+          height="800"
+        >
+      {%- else -%}
+        <div style="width:100%;height:100%;background:var(--color-surface-high);display:flex;align-items:center;justify-content:center">
+          <span class="material-symbols-outlined" style="font-size:48px;color:var(--color-border)">image</span>
+        </div>
+      {%- endif -%}
+    </a>
+    {%- assign thirty_days_ago = 'now' | date: '%s' | minus: 2592000 | date: '%Y-%m-%d' -%}
+    {%- assign created_date = product.created_at | date: '%Y-%m-%d' -%}
+    <!-- Badges -->
+    {%- if product.available == false -%}
+      <span class="product-card__badge product-card__badge--sold-out">Sold Out</span>
+    {%- elsif product.compare_at_price > product.price -%}
+      {%- assign discount = product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price -%}
+      <span class="product-card__badge product-card__badge--sale">-{{ discount }}%</span>
+    {%- elsif created_date > thirty_days_ago -%}
+      <span class="product-card__badge product-card__badge--new">New</span>
+    {%- endif -%}
+    <!-- Wishlist -->
+    <button class="product-card__wishlist" data-wishlist-toggle="{{ product.id }}" aria-label="Add to wishlist" aria-pressed="false">
+      <span class="material-symbols-outlined" style="font-size:18px">favorite</span>
+    </button>
+    <!-- Quick actions -->
+    <div class="product-card__quick-actions">
+      {%- if product.available -%}
+        <button type="button" class="btn btn--primary btn--full btn--sm" onclick="quickAddToCart({{ product.variants.first.id }}, '{{ product.title | escape }}')">
+          <span class="material-symbols-outlined" style="font-size:16px">add_shopping_cart</span>
+          Add to Cart
+        </button>
+      {%- endif -%}
+      <button class="btn btn--secondary btn--full btn--sm" data-quick-view="{{ product.url }}" data-handle="{{ product.handle }}" style="margin-top:8px">
+        Quick View
+      </button>
+    </div>
+    <!-- Color swatches -->
+    {%- if product.options contains 'Color' -%}
+      <div class="product-card__swatches" style="position:absolute;bottom:56px;left:16px">
+        {%- assign color_option = product.options_with_values | where: 'name', 'Color' | first -%}
+        {%- for value in color_option.values limit: 5 -%}
+          <div class="swatch" style="background-color:{{ value | handle | replace: '-', '' }};" title="{{ value }}"></div>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+  <div class="product-card__info">
+    <p class="product-card__vendor">{{ product.vendor }}</p>
+    <a href="{{ product.url }}" class="product-card__title">{{ product.title }}</a>
+    <div class="product-card__pricing">
+      <span class="product-card__price">{{ product.price | money }}</span>
+      {%- if product.compare_at_price > product.price -%}
+        <span class="product-card__compare-price">{{ product.compare_at_price | money }}</span>
+      {%- endif -%}
+    </div>
+  </div>
+</article>

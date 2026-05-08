@@ -1,0 +1,119 @@
+<section class="section" style="padding:64px 0">
+  <div class="container">
+    <div style="background:{% if section.settings.bg_color != blank %}{{ section.settings.bg_color }}{% else %}var(--color-text-high){% endif %};border-radius:var(--radius-lg);padding:{{ section.settings.padding | default: 64 }}px;{% if section.settings.text_color != blank %}color:{{ section.settings.text_color }}{% else %}color:white{% endif %};text-align:center;position:relative;overflow:hidden">
+      <div style="position:relative;z-index:1">
+        {%- if section.settings.eyebrow != blank -%}
+          <p style="font-size:12px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:12px;opacity:0.7">{{ section.settings.eyebrow }}</p>
+        {%- endif -%}
+        <h2 class="text-h2" style="margin-bottom:12px">{{ section.settings.title }}</h2>
+        {%- if section.settings.subtitle != blank -%}
+          <p style="font-size:16px;opacity:0.75;max-width:520px;margin:0 auto 32px;line-height:1.6">{{ section.settings.subtitle }}</p>
+        {%- endif -%}
+        <div style="max-width:440px;margin:0 auto">
+          {%- form 'customer', class: 'newsletter-form' -%}
+            {%- if form.posted_successfully? -%}
+              <p style="font-size:15px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px">
+                <span class="material-symbols-outlined fill" style="font-size:20px;color:#16a34a">check_circle</span>
+                {{ section.settings.success_text | default: 'Thanks for subscribing!' }}
+              </p>
+            {%- else -%}
+              <div style="display:flex;gap:0;border-radius:var(--radius-md);overflow:hidden;{% if form.errors %}outline:2px solid #dc2626{% endif %}">
+                <input type="hidden" name="contact[tags]" value="newsletter">
+                <input type="email"
+                  name="contact[email]"
+                  placeholder="Enter your email"
+                  required
+                  style="flex:1;padding:14px 20px;border:none;outline:none;font-size:15px;font-family:var(--font-family);min-width:0"
+                  {% if form.errors %}aria-describedby="newsletter-error"{% endif %}>
+                <button type="submit" class="btn btn--primary" style="border-radius:0;{% if section.settings.btn_color != blank %}background:{{ section.settings.btn_color }}{% endif %}">
+                  {{ section.settings.btn_label | default: 'Subscribe' }}
+                </button>
+              </div>
+              {%- if form.errors -%}
+                <p id="newsletter-error" style="font-size:13px;margin-top:8px;opacity:0.75">{{ form.errors | default_errors }}</p>
+              {%- endif -%}
+            {%- endif -%}
+          {%- endform -%}
+        </div>
+        {%- if section.settings.note != blank -%}
+          <p style="font-size:12px;opacity:0.5;margin-top:16px">{{ section.settings.note }}</p>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Newsletter",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow text",
+      "default": "Stay in the loop"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Get Early Access & Exclusive Offers"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Join our newsletter for product drops, styling tips, and member-only discounts."
+    },
+    {
+      "type": "text",
+      "id": "btn_label",
+      "label": "Button label",
+      "default": "Subscribe"
+    },
+    {
+      "type": "text",
+      "id": "success_text",
+      "label": "Success message",
+      "default": "Thanks for subscribing!"
+    },
+    {
+      "type": "text",
+      "id": "note",
+      "label": "Privacy note",
+      "default": "No spam, unsubscribe at any time."
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#18181b"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "btn_color",
+      "label": "Button color"
+    },
+    {
+      "type": "range",
+      "id": "padding",
+      "label": "Section padding",
+      "min": 32,
+      "max": 96,
+      "step": 8,
+      "default": 64
+    }
+  ],
+  "presets": [
+    {
+      "name": "Newsletter"
+    }
+  ]
+}
+{% endschema %}

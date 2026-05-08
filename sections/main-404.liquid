@@ -1,0 +1,48 @@
+<section class="section" style="min-height:70vh;display:flex;align-items:center">
+  <div class="container" style="text-align:center">
+    <p style="font-size:120px;font-weight:900;color:var(--color-primary);letter-spacing:-0.05em;line-height:1">404</p>
+    <h1 class="text-h1" style="margin-bottom:12px">{{ section.settings.title }}</h1>
+    <p style="color:var(--color-text-medium);font-size:16px;max-width:480px;margin:0 auto 32px">{{ section.settings.subtitle }}</p>
+    <a href="{{ section.settings.btn_link }}" class="btn btn--primary">
+      <span class="material-symbols-outlined" style="font-size:18px">home</span>
+      {{ section.settings.btn_label }}
+    </a>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "404",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Page Not Found"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "The page you're looking for doesn't exist or has been moved."
+    },
+    {
+      "type": "text",
+      "id": "btn_label",
+      "label": "Button label",
+      "default": "Back to Home"
+    },
+    {
+      "type": "url",
+      "id": "btn_link",
+      "label": "Button link",
+      "default": "/"
+    }
+  ],
+  "presets": [
+    {
+      "name": "404"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,13 @@
+<div class="announcement-bar" role="status">
+  <div style="display:flex;align-items:center;justify-content:center;gap:16px;position:relative">
+    <span>{{ settings.announcement_text | default: '🎉 Free shipping on orders over $75 — Use code FREESHIP' }}</span>
+    {%- if settings.announcement_link != blank -%}
+      <a href="{{ settings.announcement_link }}" style="color:white;font-weight:700;text-decoration:underline">
+        {{ settings.announcement_link_text | default: 'Shop Now' }}
+      </a>
+    {%- endif -%}
+    <button class="announcement-bar__close" aria-label="Dismiss announcement" style="position:absolute;right:0;background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.6);display:flex;align-items:center">
+      <span class="material-symbols-outlined" style="font-size:16px">close</span>
+    </button>
+  </div>
+</div>

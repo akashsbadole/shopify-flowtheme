@@ -1,0 +1,140 @@
+{%- paginate blog.articles by section.settings.posts_per_page -%}
+<section class="section" style="padding-top:40px;padding-bottom:80px">
+  <div class="container">
+    <!-- Breadcrumbs -->
+    <div class="breadcrumbs">
+      <span class="breadcrumbs__item"><a href="/">Home</a></span>
+      <span class="breadcrumbs__item">Blog</span>
+    </div>
+
+    <!-- Header -->
+    <div style="text-align:center;max-width:640px;margin:0 auto 48px">
+      <h1 class="text-h1" style="margin-bottom:12px">{{ section.settings.title }}</h1>
+      {%- if section.settings.subtitle != blank -%}
+        <p style="color:var(--color-text-medium);font-size:16px;line-height:1.6">{{ section.settings.subtitle }}</p>
+      {%- endif -%}
+    </div>
+
+    <!-- Blog Grid -->
+    <div style="display:grid;grid-template-columns:repeat({{ section.settings.columns }},1fr);gap:32px">
+      {%- for article in blog.articles -%}
+        <article class="blog-card">
+          <a href="{{ article.url }}" class="blog-card__image">
+            {%- if article.image -%}
+              <img src="{{ article.image | image_url: width: 600 }}" alt="{{ article.image.alt | escape | default: article.title }}" loading="lazy" width="600" height="375">
+            {%- else -%}
+              <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--color-surface-low)">
+                <span class="material-symbols-outlined" style="font-size:48px;color:var(--color-border)">article</span>
+              </div>
+            {%- endif -%}
+          </a>
+
+          {%- if article.tags.size > 0 -%}
+            <p class="blog-card__category">{{ article.tags.first }}</p>
+          {%- endif -%}
+
+          <a href="{{ article.url }}" class="blog-card__title">{{ article.title }}</a>
+
+          {%- if section.settings.show_excerpt -%}
+            <p class="blog-card__excerpt">{{ article.excerpt_or_content | strip_html | truncate: 140 }}</p>
+          {%- endif -%}
+
+          <div class="blog-card__meta">
+            {%- if section.settings.show_author -%}
+              <span>{{ article.author }}</span>
+            {%- endif -%}
+            {%- if section.settings.show_date -%}
+              <span style="color:var(--color-border-strong)">â€¢</span>
+              <span>{{ article.published_at | date: '%b %d, %Y' }}</span>
+            {%- endif -%}
+            <span style="color:var(--color-border-strong)">â€¢</span>
+            <span>{{ article.content | number_of_words | divided_by: 200 }} min read</span>
+          </div>
+        </article>
+      {%- endfor -%}
+    </div>
+
+    <!-- Pagination -->
+    {%- if paginate.pages > 1 -%}
+      <nav class="pagination">
+        {%- if paginate.previous -%}
+          <a href="{{ paginate.previous.url }}" class="pagination__btn"><span class="material-symbols-outlined" style="font-size:16px">chevron_left</span></a>
+        {%- endif -%}
+        {%- for part in paginate.parts -%}
+          {%- if part.is_link -%}
+            <a href="{{ part.url }}" class="pagination__btn">{{ part.title }}</a>
+          {%- else -%}
+            <span class="pagination__btn {% if part.title == paginate.current_page %}active{% endif %}">{{ part.title }}</span>
+          {%- endif -%}
+        {%- endfor -%}
+        {%- if paginate.next -%}
+          <a href="{{ paginate.next.url }}" class="pagination__btn"><span class="material-symbols-outlined" style="font-size:16px">chevron_right</span></a>
+        {%- endif -%}
+      </nav>
+    {%- endif -%}
+  </div>
+</section>
+{%- endpaginate -%}
+
+{% schema %}
+{
+  "name": "Blog",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Page title",
+      "default": "Our Journal"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Tips, guides, and stories from our team"
+    },
+    {
+      "type": "range",
+      "id": "posts_per_page",
+      "label": "Posts per page",
+      "min": 3,
+      "max": 24,
+      "step": 3,
+      "default": 9
+    },
+    {
+      "type": "select",
+      "id": "columns",
+      "label": "Columns on desktop",
+      "default": "3",
+      "options": [
+        { "value": "2", "label": "2" },
+        { "value": "3", "label": "3" },
+        { "value": "4", "label": "4" }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "show_excerpt",
+      "label": "Show excerpt",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_author",
+      "label": "Show author",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_date",
+      "label": "Show date",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Blog"
+    }
+  ]
+}
+{% endschema %}

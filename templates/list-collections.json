@@ -1,0 +1,13 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-collections",
+      "settings": {
+        "title": "All Collections",
+        "subtitle": "Browse our curated selections",
+        "columns": "3"
+      }
+    }
+  },
+  "order": ["main"]
+}

@@ -1,0 +1,27 @@
+<nav class="mobile-nav" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+  <div class="mobile-nav__header">
+    <span class="header__logo">{{ shop.name }}</span>
+    <button class="mobile-nav__close header__icon-btn" aria-label="Close menu">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </div>
+  <div class="mobile-nav__links">
+    {%- for link in linklists[settings.main_menu].links -%}
+      <a href="{{ link.url }}" class="mobile-nav__link">
+        {{ link.title }}
+        {%- if link.links != blank -%}
+          <span class="material-symbols-outlined" style="font-size:18px">chevron_right</span>
+        {%- endif -%}
+      </a>
+    {%- endfor -%}
+    <div style="padding:20px 24px;border-top:1px solid var(--color-border);margin-top:8px;display:flex;flex-direction:column;gap:12px">
+      {%- if customer -%}
+        <a href="{{ routes.account_url }}" class="btn btn--secondary btn--full">My Account</a>
+        <a href="{{ routes.account_logout_url }}" class="btn btn--ghost btn--full">Sign Out</a>
+      {%- else -%}
+        <a href="{{ routes.account_login_url }}" class="btn btn--primary btn--full">Sign In</a>
+        <a href="{{ routes.account_register_url }}" class="btn btn--secondary btn--full">Create Account</a>
+      {%- endif -%}
+    </div>
+  </div>
+</nav>

@@ -1,0 +1,370 @@
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Product",
+  "name": {{ product.title | json }},
+  "url": {{ canonical_url | json }},
+  "description": {{ product.description | strip_html | json }},
+  "brand": { "@type": "Brand", "name": {{ product.vendor | json }} },
+  "offers": {
+    "@type": "Offer",
+    "price": {{ product.selected_or_first_available_variant.price | divided_by: 100.00 | json }},
+    "priceCurrency": {{ cart.currency.iso_code | json }},
+    "availability": "{% if product.available %}http://schema.org/InStock{% else %}http://schema.org/OutOfStock{% endif %}"
+  }
+}
+</script>
+
+<div class="section" style="padding-top:40px;padding-bottom:80px">
+  <div class="container">
+    <!-- Breadcrumbs -->
+    <div class="breadcrumbs">
+      <span class="breadcrumbs__item"><a href="/">Home</a></span>
+      {%- if product.collections.size > 0 -%}
+        <span class="breadcrumbs__item"><a href="{{ product.collections.first.url }}">{{ product.collections.first.title }}</a></span>
+      {%- endif -%}
+      <span class="breadcrumbs__item">{{ product.title }}</span>
+    </div>
+
+    <div class="product-page">
+      <!-- Gallery -->
+      <div class="product-gallery">
+        <div class="product-gallery__main" id="main-product-image">
+          {%- if product.featured_media -%}
+            <img id="main-image"
+              src="{{ product.featured_media | image_url: width: 1200 }}"
+              alt="{{ product.featured_media.alt | escape }}"
+              loading="eager"
+              style="width:100%;height:100%;object-fit:cover"
+              data-zoom="{{ product.featured_media | image_url: width: 2400 }}">
+          {%- else -%}
+            <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--color-surface-low)">
+              <span class="material-symbols-outlined" style="font-size:80px;color:var(--color-border)">image</span>
+            </div>
+          {%- endif -%}
+        </div>
+
+        {%- if product.media.size > 1 -%}
+          <div class="product-gallery__thumbs">
+            {%- for media in product.media limit: 4 -%}
+              <div class="product-gallery__thumb {% if forloop.first %}active{% endif %}"
+                data-media-id="{{ media.id }}"
+                onclick="switchMedia('{{ media | image_url: width: 1200 }}', '{{ media | image_url: width: 2400 }}', this)">
+                {%- if media.media_type == 'image' -%}
+                  <img src="{{ media | image_url: width: 200 }}" alt="{{ media.alt | escape }}" loading="lazy">
+                {%- elsif media.media_type == 'video' or media.media_type == 'external_video' -%}
+                  <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--color-surface-low)">
+                    <span class="material-symbols-outlined" style="font-size:32px;color:var(--color-text-medium)">play_circle</span>
+                  </div>
+                {%- endif -%}
+              </div>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </div>
+
+      <!-- Product Info -->
+      <div class="product-info" id="product-info"
+        data-url="{{ product.url }}"
+        data-title="{{ product.title | escape }}"
+        data-handle="{{ product.handle }}"
+        data-featured-image="{{ product.featured_image | image_url: width: 600 }}">
+
+        {%- if section.settings.show_vendor -%}
+          <p class="product-info__vendor">
+            <span class="material-symbols-outlined" style="font-size:16px">verified</span>
+            {{ product.vendor }}
+          </p>
+        {%- endif -%}
+
+        <h1 class="product-info__title">{{ product.title }}</h1>
+
+        <!-- Pricing -->
+        <div class="product-info__pricing">
+          <span class="product-info__price" id="product-price" data-price="{{ product.selected_or_first_available_variant.price }}">
+            {{ product.selected_or_first_available_variant.price | money }}
+          </span>
+          {%- if product.selected_or_first_available_variant.compare_at_price > product.selected_or_first_available_variant.price -%}
+            <span class="product-info__compare" id="compare-price">{{ product.selected_or_first_available_variant.compare_at_price | money }}</span>
+            <span class="product-info__sale-badge">Sale</span>
+          {%- endif -%}
+        </div>
+
+        <!-- SKU -->
+        {%- if section.settings.show_sku and product.selected_or_first_available_variant.sku != blank -%}
+          <p style="font-size:13px;color:var(--color-text-medium);margin-bottom:16px">SKU: <span id="product-sku">{{ product.selected_or_first_available_variant.sku }}</span></p>
+        {%- endif -%}
+
+        <!-- Inventory -->
+        {%- if product.selected_or_first_available_variant.inventory_management == 'shopify' and product.selected_or_first_available_variant.inventory_quantity <= 10 and product.selected_or_first_available_variant.inventory_quantity > 0 -%}
+          <div class="scarcity-bar" style="margin-bottom:20px">
+            <span class="scarcity-bar__dot"></span>
+            <span class="scarcity-bar__text">Only {{ product.selected_or_first_available_variant.inventory_quantity }} left in stock!</span>
+          </div>
+        {%- endif -%}
+
+        <div style="height:1px;background:var(--color-border);margin-bottom:24px"></div>
+
+        <!-- Variant Form -->
+        {%- form 'product', product, id: 'product-form', data-product-form: true -%}
+          {%- unless product.has_only_default_variant -%}
+            {%- for option in product.options_with_values -%}
+              <p class="product-info__variant-label">
+                {{ option.name }}
+                {%- if option.name contains 'Color' -%}
+                  <span id="selected-{{ option.name | handle }}" style="font-weight:500;text-transform:none;letter-spacing:0">{{ option.selected_value }}</span>
+                {%- endif -%}
+              </p>
+
+              {%- if option.name contains 'Color' -%}
+                <div class="color-swatch-selector" data-option-index="{{ forloop.index0 }}">
+                  {%- for value in option.values -%}
+                    <button type="button"
+                      class="color-swatch-btn {% if value == option.selected_value %}active{% endif %}"
+                      style="background-color:{{ value | handle | replace: '-', '' }};"
+                      data-value="{{ value | escape }}"
+                      onclick="selectColor(this, {{ forloop.index0 }})"
+                      title="{{ value }}"
+                      aria-label="{{ value }}">
+                    </button>
+                  {%- endfor -%}
+                </div>
+                <input type="hidden" name="options[{{ option.name | escape }}]" value="{{ option.selected_value | escape }}" id="option-{{ option.name | handle }}">
+              {%- else -%}
+                <div class="variant-selector" data-option-index="{{ forloop.index0 }}">
+                  {%- for value in option.values -%}
+                    <button type="button"
+                      class="variant-btn {% if value == option.selected_value %}active{% endif %}"
+                      onclick="selectVariant(this, {{ forloop.index0 }})">
+                      {{ value }}
+                    </button>
+                  {%- endfor -%}
+                </div>
+                <input type="hidden" name="options[{{ option.name | escape }}]" value="{{ option.selected_value | escape }}" id="option-{{ option.name | handle }}">
+              {%- endif -%}
+            {%- endfor -%}
+          {%- endunless -%}
+
+          {%- if product.selected_or_first_available_variant.available -%}
+            {%- if settings.show_quantity -%}
+              <p class="product-info__variant-label">Quantity</p>
+              <div style="margin-bottom:24px">
+                <div class="qty-selector">
+                  <button type="button" class="qty-selector__btn" onclick="changeQty(-1)">âˆ’</button>
+                  <input class="qty-selector__input" type="number" name="quantity" value="1" min="1" id="qty-input" readonly>
+                  <button type="button" class="qty-selector__btn" onclick="changeQty(1)">+</button>
+                </div>
+              </div>
+            {%- endif -%}
+
+            <div class="product-info__actions">
+              <button type="submit" class="btn btn--primary btn--lg" id="add-to-cart-btn" style="flex:1;justify-content:center">
+                <span class="material-symbols-outlined" style="font-size:20px">shopping_cart</span>
+                Add to Cart
+              </button>
+              <button type="button" class="btn btn--secondary btn--lg" onclick="this.closest('form').action='{{ routes.checkout_url }}';this.closest('form').submit()" title="Buy Now">
+                <span class="material-symbols-outlined" style="font-size:20px">bolt</span>
+              </button>
+            </div>
+          {%- else -%}
+            <button type="button" class="btn btn--secondary btn--full btn--lg" disabled>Sold Out</button>
+          {%- endif -%}
+
+          <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+        {%- endform -%}
+
+        <!-- Trust Badges -->
+        {%- if section.settings.show_trust_badges -%}
+          <div class="product-info__trust" style="margin-top:24px">
+            <div class="trust-item">
+              <span class="material-symbols-outlined trust-item__icon">local_shipping</span>
+              <span class="trust-item__label">Free Shipping</span>
+            </div>
+            <div class="trust-item">
+              <span class="material-symbols-outlined trust-item__icon">cached</span>
+              <span class="trust-item__label">30-Day Returns</span>
+            </div>
+            <div class="trust-item">
+              <span class="material-symbols-outlined trust-item__icon">lock</span>
+              <span class="trust-item__label">Secure Checkout</span>
+            </div>
+          </div>
+        {%- endif -%}
+
+        <!-- Description -->
+        <div class="product-info__accordion">
+          <div class="accordion-item">
+            <button class="accordion-item__trigger" onclick="toggleAccordion(this)">
+              Description
+              <span class="material-symbols-outlined" style="font-size:18px;color:var(--color-text-medium)">expand_more</span>
+            </button>
+            <div class="accordion-item__content open">
+              <div class="accordion-item__inner rte">{{ product.description }}</div>
+            </div>
+          </div>
+
+          {%- if settings.enable_sticky_atc and product.selected_or_first_available_variant.available -%}
+          <div class="sticky-buy-bar" id="sticky-buy-bar">
+            <div style="display:flex;align-items:center;gap:12px">
+              <img src="{{ product.featured_image | image_url: width: 60 }}" alt="" style="width:48px;height:48px;border-radius:var(--radius-sm);object-fit:cover">
+              <div>
+                <p style="font-size:14px;font-weight:700">{{ product.title }}</p>
+                <p style="font-size:13px;color:var(--color-text-medium)" id="sticky-price">{{ product.selected_or_first_available_variant.price | money }}</p>
+              </div>
+            </div>
+            <button class="btn btn--primary btn--lg" onclick="document.getElementById('product-form').requestSubmit()">
+              <span class="material-symbols-outlined" style="font-size:18px">shopping_cart</span>
+              Add to Cart
+            </button>
+          </div>
+          {%- endif -%}
+
+          {%- if settings.show_size_guide -%}
+          <div class="accordion-item">
+            <button class="accordion-item__trigger" onclick="toggleAccordion(this)">
+              Size Guide
+              <span class="material-symbols-outlined" style="font-size:18px;color:var(--color-text-medium)">expand_more</span>
+            </button>
+            <div class="accordion-item__content">
+              <div class="accordion-item__inner">
+                {% render 'size-chart' %}
+              </div>
+            </div>
+          </div>
+          {%- endif -%}
+
+          <div class="accordion-item">
+            <button class="accordion-item__trigger" onclick="toggleAccordion(this)">
+              Shipping & Returns
+              <span class="material-symbols-outlined" style="font-size:18px;color:var(--color-text-medium)">expand_more</span>
+            </button>
+            <div class="accordion-item__content">
+              <div class="accordion-item__inner">
+                <p><strong>Shipping:</strong> Free shipping on orders over $75. Standard delivery takes 3-7 business days.</p>
+                <p style="margin-top:8px"><strong>Returns:</strong> 30-day hassle-free returns. Items must be unused with original tags.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Share Buttons -->
+        {%- if section.settings.show_share_buttons -%}
+          <div style="display:flex;align-items:center;gap:12px;margin-top:24px;padding-top:20px;border-top:1px solid var(--color-border)">
+            <span style="font-size:13px;font-weight:600;color:var(--color-text-medium)">Share:</span>
+            <a href="https://www.facebook.com/sharer/sharer.php?u={{ canonical_url | url_encode }}" target="_blank" rel="noopener" class="header__icon-btn" style="width:32px;height:32px" aria-label="Share on Facebook">
+              <span class="material-symbols-outlined" style="font-size:16px">share</span>
+            </a>
+            <a href="https://twitter.com/intent/tweet?url={{ canonical_url | url_encode }}&text={{ product.title | url_encode }}" target="_blank" rel="noopener" class="header__icon-btn" style="width:32px;height:32px" aria-label="Share on Twitter">
+              <span class="material-symbols-outlined" style="font-size:16px">tag</span>
+            </a>
+            <a href="https://pinterest.com/pin/create/button/?url={{ canonical_url | url_encode }}&media={{ product.featured_image | image_url: width: 600 }}&description={{ product.title | url_encode }}" target="_blank" rel="noopener" class="header__icon-btn" style="width:32px;height:32px" aria-label="Share on Pinterest">
+              <span class="material-symbols-outlined" style="font-size:16px">pinterest</span>
+            </a>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function switchMedia(src, zoomSrc, el) {
+  document.querySelector('#main-image').src = src;
+  document.querySelector('#main-image').dataset.zoom = zoomSrc;
+  document.querySelectorAll('.product-gallery__thumb').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function selectColor(btn, index) {
+  const container = btn.closest('.color-swatch-selector');
+  container.querySelectorAll('.color-swatch-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const input = document.getElementById('option-' + btn.closest('.color-swatch-selector').dataset.optionIndex);
+  // Update hidden input and form
+  const name = btn.closest('.color-swatch-selector').parentElement.querySelector('.product-info__variant-label').textContent.trim().split('\n')[0].trim();
+  document.querySelector('input[name="options[' + name + ']"]').value = btn.dataset.value;
+}
+
+function selectVariant(btn, index) {
+  const container = btn.closest('.variant-selector');
+  container.querySelectorAll('.variant-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const label = btn.closest('.variant-selector').parentElement.querySelector('.product-info__variant-label').textContent.trim();
+  document.querySelector('input[name="options[' + label + ']"]').value = btn.textContent.trim();
+}
+
+function changeQty(delta) {
+  const input = document.getElementById('qty-input');
+  let val = parseInt(input.value) + delta;
+  if (val < 1) val = 1;
+  input.value = val;
+}
+
+function toggleAccordion(btn) {
+  const content = btn.nextElementSibling;
+  const icon = btn.querySelector('.material-symbols-outlined');
+  content.classList.toggle('open');
+  icon.style.transform = content.classList.contains('open') ? 'rotate(0)' : 'rotate(-90deg)';
+}
+
+// Sticky buy bar
+const stickyBar = document.getElementById('sticky-buy-bar');
+if (stickyBar) {
+  window.addEventListener('scroll', () => {
+    const productForm = document.getElementById('product-form');
+    if (productForm) {
+      const rect = productForm.getBoundingClientRect();
+      stickyBar.classList.toggle('visible', rect.bottom < 0);
+    }
+  });
+}
+</script>
+
+{% schema %}
+{
+  "name": "Product",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable_zoom",
+      "label": "Enable image zoom",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sticky_atc",
+      "label": "Enable sticky add-to-cart bar",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Show vendor",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sku",
+      "label": "Show SKU",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_trust_badges",
+      "label": "Show trust badges",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_share_buttons",
+      "label": "Show share buttons",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,45 @@
+{%- comment -%}Recently viewed products — populated by JavaScript{%- endcomment -%}
+<section class="section section--sm" id="recently-viewed" style="display:none">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-header__title">Recently Viewed</h2>
+    </div>
+    <div class="product-grid" id="recently-viewed-grid"></div>
+  </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const key = 'flowtheme_recently_viewed';
+  const handles = JSON.parse(localStorage.getItem(key) || '[]');
+  const currentHandle = document.body.dataset.productHandle;
+  const filtered = handles.filter(h => h !== currentHandle).slice(0, 4);
+  if (!filtered.length) return;
+
+  const section = document.getElementById('recently-viewed');
+  const grid    = document.getElementById('recently-viewed-grid');
+  if (!section || !grid) return;
+
+  Promise.all(
+    filtered.map(h => fetch(`/products/${h}.js`).then(r => r.json()).catch(() => null))
+  ).then(products => {
+    const valid = products.filter(Boolean);
+    if (!valid.length) return;
+    section.style.display = '';
+    grid.innerHTML = valid.map(p => `
+      <article class="product-card">
+        <div class="product-card__media">
+          <a href="/products/${p.handle}">
+            <img src="${p.images[0] || ''}" alt="${p.title}" loading="lazy">
+          </a>
+        </div>
+        <div class="product-card__info">
+          <a href="/products/${p.handle}" class="product-card__title">${p.title}</a>
+          <div class="product-card__pricing">
+            <span class="product-card__price">${(p.price / 100).toLocaleString('en-US',{style:'currency',currency:'USD'})}</span>
+          </div>
+        </div>
+      </article>`).join('');
+  });
+});
+</script>

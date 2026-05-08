@@ -1,0 +1,86 @@
+<section class="section {% if section.settings.alt_bg %}section--alt{% endif %}" style="background:{% if section.settings.flip_bg %}var(--color-surface-low){% else %}white{% endif %}">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;{% if section.settings.image_right %}direction:initial{% endif %}">
+      {%- if section.settings.image_right -%}
+        <div>
+          {%- if section.settings.eyebrow != blank -%}
+            <p class="text-label" style="color:var(--color-primary);margin-bottom:16px">{{ section.settings.eyebrow }}</p>
+          {%- endif -%}
+          <h2 style="font-size:clamp(26px,3.5vw,44px);font-weight:900;letter-spacing:-0.025em;line-height:1.1;margin-bottom:20px;color:var(--color-text-high)">{{ section.settings.title }}</h2>
+          <p style="font-size:16px;line-height:1.75;color:var(--color-text-medium);margin-bottom:32px">{{ section.settings.text }}</p>
+          {%- for block in section.blocks -%}
+            <div style="display:flex;gap:12px;margin-bottom:16px" {{ block.shopify_attributes }}>
+              <div style="width:40px;height:40px;background:rgba(0,82,255,0.1);border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                <span class="material-symbols-outlined" style="color:var(--color-primary);font-size:20px">{{ block.settings.icon | default: 'check_circle' }}</span>
+              </div>
+              <div>
+                <p style="font-size:14px;font-weight:700;margin-bottom:3px">{{ block.settings.title }}</p>
+                <p style="font-size:13px;color:var(--color-text-medium)">{{ block.settings.text }}</p>
+              </div>
+            </div>
+          {%- endfor -%}
+          {%- if section.settings.btn_label != blank -%}
+            <a href="{{ section.settings.btn_link }}" class="btn btn--primary btn--lg" style="margin-top:8px">{{ section.settings.btn_label }}</a>
+          {%- endif -%}
+        </div>
+        <div style="border-radius:8px;overflow:hidden;aspect-ratio:4/5;background:var(--color-surface-low)">
+          {%- if section.settings.image != blank -%}
+            <img src="{{ section.settings.image | image_url: width: 900 }}" alt="{{ section.settings.title | escape }}" loading="lazy" style="width:100%;height:100%;object-fit:cover">
+          {%- endif -%}
+        </div>
+      {%- else -%}
+        <div style="border-radius:8px;overflow:hidden;aspect-ratio:4/5;background:var(--color-surface-low)">
+          {%- if section.settings.image != blank -%}
+            <img src="{{ section.settings.image | image_url: width: 900 }}" alt="{{ section.settings.title | escape }}" loading="lazy" style="width:100%;height:100%;object-fit:cover">
+          {%- endif -%}
+        </div>
+        <div>
+          {%- if section.settings.eyebrow != blank -%}
+            <p class="text-label" style="color:var(--color-primary);margin-bottom:16px">{{ section.settings.eyebrow }}</p>
+          {%- endif -%}
+          <h2 style="font-size:clamp(26px,3.5vw,44px);font-weight:900;letter-spacing:-0.025em;line-height:1.1;margin-bottom:20px;color:var(--color-text-high)">{{ section.settings.title }}</h2>
+          <p style="font-size:16px;line-height:1.75;color:var(--color-text-medium);margin-bottom:32px">{{ section.settings.text }}</p>
+          {%- for block in section.blocks -%}
+            <div style="display:flex;gap:12px;margin-bottom:16px" {{ block.shopify_attributes }}>
+              <div style="width:40px;height:40px;background:rgba(0,82,255,0.1);border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                <span class="material-symbols-outlined" style="color:var(--color-primary);font-size:20px">{{ block.settings.icon | default: 'check_circle' }}</span>
+              </div>
+              <div>
+                <p style="font-size:14px;font-weight:700;margin-bottom:3px">{{ block.settings.title }}</p>
+                <p style="font-size:13px;color:var(--color-text-medium)">{{ block.settings.text }}</p>
+              </div>
+            </div>
+          {%- endfor -%}
+          {%- if section.settings.btn_label != blank -%}
+            <a href="{{ section.settings.btn_link }}" class="btn btn--primary btn--lg" style="margin-top:8px">{{ section.settings.btn_label }}</a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Image with Text",
+  "settings": [
+    {"type":"text","id":"eyebrow","label":"Eyebrow"},
+    {"type":"text","id":"title","label":"Title","default":"Why Choose Us"},
+    {"type":"textarea","id":"text","label":"Text","default":"We craft products with the finest materials and uncompromising attention to detail."},
+    {"type":"image_picker","id":"image","label":"Image"},
+    {"type":"checkbox","id":"image_right","label":"Image on Right","default":false},
+    {"type":"checkbox","id":"flip_bg","label":"Light Background","default":false},
+    {"type":"text","id":"btn_label","label":"Button Label"},
+    {"type":"url","id":"btn_link","label":"Button Link"}
+  ],
+  "blocks":[
+    {"type":"feature","name":"Feature Item","settings":[
+      {"type":"text","id":"icon","label":"Material Icon","default":"check_circle"},
+      {"type":"text","id":"title","label":"Title","default":"Premium Quality"},
+      {"type":"text","id":"text","label":"Description","default":"Every product is built to last."}
+    ]}
+  ],
+  "max_blocks":6,
+  "presets":[{"name":"Image with Text"}]
+}
+{% endschema %}

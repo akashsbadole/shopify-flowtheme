@@ -1,0 +1,36 @@
+<section class="section {% if section.settings.narrow %}section--sm{% endif %}" style="background:{{ section.settings.background | default: 'var(--color-surface)' }};text-align:{{ section.settings.alignment | default: 'center' }}">
+  <div class="container" style="max-width:{% if section.settings.narrow %}640px{% else %}860px{% endif %}">
+    {%- if section.settings.eyebrow != blank -%}
+      <p class="text-label" style="color:var(--color-primary);margin-bottom:16px">{{ section.settings.eyebrow }}</p>
+    {%- endif -%}
+    {%- if section.settings.title != blank -%}
+      <h2 style="font-size:clamp(26px,4vw,48px);font-weight:900;letter-spacing:-0.03em;line-height:1.1;color:var(--color-text-high);margin-bottom:20px">{{ section.settings.title }}</h2>
+    {%- endif -%}
+    {%- if section.settings.content != blank -%}
+      <div style="font-size:17px;line-height:1.75;color:var(--color-text-medium)">{{ section.settings.content }}</div>
+    {%- endif -%}
+    {%- if section.settings.btn_label != blank -%}
+      <div style="margin-top:32px">
+        <a href="{{ section.settings.btn_link }}" class="btn btn--{{ section.settings.btn_style | default: 'primary' }} btn--lg">{{ section.settings.btn_label }}</a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Rich Text",
+  "settings": [
+    {"type":"text","id":"eyebrow","label":"Eyebrow"},
+    {"type":"text","id":"title","label":"Title"},
+    {"type":"richtext","id":"content","label":"Content"},
+    {"type":"select","id":"alignment","label":"Alignment","default":"center","options":[{"value":"left","label":"Left"},{"value":"center","label":"Center"}]},
+    {"type":"checkbox","id":"narrow","label":"Narrow Width","default":true},
+    {"type":"color","id":"background","label":"Background","default":"#fbf9f9"},
+    {"type":"text","id":"btn_label","label":"Button Label"},
+    {"type":"url","id":"btn_link","label":"Button Link"},
+    {"type":"select","id":"btn_style","label":"Button Style","default":"primary","options":[{"value":"primary","label":"Primary"},{"value":"secondary","label":"Secondary"}]}
+  ],
+  "presets":[{"name":"Rich Text"}]
+}
+{% endschema %}

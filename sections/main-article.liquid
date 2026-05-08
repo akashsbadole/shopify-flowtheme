@@ -1,0 +1,148 @@
+<section class="section" style="padding-top:40px;padding-bottom:80px">
+  <div class="container">
+    <div class="breadcrumbs">
+      <span class="breadcrumbs__item"><a href="/">Home</a></span>
+      <span class="breadcrumbs__item"><a href="{{ blog.url }}">Blog</a></span>
+      <span class="breadcrumbs__item">{{ article.title }}</span>
+    </div>
+
+    <article style="max-width:780px;margin:0 auto">
+      <!-- Header -->
+      <div style="text-align:center;margin-bottom:40px">
+        {%- if article.tags.size > 0 -%}
+          <span class="blog-card__category" style="margin-bottom:16px">{{ article.tags.first }}</span>
+        {%- endif -%}
+        <h1 class="text-h1" style="margin-bottom:20px">{{ article.title }}</h1>
+
+        <div class="blog-card__meta" style="justify-content:center;gap:16px">
+          {%- if section.settings.show_author -%}
+            <span>By {{ article.author }}</span>
+          {%- endif -%}
+          {%- if section.settings.show_date -%}
+            <span>â€¢</span>
+            <span>{{ article.published_at | date: '%B %d, %Y' }}</span>
+          {%- endif -%}
+          <span>â€¢</span>
+          <span>{{ article.content | number_of_words | divided_by: 200 }} min read</span>
+        </div>
+      </div>
+
+      <!-- Featured Image -->
+      {%- if article.image -%}
+        <div style="aspect-ratio:16/9;border-radius:var(--radius-md);overflow:hidden;margin-bottom:40px">
+          <img src="{{ article.image | image_url: width: 1200 }}" alt="{{ article.image.alt | escape | default: article.title }}" style="width:100%;height:100%;object-fit:cover" loading="eager">
+        </div>
+      {%- endif -%}
+
+      <!-- Content -->
+      <div class="rte" style="font-size:16px;line-height:1.8;color:var(--color-text-high)">
+        {{ article.content }}
+      </div>
+
+      <!-- Tags -->
+      {%- if section.settings.show_tags and article.tags.size > 0 -%}
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:40px;padding-top:24px;border-top:1px solid var(--color-border)">
+          {%- for tag in article.tags -%}
+            <a href="{{ blog.url }}/tagged/{{ tag | handle }}" class="btn btn--ghost btn--sm" style="border:1px solid var(--color-border);border-radius:var(--radius-full);padding:6px 14px;font-size:12px;text-transform:none;letter-spacing:0;font-weight:600">{{ tag }}</a>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+
+      <!-- Share -->
+      {%- if section.settings.show_share -%}
+        <div style="display:flex;align-items:center;gap:12px;margin-top:24px">
+          <span style="font-size:13px;font-weight:600;color:var(--color-text-medium)">Share:</span>
+          <a href="https://www.facebook.com/sharer/sharer.php?u={{ canonical_url | url_encode }}" target="_blank" rel="noopener" class="header__icon-btn" style="width:32px;height:32px">
+            <span class="material-symbols-outlined" style="font-size:16px">share</span>
+          </a>
+          <a href="https://twitter.com/intent/tweet?url={{ canonical_url | url_encode }}&text={{ article.title | url_encode }}" target="_blank" rel="noopener" class="header__icon-btn" style="width:32px;height:32px">
+            <span class="material-symbols-outlined" style="font-size:16px">tag</span>
+          </a>
+        </div>
+      {%- endif -%}
+    </article>
+
+    <!-- Related Articles -->
+    {%- if section.settings.show_related -%}
+      {%- assign related_limit = section.settings.related_limit -%}
+      {%- assign related_articles = blog.articles | where_exp: "a", "a.handle != article.handle" | limit: related_limit -%}
+      {%- if related_articles.size > 0 -%}
+        <div style="margin-top:80px;padding-top:40px;border-top:2px solid var(--color-border)">
+          <h2 class="text-h2" style="margin-bottom:32px">Related Articles</h2>
+          <div style="display:grid;grid-template-columns:repeat({{ related_limit }},1fr);gap:32px">
+            {%- for related in related_articles -%}
+              <article class="blog-card">
+                <a href="{{ related.url }}" class="blog-card__image">
+                  {%- if related.image -%}
+                    <img src="{{ related.image | image_url: width: 600 }}" alt="{{ related.title | escape }}" loading="lazy">
+                  {%- endif -%}
+                </a>
+                {%- if related.tags.size > 0 -%}
+                  <p class="blog-card__category">{{ related.tags.first }}</p>
+                {%- endif -%}
+                <a href="{{ related.url }}" class="blog-card__title">{{ related.title }}</a>
+                <div class="blog-card__meta">
+                  {%- if section.settings.show_date -%}
+                    <span>{{ related.published_at | date: '%b %d, %Y' }}</span>
+                  {%- endif -%}
+                </div>
+              </article>
+            {%- endfor -%}
+          </div>
+        </div>
+      {%- endif -%}
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Article",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_author",
+      "label": "Show author",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_date",
+      "label": "Show date",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_tags",
+      "label": "Show tags",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_share",
+      "label": "Show share buttons",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_related",
+      "label": "Show related articles",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "related_limit",
+      "label": "Number of related articles",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 3
+    }
+  ],
+  "presets": [
+    {
+      "name": "Article"
+    }
+  ]
+}
+{% endschema %}

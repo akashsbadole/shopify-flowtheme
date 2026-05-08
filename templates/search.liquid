@@ -1,0 +1,102 @@
+<div class="section">
+  <div class="container">
+    <h1 class="text-h1" style="margin-bottom:32px">Search</h1>
+
+    <!-- Search Bar -->
+    <div style="max-width:640px;margin-bottom:48px">
+      {%- form 'get', routes.search_url -%}
+        <div style="display:flex;gap:0;border:2px solid var(--color-border);border-radius:4px;overflow:hidden;transition:border-color 0.15s">
+          <input
+            type="search"
+            name="q"
+            value="{{ search.terms | escape }}"
+            placeholder="Search products, articles..."
+            style="flex:1;padding:14px 20px;border:none;outline:none;font-size:16px;font-family:var(--font-family);background:white"
+            autofocus
+            aria-label="Search"
+          >
+          <input type="hidden" name="type" value="product,article,page">
+          <button type="submit" class="btn btn--primary" style="border-radius:0;padding:14px 24px">
+            <span class="material-symbols-outlined">search</span>
+            Search
+          </button>
+        </div>
+      {%- endform -%}
+    </div>
+
+    {%- if search.performed -%}
+      {%- if search.results.size == 0 -%}
+        <div style="text-align:center;padding:64px 24px">
+          <span class="material-symbols-outlined" style="font-size:64px;color:var(--color-border);display:block;margin-bottom:24px">search_off</span>
+          <h2 style="font-size:24px;font-weight:800;margin-bottom:12px">No results for "{{ search.terms }}"</h2>
+          <p style="color:var(--color-text-medium);margin-bottom:32px">Try different keywords or browse our collections.</p>
+          <a href="{{ routes.all_products_collection_url }}" class="btn btn--primary">Browse All Products</a>
+        </div>
+      {%- else -%}
+        <p style="font-size:15px;color:var(--color-text-medium);margin-bottom:32px">
+          Showing <strong>{{ search.results_count }}</strong> results for "<strong>{{ search.terms }}</strong>"
+        </p>
+
+        <!-- Filter by type -->
+        <div class="tabs" style="margin-bottom:40px">
+          <button class="tab-btn active">All ({{ search.results_count }})</button>
+          {%- assign product_count = 0 -%}
+          {%- assign article_count = 0 -%}
+          {%- for result in search.results -%}
+            {%- if result.object_type == 'product' -%}{%- assign product_count = product_count | plus: 1 -%}{%- endif -%}
+            {%- if result.object_type == 'article' -%}{%- assign article_count = article_count | plus: 1 -%}{%- endif -%}
+          {%- endfor -%}
+          {%- if product_count > 0 -%}<button class="tab-btn">Products ({{ product_count }})</button>{%- endif -%}
+          {%- if article_count > 0 -%}<button class="tab-btn">Articles ({{ article_count }})</button>{%- endif -%}
+        </div>
+
+        <div class="product-grid">
+          {%- for result in search.results -%}
+            {%- if result.object_type == 'product' -%}
+              {%- render 'product-card', product: result -%}
+            {%- elsif result.object_type == 'article' -%}
+              <article class="blog-card">
+                <a href="{{ result.url }}" class="blog-card__image">
+                  {%- if result.image -%}
+                    <img src="{{ result.image | image_url: width: 600 }}" alt="{{ result.title | escape }}" loading="lazy">
+                  {%- endif -%}
+                </a>
+                <p class="blog-card__category">Article</p>
+                <a href="{{ result.url }}" class="blog-card__title">{{ result.title }}</a>
+                <p class="blog-card__excerpt">{{ result.body | strip_html | truncate: 140 }}</p>
+              </article>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+
+        {%- if paginate.pages > 1 -%}
+          <nav class="pagination">
+            {%- if paginate.previous -%}
+              <a href="{{ paginate.previous.url }}" class="pagination__btn"><span class="material-symbols-outlined" style="font-size:16px">chevron_left</span></a>
+            {%- endif -%}
+            {%- for part in paginate.parts -%}
+              {%- if part.is_link -%}
+                <a href="{{ part.url }}" class="pagination__btn">{{ part.title }}</a>
+              {%- else -%}
+                <span class="pagination__btn {% if part.title == paginate.current_page %}active{% endif %}">{{ part.title }}</span>
+              {%- endif -%}
+            {%- endfor -%}
+            {%- if paginate.next -%}
+              <a href="{{ paginate.next.url }}" class="pagination__btn"><span class="material-symbols-outlined" style="font-size:16px">chevron_right</span></a>
+            {%- endif -%}
+          </nav>
+        {%- endif -%}
+      {%- endif -%}
+    {%- else -%}
+      <!-- Search suggestions -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+        {%- for block in section.blocks -%}
+          <a href="{{ block.settings.link }}" style="display:flex;align-items:center;gap:12px;padding:16px;border:1px solid var(--color-border);border-radius:4px;background:white;transition:border-color 0.15s">
+            <span class="material-symbols-outlined" style="color:var(--color-primary)">{{ block.settings.icon | default: 'search' }}</span>
+            <span style="font-size:14px;font-weight:600">{{ block.settings.label }}</span>
+          </a>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+</div>

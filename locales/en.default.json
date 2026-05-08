@@ -1,0 +1,57 @@
+{
+  "general": {
+    "search": { "placeholder": "Search...", "submit": "Search", "no_results": "No results for \"{{ terms }}\"" },
+    "accessibility": { "skip_content": "Skip to content", "close": "Close", "open": "Open" }
+  },
+  "products": {
+    "product": {
+      "add_to_cart": "Add to Cart",
+      "sold_out": "Sold Out",
+      "unavailable": "Unavailable",
+      "quick_view": "Quick View",
+      "from_price": "From {{ price }}",
+      "quantity": "Quantity",
+      "size_guide": "Size Guide",
+      "share": "Share"
+    }
+  },
+  "cart": {
+    "general": {
+      "title": "Your Cart",
+      "empty": "Your cart is empty",
+      "checkout": "Checkout",
+      "view_cart": "View Cart",
+      "subtotal": "Subtotal",
+      "shipping": "Shipping",
+      "total": "Total",
+      "items": "{{ count }} items",
+      "item": "1 item",
+      "remove": "Remove",
+      "discount": "Discount",
+      "apply": "Apply",
+      "update": "Update Cart"
+    }
+  },
+  "collections": {
+    "general": {
+      "title": "All Products",
+      "sort_by": "Sort by",
+      "filter": "Filter",
+      "clear_all": "Clear All",
+      "products_count": "{{ count }} products"
+    }
+  },
+  "blogs": {
+    "general": { "by": "By {{ author }}", "read_more": "Read More", "min_read": "{{ time }} min read" }
+  },
+  "customer": {
+    "login": { "title": "Sign In", "email": "Email", "password": "Password", "submit": "Sign In", "forgot_password": "Forgot password?" },
+    "register": { "title": "Create Account", "submit": "Create Account" },
+    "account": { "title": "My Account", "orders": "Orders", "addresses": "Addresses", "sign_out": "Sign Out" },
+    "order": { "title": "Order #{{ name }}", "date": "{{ date }}", "payment_status": "Payment status", "fulfillment_status": "Fulfillment status" },
+    "addresses": { "title": "Your Addresses", "default": "Default", "add_new": "Add Address", "delete": "Delete", "edit": "Edit", "cancel": "Cancel" }
+  },
+  "errors": {
+    "404": { "title": "Page not found", "description": "The page you requested does not exist.", "button": "Back to Home" }
+  }
+}

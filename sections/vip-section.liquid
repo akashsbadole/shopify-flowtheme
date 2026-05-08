@@ -1,0 +1,50 @@
+<section class="section vip-section">
+  <div class="container">
+    <div style="max-width:800px;margin:0 auto;text-align:center">
+      <div class="vip-badge"><span>👑</span>{{ section.settings.badge | default: 'VIP Members Only' }}</div>
+      <h2 style="font-size:clamp(28px,4vw,48px);font-weight:900;letter-spacing:-0.03em;color:white;margin-bottom:16px">{{ section.settings.title | default: 'Join Our VIP Program' }}</h2>
+      <p style="font-size:18px;color:rgba(255,255,255,0.65);margin-bottom:48px">{{ section.settings.subtitle | default: 'Exclusive access to new arrivals, private sales, and concierge service.' }}</p>
+    </div>
+    <div class="vip-perks">
+      {%- for block in section.blocks -%}
+        <div class="vip-perk" {{ block.shopify_attributes }}>
+          <p class="vip-perk__icon">{{ block.settings.emoji | default: '⭐' }}</p>
+          <p class="vip-perk__title">{{ block.settings.title }}</p>
+          <p class="vip-perk__desc">{{ block.settings.description }}</p>
+        </div>
+      {%- endfor -%}
+    </div>
+    <div style="text-align:center;margin-top:40px">
+      <a href="{{ section.settings.btn_link | default: routes.account_register_url }}" class="btn btn--lg" style="background:#ffc800;color:#18181b;border-color:#ffc800;font-size:14px">
+        {{ section.settings.btn_label | default: 'Become a VIP Member' }}
+        <span class="material-symbols-outlined" style="font-size:18px">arrow_forward</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "VIP Section",
+  "settings": [
+    {"type":"text","id":"badge","label":"Badge Text","default":"VIP Members Only"},
+    {"type":"text","id":"title","label":"Title","default":"Join Our VIP Program"},
+    {"type":"textarea","id":"subtitle","label":"Subtitle"},
+    {"type":"text","id":"btn_label","label":"Button Label","default":"Become a VIP Member"},
+    {"type":"url","id":"btn_link","label":"Button Link"}
+  ],
+  "blocks":[
+    {"type":"perk","name":"VIP Perk","settings":[
+      {"type":"text","id":"emoji","label":"Emoji","default":"⭐"},
+      {"type":"text","id":"title","label":"Title","default":"Early Access"},
+      {"type":"textarea","id":"description","label":"Description","default":"Be the first to shop new arrivals before anyone else."}
+    ]}
+  ],
+  "max_blocks":6,
+  "presets":[{"name":"VIP Section","blocks":[
+    {"type":"perk","settings":{"emoji":"⚡","title":"Early Access","description":"Shop new arrivals 48 hours before public release."}},
+    {"type":"perk","settings":{"emoji":"🎁","title":"Exclusive Gifts","description":"Receive surprise gifts with every qualifying order."}},
+    {"type":"perk","settings":{"emoji":"🤝","title":"Personal Shopper","description":"1-on-1 styling advice from our expert team."}}
+  ]}]
+}
+{% endschema %}

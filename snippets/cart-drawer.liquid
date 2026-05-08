@@ -1,0 +1,110 @@
+<div class="cart-drawer-overlay"></div>
+<div class="cart-drawer" role="dialog" aria-modal="true" aria-label="Shopping cart">
+  <div class="cart-drawer__header">
+    <h2 class="cart-drawer__title">Your Cart <span style="font-weight:400;font-size:14px;color:var(--color-text-medium)">({{ cart.item_count }} items)</span></h2>
+    <button class="cart-drawer__close" aria-label="Close cart">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </div>
+
+  <!-- Free shipping progress -->
+  {%- if settings.free_shipping_threshold > 0 -%}
+    {%- assign threshold = settings.free_shipping_threshold | times: 100 -%}
+    {%- assign progress = cart.total_price | times: 100 | divided_by: threshold -%}
+    {%- assign progress = progress | at_most: 100 -%}
+    <div style="padding:12px 24px;background:var(--color-surface-low);border-bottom:1px solid var(--color-border)">
+      {%- if cart.total_price >= threshold -%}
+        <p style="font-size:13px;font-weight:600;color:var(--color-success);display:flex;align-items:center;gap:6px">
+          <span class="material-symbols-outlined fill" style="font-size:16px">check_circle</span>
+          You've unlocked FREE shipping!
+        </p>
+      {%- else -%}
+        {%- assign remaining = threshold | minus: cart.total_price -%}
+        <p style="font-size:13px;color:var(--color-text-medium);margin-bottom:8px">
+          Add <strong style="color:var(--color-text-high)">{{ remaining | money }}</strong> more for free shipping
+        </p>
+      {%- endif -%}
+      <div style="height:4px;background:var(--color-border);border-radius:99px;overflow:hidden">
+        <div style="height:100%;width:{{ progress }}%;background:var(--color-primary);border-radius:99px;transition:width 0.5s ease"></div>
+      </div>
+    </div>
+  {%- endif -%}
+
+  <!-- Cart Items -->
+  <div class="cart-drawer__body">
+    {%- if cart.item_count == 0 -%}
+      <div class="wishlist-empty" style="padding:40px 24px">
+        <span class="material-symbols-outlined" style="font-size:56px;color:var(--color-border);display:block;margin-bottom:16px">shopping_bag</span>
+        <p class="wishlist-empty__title">Your cart is empty</p>
+        <p class="wishlist-empty__subtitle">Add products to get started</p>
+        <a href="{{ routes.all_products_collection_url }}" class="btn btn--primary" style="margin-top:24px">Start Shopping</a>
+      </div>
+    {%- else -%}
+      {%- for item in cart.items -%}
+        <div class="cart-item" data-key="{{ item.key }}">
+          <a href="{{ item.url }}">
+            <img class="cart-item__image"
+              src="{{ item.image | image_url: width: 160 }}"
+              alt="{{ item.title | escape }}"
+              loading="lazy"
+              width="80" height="96">
+          </a>
+          <div class="cart-item__details">
+            <a href="{{ item.url }}" class="cart-item__title">{{ item.product_title }}</a>
+            {%- unless item.variant.title == 'Default Title' -%}
+              <p class="cart-item__variant">{{ item.variant.title }}</p>
+            {%- endunless -%}
+            <div class="cart-item__bottom">
+              <div class="qty-selector" style="height:36px">
+                <button class="qty-selector__btn" data-cart-qty-btn data-key="{{ item.key }}" data-action="dec" style="width:36px">−</button>
+                <input class="qty-selector__input" type="number" value="{{ item.quantity }}" min="1" style="width:44px;font-size:14px" readonly>
+                <button class="qty-selector__btn" data-cart-qty-btn data-key="{{ item.key }}" data-action="inc" style="width:36px">+</button>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px">
+                <span class="cart-item__price">{{ item.final_line_price | money }}</span>
+                <button data-cart-remove data-key="{{ item.key }}" title="Remove" style="color:var(--color-text-medium);background:none;border:none;cursor:pointer">
+                  <span class="material-symbols-outlined" style="font-size:18px">close</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      {%- endfor -%}
+    {%- endif -%}
+  </div>
+
+  <!-- Footer -->
+  {%- if cart.item_count > 0 -%}
+    <div class="cart-drawer__footer">
+      <div class="cart-summary__row">
+        <span>Subtotal</span>
+        <span>{{ cart.total_price | money }}</span>
+      </div>
+      <div class="cart-summary__row">
+        <span>Shipping</span>
+        <span style="color:var(--color-success)">Calculated at checkout</span>
+      </div>
+      <div class="cart-summary__row cart-summary__row--total">
+        <span>Total</span>
+        <span data-cart-total>{{ cart.total_price | money }}</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:20px">
+        <a href="{{ routes.cart_url }}" class="btn btn--secondary btn--full">View Cart</a>
+        <a href="{{ routes.checkout_url }}" class="btn btn--primary btn--full">
+          <span class="material-symbols-outlined" style="font-size:18px">lock</span>
+          Checkout — {{ cart.total_price | money }}
+        </a>
+      </div>
+      {%- if settings.show_cart_trust_badges -%}
+        <div style="display:flex;justify-content:center;gap:16px;margin-top:16px;flex-wrap:wrap">
+          <span style="font-size:12px;color:var(--color-text-medium);display:flex;align-items:center;gap:4px">
+            <span class="material-symbols-outlined" style="font-size:14px">lock</span>Secure checkout
+          </span>
+          <span style="font-size:12px;color:var(--color-text-medium);display:flex;align-items:center;gap:4px">
+            <span class="material-symbols-outlined" style="font-size:14px">cached</span>Free returns
+          </span>
+        </div>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+</div>

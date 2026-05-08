@@ -1,0 +1,92 @@
+<section class="section" style="padding-top:48px;padding-bottom:80px">
+  <div class="container">
+    <!-- Breadcrumbs -->
+    <div class="breadcrumbs">
+      <span class="breadcrumbs__item"><a href="/">Home</a></span>
+      <span class="breadcrumbs__item">{{ section.settings.title }}</span>
+    </div>
+
+    <!-- Header -->
+    <div style="text-align:center;max-width:640px;margin:0 auto 48px">
+      <h1 class="text-h1" style="margin-bottom:12px">{{ section.settings.title }}</h1>
+      {%- if section.settings.subtitle != blank -%}
+        <p style="color:var(--color-text-medium);font-size:16px;line-height:1.6">{{ section.settings.subtitle }}</p>
+      {%- endif -%}
+    </div>
+
+    <!-- Collections Grid -->
+    <div style="display:grid;grid-template-columns:repeat({{ section.settings.columns }},1fr);gap:24px">
+      {%- for collection in collections -%}
+        {%- if collection.handle != 'all' -%}
+        <a href="{{ collection.url }}" class="collection-card" style="display:block;position:relative;overflow:hidden;border-radius:var(--radius-md);aspect-ratio:3/4;background:var(--color-surface-low);group:collection">
+          {%- if collection.image != blank -%}
+            <img src="{{ collection.image | image_url: width: 800 }}" alt="{{ collection.title | escape }}" loading="lazy" style="width:100%;height:100%;object-fit:cover;transition:transform var(--transition-slow)">
+          {%- else -%}
+            <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--color-surface-low),var(--color-surface-high))">
+              <span class="material-symbols-outlined" style="font-size:64px;color:var(--color-text-low)">collections</span>
+            </div>
+          {%- endif -%}
+
+          <!-- Overlay -->
+          <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.65) 0%,rgba(0,0,0,0.15) 40%,transparent 100%);transition:background var(--transition-base)"></div>
+
+          <!-- Content -->
+          <div style="position:absolute;bottom:28px;left:24px;right:24px">
+            <h3 style="font-size:22px;font-weight:800;letter-spacing:-0.02em;color:white;margin-bottom:4px;transition:color var(--transition-fast)">{{ collection.title }}</h3>
+            {%- if collection.description != blank -%}
+              <p style="font-size:13px;color:rgba(255,255,255,0.75);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:8px">{{ collection.description | strip_html | truncate: 100 }}</p>
+            {%- endif -%}
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <span style="font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.6)">
+                {{ collection.all_products_count }} product{{ collection.all_products_count | pluralize }}
+              </span>
+              <span class="material-symbols-outlined" style="color:white;font-size:18px;transform:translateX(0);transition:transform var(--transition-fast)">arrow_forward</span>
+            </div>
+          </div>
+        </a>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+
+    {%- if collections.size == 1 -%}
+      <!-- No collections exist -->
+      <div style="text-align:center;padding:80px 24px">
+        <span class="material-symbols-outlined" style="font-size:64px;color:var(--color-border);display:block;margin-bottom:24px">inventory_2</span>
+        <h2 style="font-size:24px;font-weight:800;margin-bottom:12px">No collections yet</h2>
+        <p style="color:var(--color-text-medium);margin-bottom:32px">Create collections in your Shopify admin to organize your products.</p>
+        <a href="/admin/collections" class="btn btn--primary" target="_blank">Create Collection</a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Collections List",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Page Title",
+      "default": "All Collections"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Browse our curated selections"
+    },
+    {
+      "type": "select",
+      "id": "columns",
+      "label": "Columns on desktop",
+      "default": "3",
+      "options": [
+        { "value": "2", "label": "2" },
+        { "value": "3", "label": "3" },
+        { "value": "4", "label": "4" }
+      ]
+    }
+  ]
+}
+{% endschema %}

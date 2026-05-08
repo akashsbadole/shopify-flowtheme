@@ -1,0 +1,104 @@
+<section class="section" style="background:{{ section.settings.background }}">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-header__title">{{ section.settings.title }}</h2>
+      {%- if section.settings.view_all_link != blank -%}
+        <a href="{{ section.settings.view_all_link }}" class="section-header__link">
+          View All <span class="material-symbols-outlined" style="font-size:16px">arrow_forward</span>
+        </a>
+      {%- endif -%}
+    </div>
+    {%- if section.settings.description != blank -%}
+      <p style="font-size:16px;color:var(--color-text-medium);margin-top:-24px;margin-bottom:32px;max-width:560px">{{ section.settings.description }}</p>
+    {%- endif -%}
+    <div class="product-grid product-grid--{{ section.settings.columns }}">
+      {%- if section.settings.collection != blank -%}
+        {%- assign collection = collections[section.settings.collection] -%}
+        {%- for product in collection.products limit: section.settings.product_limit -%}
+          {%- render 'product-card', product: product -%}
+        {%- endfor -%}
+      {%- else -%}
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'product' and block.settings.product != blank -%}
+            {%- render 'product-card', product: block.settings.product -%}
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Featured Products",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section Title",
+      "default": "Featured Products"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description"
+    },
+    {
+      "type": "url",
+      "id": "view_all_link",
+      "label": "View All Link"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "product_limit",
+      "label": "Number of products to show",
+      "min": 4,
+      "max": 12,
+      "step": 2,
+      "default": 8
+    },
+    {
+      "type": "select",
+      "id": "columns",
+      "label": "Number of columns on desktop",
+      "default": "4",
+      "options": [
+        { "value": "2", "label": "2" },
+        { "value": "3", "label": "3" },
+        { "value": "4", "label": "4" }
+      ]
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Background color",
+      "default": "#ffffff"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "product",
+      "name": "Product",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 12,
+  "presets": [
+    {
+      "name": "Featured Products",
+      "category": "Products"
+    }
+  ]
+}
+{% endschema %}

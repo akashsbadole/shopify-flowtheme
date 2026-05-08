@@ -1,0 +1,162 @@
+{%- paginate collection.products by section.settings.products_per_page -%}
+<section class="section" style="padding-top:40px;padding-bottom:80px">
+  <div class="container">
+    <div class="breadcrumbs">
+      <span class="breadcrumbs__item"><a href="/">Home</a></span>
+      <span class="breadcrumbs__item"><a href="/collections">Collections</a></span>
+      <span class="breadcrumbs__item">{{ collection.title }}</span>
+    </div>
+
+    <div style="margin-bottom:40px">
+      <h1 class="text-h1" style="margin-bottom:12px">{{ collection.title }}</h1>
+      {%- if collection.description != blank -%}
+        <div style="max-width:640px;color:var(--color-text-medium);font-size:15px;line-height:1.6">{{ collection.description }}</div>
+      {%- endif -%}
+    </div>
+
+    {%- if collection.image != blank -%}
+      <div style="aspect-ratio:16/6;border-radius:var(--radius-md);overflow:hidden;margin-bottom:40px">
+        <img src="{{ collection.image | image_url: width: 1600 }}" alt="{{ collection.title | escape }}" style="width:100%;height:100%;object-fit:cover" loading="eager">
+      </div>
+    {%- endif -%}
+
+    <div class="collection-layout">
+      {%- if section.settings.enable_filters -%}
+      <aside class="collection-filters">
+        {%- for filter in collection.filters -%}
+          {%- if filter.type == 'list' -%}
+            <div class="filter-group">
+              <div class="filter-group__title">
+                {{ filter.label }}
+                <span class="material-symbols-outlined" style="font-size:16px;color:var(--color-text-medium)">expand_more</span>
+              </div>
+              <div class="filter-group__options">
+                {%- for value in filter.values -%}
+                  <label class="filter-option">
+                    <input type="checkbox" name="{{ value.param_name }}" value="{{ value.value }}"
+                      {%- if value.active -%}checked{%- endif -%}
+                      {%- if value.count == 0 and value.active == false -%}disabled{%- endif -%}
+                    >
+                    <span>{{ value.label }} ({{ value.count }})</span>
+                  </label>
+                {%- endfor -%}
+              </div>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+        {%- assign active_filters = collection.filters | where: 'active_values', true -%}
+        {%- if active_filters.size > 0 -%}
+          <a href="{{ collection.url }}" class="btn btn--secondary btn--sm btn--full" style="margin-top:24px;text-decoration:none">Clear All Filters</a>
+        {%- endif -%}
+      </aside>
+      {%- endif -%}
+
+      <div>
+        <div class="collection-toolbar">
+          <span class="collection-toolbar__count">{{ collection.products_count | pluralize: 'product', 'products' }}</span>
+
+          {%- if section.settings.enable_sorting -%}
+          <div class="collection-toolbar__sort">
+            <label for="sort-by" style="font-size:13px;font-weight:600;color:var(--color-text-medium)">Sort by:</label>
+            <select id="sort-by" onchange="window.location.href=this.value">
+              <option value="{{ collection.url }}?sort_by=manual"
+                {%- if collection.sort_by == 'manual' or collection.sort_by == blank -%}selected{%- endif -%}>Featured</option>
+              <option value="{{ collection.url }}?sort_by=best-selling"
+                {%- if collection.sort_by == 'best-selling' -%}selected{%- endif -%}>Best Selling</option>
+              <option value="{{ collection.url }}?sort_by=title-ascending"
+                {%- if collection.sort_by == 'title-ascending' -%}selected{%- endif -%}>A-Z</option>
+              <option value="{{ collection.url }}?sort_by=title-descending"
+                {%- if collection.sort_by == 'title-descending' -%}selected{%- endif -%}>Z-A</option>
+              <option value="{{ collection.url }}?sort_by=price-ascending"
+                {%- if collection.sort_by == 'price-ascending' -%}selected{%- endif -%}>Price, low to high</option>
+              <option value="{{ collection.url }}?sort_by=price-descending"
+                {%- if collection.sort_by == 'price-descending' -%}selected{%- endif -%}>Price, high to low</option>
+              <option value="{{ collection.url }}?sort_by=created-descending"
+                {%- if collection.sort_by == 'created-descending' -%}selected{%- endif -%}>Newest</option>
+            </select>
+          </div>
+          {%- endif -%}
+        </div>
+
+        {%- if collection.products.size > 0 -%}
+          <div class="product-grid product-grid--{{ section.settings.columns }}">
+            {%- for product in collection.products -%}
+              {%- render 'product-card', product: product -%}
+            {%- endfor -%}
+          </div>
+        {%- else -%}
+          <div style="text-align:center;padding:80px 24px">
+            <span class="material-symbols-outlined" style="font-size:64px;color:var(--color-border);display:block;margin-bottom:24px">inventory_2</span>
+            <h2 style="font-size:24px;font-weight:800;margin-bottom:12px">No products found</h2>
+            <p style="color:var(--color-text-medium);margin-bottom:32px">Try adjusting your filters or browse other collections.</p>
+            <a href="/collections" class="btn btn--primary">View All Collections</a>
+          </div>
+        {%- endif -%}
+
+        {%- if paginate.pages > 1 -%}
+          <nav class="pagination">
+            {%- if paginate.previous -%}
+              <a href="{{ paginate.previous.url }}" class="pagination__btn"><span class="material-symbols-outlined" style="font-size:16px">chevron_left</span></a>
+            {%- endif -%}
+            {%- for part in paginate.parts -%}
+              {%- if part.is_link -%}
+                <a href="{{ part.url }}" class="pagination__btn">{{ part.title }}</a>
+              {%- else -%}
+                <span class="pagination__btn {% if part.title == paginate.current_page %}active{% endif %}">{{ part.title }}</span>
+              {%- endif -%}
+            {%- endfor -%}
+            {%- if paginate.next -%}
+              <a href="{{ paginate.next.url }}" class="pagination__btn"><span class="material-symbols-outlined" style="font-size:16px">chevron_right</span></a>
+            {%- endif -%}
+          </nav>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+{%- endpaginate -%}
+
+{% schema %}
+{
+  "name": "Collection",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable_filters",
+      "label": "Enable filters",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sorting",
+      "label": "Enable sorting",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "Products per page",
+      "min": 4,
+      "max": 48,
+      "step": 4,
+      "default": 16
+    },
+    {
+      "type": "select",
+      "id": "columns",
+      "label": "Columns on desktop",
+      "default": "4",
+      "options": [
+        { "value": "2", "label": "2" },
+        { "value": "3", "label": "3" },
+        { "value": "4", "label": "4" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection"
+    }
+  ]
+}
+{% endschema %}

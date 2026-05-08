@@ -1,0 +1,70 @@
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-header__title">{{ section.settings.title | default: 'Compare Products' }}</h2>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'product' -%}
+                <th style="text-align:center">
+                  {%- if block.settings.product != blank -%}
+                    {%- assign prod = all_products[block.settings.product] -%}
+                    <img src="{{ prod.featured_image | image_url: width: 200 }}" alt="{{ prod.title }}" style="width:80px;height:80px;object-fit:cover;border-radius:4px;margin-bottom:8px;display:block;margin-inline:auto">
+                    <span>{{ prod.title }}</span><br>
+                    <strong style="color:var(--color-primary)">{{ prod.price | money }}</strong>
+                  {%- else -%}
+                    {{ block.settings.label }}
+                  {%- endif -%}
+                </th>
+              {%- endif -%}
+            {%- endfor -%}
+          </tr>
+        </thead>
+        <tbody>
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'row' -%}
+              <tr {{ block.shopify_attributes }}>
+                <td>{{ block.settings.feature }}</td>
+                {%- assign vals = block.settings.values | split: ',' -%}
+                {%- for val in vals -%}
+                  {%- assign v = val | strip -%}
+                  <td style="text-align:center">
+                    {%- if v == 'yes' or v == '✓' -%}
+                      <span class="spec-check material-symbols-outlined fill">check_circle</span>
+                    {%- elsif v == 'no' or v == '✗' -%}
+                      <span class="spec-cross material-symbols-outlined">cancel</span>
+                    {%- else -%}
+                      {{ v }}
+                    {%- endif -%}
+                  </td>
+                {%- endfor -%}
+              </tr>
+            {%- endif -%}
+          {%- endfor -%}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Product Comparison",
+  "settings": [{"type":"text","id":"title","label":"Title","default":"Compare Products"}],
+  "blocks":[
+    {"type":"product","name":"Product Column","settings":[
+      {"type":"product","id":"product","label":"Product"},
+      {"type":"text","id":"label","label":"Label (if no product)"}
+    ]},
+    {"type":"row","name":"Feature Row","settings":[
+      {"type":"text","id":"feature","label":"Feature Name","default":"Storage"},
+      {"type":"text","id":"values","label":"Values (comma-separated, use yes/no)","default":"128GB, 256GB, 512GB"}
+    ]}
+  ],
+  "presets":[{"name":"Product Comparison"}]
+}
+{% endschema %}

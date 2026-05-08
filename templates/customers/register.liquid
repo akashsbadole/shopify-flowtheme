@@ -1,0 +1,50 @@
+<div class="section">
+  <div class="container" style="max-width:480px">
+    <div style="text-align:center;margin-bottom:40px">
+      <a href="{{ routes.root_url }}" class="header__logo" style="display:inline-block;margin-bottom:24px">{{ shop.name }}</a>
+      <h1 class="text-h2">Create Account</h1>
+      <p style="color:var(--color-text-medium);margin-top:8px">Join our community and enjoy exclusive benefits</p>
+    </div>
+    {%- form 'create_customer' -%}
+      {%- if form.errors -%}
+        <div style="padding:16px;background:#fef2f2;border:1px solid #fecaca;border-radius:4px;color:#dc2626;font-size:14px;margin-bottom:20px">
+          {{ form.errors | default_errors }}
+        </div>
+      {%- endif -%}
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div class="form-field">
+          <label class="form-label">First Name</label>
+          <input class="form-input" type="text" name="customer[first_name]" autocomplete="given-name">
+        </div>
+        <div class="form-field">
+          <label class="form-label">Last Name</label>
+          <input class="form-input" type="text" name="customer[last_name]" autocomplete="family-name">
+        </div>
+      </div>
+      <div class="form-field" style="margin-top:16px">
+        <label class="form-label">Email</label>
+        <input class="form-input" type="email" name="customer[email]" autocomplete="email" required>
+      </div>
+      <div class="form-field" style="margin-top:16px">
+        <label class="form-label">Password</label>
+        <input class="form-input" type="password" name="customer[password]" autocomplete="new-password" required minlength="5">
+      </div>
+      <div style="margin-top:16px;padding:16px;background:var(--color-surface-low);border-radius:4px">
+        <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:13px;color:var(--color-text-medium)">
+          <input type="checkbox" name="customer[accepts_marketing]" style="margin-top:2px;accent-color:var(--color-primary)">
+          Subscribe to our newsletter for exclusive offers and new arrivals.
+        </label>
+      </div>
+      <button type="submit" class="btn btn--primary btn--full btn--lg" style="margin-top:24px">Create Account</button>
+      <p style="font-size:12px;color:var(--color-text-medium);text-align:center;margin-top:12px;line-height:1.5">
+        By creating an account you agree to our
+        <a href="/pages/privacy-policy" style="color:var(--color-primary)">Privacy Policy</a> and
+        <a href="/pages/terms-of-service" style="color:var(--color-primary)">Terms of Service</a>.
+      </p>
+    {%- endform -%}
+    <p style="text-align:center;margin-top:24px;font-size:14px;color:var(--color-text-medium)">
+      Already have an account?
+      <a href="{{ routes.account_login_url }}" style="color:var(--color-primary);font-weight:700">Sign in</a>
+    </p>
+  </div>
+</div>

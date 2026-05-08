@@ -1,0 +1,96 @@
+<div class="section">
+  <div class="container">
+    <div class="account-layout">
+      <!-- Sidebar Nav -->
+      <div class="account-nav">
+        <div class="account-nav__header">
+          <div class="account-nav__avatar">{{ customer.first_name | slice: 0 }}</div>
+          <p class="account-nav__name">{{ customer.name }}</p>
+          <p class="account-nav__email">{{ customer.email }}</p>
+        </div>
+        <nav class="account-nav__links">
+          <a href="{{ routes.account_url }}" class="account-nav__link active">
+            <span class="material-symbols-outlined" style="font-size:18px">receipt_long</span>Orders
+          </a>
+          <a href="{{ routes.account_addresses_url }}" class="account-nav__link">
+            <span class="material-symbols-outlined" style="font-size:18px">location_on</span>Addresses
+          </a>
+          <a href="/pages/wishlist" class="account-nav__link">
+            <span class="material-symbols-outlined" style="font-size:18px">favorite</span>Wishlist
+          </a>
+          <a href="/pages/loyalty" class="account-nav__link">
+            <span class="material-symbols-outlined" style="font-size:18px">stars</span>Loyalty Points
+          </a>
+          <a href="{{ routes.account_logout_url }}" class="account-nav__link" style="color:var(--color-error)">
+            <span class="material-symbols-outlined" style="font-size:18px">logout</span>Sign Out
+          </a>
+        </nav>
+      </div>
+
+      <!-- Orders -->
+      <div class="account-content">
+        <h1 class="account-content__title">My Orders</h1>
+        <p class="account-content__subtitle">Track, return, or buy again</p>
+
+        {%- if customer.orders.size == 0 -%}
+          <div class="data-card" style="padding:48px;text-align:center">
+            <span class="material-symbols-outlined" style="font-size:56px;color:var(--color-border);display:block;margin-bottom:16px">receipt_long</span>
+            <p style="font-size:18px;font-weight:700;margin-bottom:8px">No orders yet</p>
+            <p style="color:var(--color-text-medium);margin-bottom:24px">When you place an order, it will appear here.</p>
+            <a href="{{ routes.all_products_collection_url }}" class="btn btn--primary">Start Shopping</a>
+          </div>
+        {%- else -%}
+          <div class="data-card">
+            <div class="data-card__body" style="padding:0">
+              <table class="order-table">
+                <thead>
+                  <tr>
+                    <th>Order</th>
+                    <th>Date</th>
+                    <th>Items</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {%- for order in customer.orders -%}
+                    <tr>
+                      <td><strong>#{{ order.order_number }}</strong></td>
+                      <td style="color:var(--color-text-medium)">{{ order.created_at | date: '%b %d, %Y' }}</td>
+                      <td style="color:var(--color-text-medium)">
+                        {%- for line_item in order.line_items limit: 1 -%}
+                          {{ line_item.title | truncate: 30 }}
+                          {%- if order.line_items.size > 1 %} +{{ order.line_items.size | minus: 1 }} more{%- endif -%}
+                        {%- endfor -%}
+                      </td>
+                      <td><strong>{{ order.total_price | money }}</strong></td>
+                      <td>
+                        {%- case order.financial_status -%}
+                          {%- when 'paid' -%}
+                            <span class="order-status order-status--delivered">
+                              <span class="material-symbols-outlined fill" style="font-size:12px">check_circle</span>
+                              Paid
+                            </span>
+                          {%- when 'pending' -%}
+                            <span class="order-status order-status--processing">Pending</span>
+                          {%- when 'refunded' -%}
+                            <span class="order-status order-status--cancelled">Refunded</span>
+                          {%- else -%}
+                            <span class="order-status order-status--shipped">{{ order.financial_status | capitalize }}</span>
+                        {%- endcase -%}
+                      </td>
+                      <td>
+                        <a href="{{ order.customer_url }}" class="btn btn--secondary btn--sm">View</a>
+                      </td>
+                    </tr>
+                  {%- endfor -%}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</div>

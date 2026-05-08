@@ -1,0 +1,58 @@
+{%- comment -%}Dropshipping/Conversion section: Bundle + Save{%- endcomment -%}
+<section class="section" style="background:var(--color-surface-low)">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-header__title">{{ section.settings.title | default: 'Frequently Bought Together' }}</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 300px;gap:40px;align-items:start">
+      <div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap">
+        {%- for block in section.blocks -%}
+          {%- if block.settings.product != blank -%}
+            {%- assign prod = all_products[block.settings.product] -%}
+            <div style="text-align:center">
+              <div style="width:160px;height:160px;border-radius:8px;overflow:hidden;background:white;border:1px solid var(--color-border);margin-bottom:8px">
+                <img src="{{ prod.featured_image | image_url: width: 320 }}" alt="{{ prod.title }}" style="width:100%;height:100%;object-fit:cover">
+              </div>
+              <p style="font-size:13px;font-weight:600;margin-bottom:4px">{{ prod.title | truncate: 30 }}</p>
+              <p style="font-size:14px;font-weight:700;color:var(--color-primary)">{{ prod.price | money }}</p>
+            </div>
+            {%- unless forloop.last -%}
+              <span style="font-size:28px;font-weight:900;color:var(--color-text-medium)">+</span>
+            {%- endunless -%}
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+      <div style="background:white;border:1px solid var(--color-border);border-radius:8px;padding:28px">
+        <p class="text-label" style="color:var(--color-primary);margin-bottom:12px">Bundle & Save</p>
+        <p style="font-size:24px;font-weight:900;letter-spacing:-0.02em;margin-bottom:4px">{{ section.settings.bundle_price | money }}</p>
+        {%- if section.settings.original_price != blank -%}
+          <p style="font-size:16px;color:var(--color-text-medium);text-decoration:line-through;margin-bottom:16px">{{ section.settings.original_price | money }}</p>
+          {%- assign savings = section.settings.original_price | minus: section.settings.bundle_price -%}
+          <div style="background:#dcfce7;color:#16a34a;padding:8px 14px;border-radius:4px;font-size:13px;font-weight:700;margin-bottom:16px;display:inline-flex;align-items:center;gap:6px">
+            <span class="material-symbols-outlined fill" style="font-size:16px">savings</span>
+            Save {{ savings | money }}
+          </div>
+        {%- endif -%}
+        <button class="btn btn--primary btn--full" style="margin-top:8px">
+          <span class="material-symbols-outlined" style="font-size:18px">add_shopping_cart</span>
+          Add Bundle to Cart
+        </button>
+        <p style="font-size:12px;color:var(--color-text-medium);text-align:center;margin-top:12px">✓ Free shipping on bundle orders</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Bundle Upsell",
+  "settings": [
+    {"type":"text","id":"title","label":"Title","default":"Frequently Bought Together"},
+    {"type":"number","id":"bundle_price","label":"Bundle Price (in cents)","default":5999},
+    {"type":"number","id":"original_price","label":"Original Price (in cents)","default":7999}
+  ],
+  "blocks":[{"type":"product","name":"Product","settings":[{"type":"product","id":"product","label":"Product"}]}],
+  "max_blocks":3,
+  "presets":[{"name":"Bundle Upsell"}]
+}
+{% endschema %}

@@ -1,0 +1,77 @@
+{
+  "current": {
+    "logo": "",
+    "logo_width": 160,
+    "color_primary": "#0052FF",
+    "color_primary_dark": "#003EC7",
+    "color_surface": "#fbf9f9",
+    "color_text": "#18181b",
+    "color_border": "#e4e4e7",
+    "font_heading": "Plus Jakarta Sans",
+    "base_font_size": 16,
+    "main_menu": "main-menu",
+    "header_style": "default",
+    "sticky_header": true,
+    "show_wishlist_count": true,
+    "show_announcement": true,
+    "announcement_text": "🎉 Free shipping on orders over $75 — Use code FREESHIP",
+    "announcement_link_text": "Shop Now",
+    "cart_type": "drawer",
+    "free_shipping_threshold": 7500,
+    "show_cart_trust_badges": true,
+    "enable_zoom": true,
+    "show_quantity": true,
+    "show_share_buttons": true,
+    "enable_sticky_buy_bar": true,
+    "show_size_guide": true,
+    "default_columns": "4",
+    "products_per_page": 24,
+    "show_filter_sidebar": true,
+    "show_quick_view": true,
+    "enable_wishlist": true,
+    "predictive_search": true,
+    "search_results_limit": 6,
+    "niche_preset": "general",
+    "footer_tagline": "Premium quality, delivered with care.",
+    "footer_menu_1": "footer",
+    "footer_menu_label_1": "Shop",
+    "footer_menu_label_2": "Support",
+    "footer_menu_label_3": "Company",
+    "newsletter_text": "Get early access to new arrivals and exclusive offers.",
+    "show_powered_by": false,
+    "show_cookie_banner": true,
+    "enable_lazy_load": true,
+    "enable_critical_css": true,
+    "preload_fonts": true
+  },
+  "presets": {
+    "Fashion": {
+      "color_primary": "#1a1a1a",
+      "font_heading": "Playfair Display",
+      "niche_preset": "fashion",
+      "header_style": "centered"
+    },
+    "Tech": {
+      "color_primary": "#0052FF",
+      "font_heading": "Space Grotesk",
+      "niche_preset": "tech",
+      "color_surface": "#f8faff"
+    },
+    "Luxury": {
+      "color_primary": "#b8973e",
+      "font_heading": "Playfair Display",
+      "niche_preset": "luxury",
+      "color_surface": "#fafaf8"
+    },
+    "Dropshipping": {
+      "color_primary": "#dc2626",
+      "font_heading": "Plus Jakarta Sans",
+      "niche_preset": "dropshipping"
+    },
+    "Local Business": {
+      "color_primary": "#16a34a",
+      "font_heading": "DM Sans",
+      "niche_preset": "local"
+    }
+  }
+}

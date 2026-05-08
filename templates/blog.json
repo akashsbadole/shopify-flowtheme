@@ -1,0 +1,17 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-blog",
+      "settings": {
+        "title": "Our Journal",
+        "subtitle": "Tips, guides, and stories from our team",
+        "posts_per_page": 9,
+        "columns": "3",
+        "show_excerpt": true,
+        "show_author": true,
+        "show_date": true
+      }
+    }
+  },
+  "order": ["main"]
+}

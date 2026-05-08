@@ -1,0 +1,71 @@
+<section class="section" style="padding-top:48px;padding-bottom:64px;background:var(--color-surface-low)">
+  <div class="container">
+    <div class="section-header" style="margin-bottom:32px;padding-bottom:16px">
+      <h2 class="section-header__title">{{ section.settings.title }}</h2>
+      <a href="{{ routes.all_products_collection_url }}" class="section-header__link">
+        View All <span class="material-symbols-outlined" style="font-size:16px">arrow_forward</span>
+      </a>
+    </div>
+    <div class="product-grid product-grid--{{ section.settings.columns }}">
+      {%- if section.settings.collection != blank -%}
+        {%- assign rec_col = collections[section.settings.collection] -%}
+        {%- for product in rec_col.products limit: section.settings.limit -%}
+          {%- render 'product-card', product: product -%}
+        {%- endfor -%}
+      {%- elsif product -%}
+        {%- assign related_products = product.recommendations.products | default: collections.all.products | where_exp: "p", "p.handle != product.handle" | limit: section.settings.limit -%}
+        {%- for product in related_products -%}
+          {%- render 'product-card', product: product -%}
+        {%- endfor -%}
+      {%- else -%}
+        {%- for product in collections.all.products limit: section.settings.limit -%}
+          {%- render 'product-card', product: product -%}
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Recommended Products",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section title",
+      "default": "You May Also Like"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection (optional)"
+    },
+    {
+      "type": "range",
+      "id": "limit",
+      "label": "Number of products",
+      "min": 2,
+      "max": 12,
+      "step": 2,
+      "default": 4
+    },
+    {
+      "type": "select",
+      "id": "columns",
+      "label": "Columns",
+      "default": "4",
+      "options": [
+        { "value": "2", "label": "2" },
+        { "value": "3", "label": "3" },
+        { "value": "4", "label": "4" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Recommended Products"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,43 @@
+{%- assign end_time = section.settings.end_time -%}
+<section class="section section--sm" style="background:{{ section.settings.background | default: 'var(--color-text-high)' }};color:{{ section.settings.text_color | default: '#ffffff' }}">
+  <div class="container" style="display:flex;align-items:center;justify-content:space-between;gap:32px;flex-wrap:wrap">
+    <div>
+      {%- if section.settings.eyebrow != blank -%}
+        <p style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;opacity:0.6;margin-bottom:8px">{{ section.settings.eyebrow }}</p>
+      {%- endif -%}
+      <h2 style="font-size:clamp(20px,3vw,32px);font-weight:900;letter-spacing:-0.02em;margin-bottom:4px">{{ section.settings.title | default: 'Flash Sale Ends In' }}</h2>
+      {%- if section.settings.subtitle != blank -%}
+        <p style="font-size:14px;opacity:0.7">{{ section.settings.subtitle }}</p>
+      {%- endif -%}
+    </div>
+    <div class="countdown-timer" data-countdown data-end="{{ end_time }}">
+      <div class="countdown-unit"><span class="countdown-unit__value" data-days>00</span><span class="countdown-unit__label">Days</span></div>
+      <span class="countdown-sep">:</span>
+      <div class="countdown-unit"><span class="countdown-unit__value" data-hours>00</span><span class="countdown-unit__label">Hours</span></div>
+      <span class="countdown-sep">:</span>
+      <div class="countdown-unit"><span class="countdown-unit__value" data-minutes>00</span><span class="countdown-unit__label">Mins</span></div>
+      <span class="countdown-sep">:</span>
+      <div class="countdown-unit"><span class="countdown-unit__value" data-seconds>00</span><span class="countdown-unit__label">Secs</span></div>
+    </div>
+    {%- if section.settings.btn_label != blank -%}
+      <a href="{{ section.settings.btn_link }}" class="btn btn--primary btn--lg" style="background:white;color:var(--color-primary);border-color:white">{{ section.settings.btn_label }}</a>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Countdown Banner",
+  "settings": [
+    {"type":"text","id":"eyebrow","label":"Eyebrow","default":"Limited Time Offer"},
+    {"type":"text","id":"title","label":"Title","default":"Flash Sale Ends In"},
+    {"type":"text","id":"subtitle","label":"Subtitle"},
+    {"type":"text","id":"end_time","label":"End Time (ISO 8601)","info":"e.g. 2025-12-31T23:59:59","default":"2025-12-31T23:59:59"},
+    {"type":"text","id":"btn_label","label":"Button Label","default":"Shop Sale"},
+    {"type":"url","id":"btn_link","label":"Button Link"},
+    {"type":"color","id":"background","label":"Background","default":"#18181b"},
+    {"type":"color","id":"text_color","label":"Text Color","default":"#ffffff"}
+  ],
+  "presets":[{"name":"Countdown Banner"}]
+}
+{% endschema %}

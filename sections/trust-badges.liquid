@@ -1,0 +1,38 @@
+<section class="trust-badges-bar">
+  <div class="container">
+    <div class="trust-badges-bar__inner">
+      {%- for block in section.blocks -%}
+        <div class="trust-badge" {{ block.shopify_attributes }}>
+          <span class="trust-badge__icon material-symbols-outlined fill">{{ block.settings.icon | default: 'verified' }}</span>
+          <div>
+            <p style="font-size:13px;font-weight:700;color:var(--color-text-high)">{{ block.settings.title }}</p>
+            {%- if block.settings.subtitle != blank -%}
+              <p style="font-size:12px;color:var(--color-text-medium)">{{ block.settings.subtitle }}</p>
+            {%- endif -%}
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Trust Badges",
+  "settings": [],
+  "blocks":[
+    {"type":"badge","name":"Trust Badge","settings":[
+      {"type":"text","id":"icon","label":"Material Icon Name","default":"local_shipping"},
+      {"type":"text","id":"title","label":"Title","default":"Free Shipping"},
+      {"type":"text","id":"subtitle","label":"Subtitle","default":"On orders over $75"}
+    ]}
+  ],
+  "max_blocks":6,
+  "presets":[{"name":"Trust Badges","blocks":[
+    {"type":"badge","settings":{"icon":"local_shipping","title":"Free Shipping","subtitle":"Orders over $75"}},
+    {"type":"badge","settings":{"icon":"cached","title":"Free Returns","subtitle":"30-day hassle-free"}},
+    {"type":"badge","settings":{"icon":"lock","title":"Secure Checkout","subtitle":"SSL encrypted"}},
+    {"type":"badge","settings":{"icon":"support_agent","title":"24/7 Support","subtitle":"Always here to help"}}
+  ]}]
+}
+{% endschema %}

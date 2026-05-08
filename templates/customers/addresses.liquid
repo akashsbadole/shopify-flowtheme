@@ -1,0 +1,112 @@
+<div class="section">
+  <div class="container">
+    <div class="account-layout">
+      <div class="account-nav">
+        <div class="account-nav__header">
+          <div class="account-nav__avatar">{{ customer.first_name | slice: 0 }}</div>
+          <p class="account-nav__name">{{ customer.name }}</p>
+          <p class="account-nav__email">{{ customer.email }}</p>
+        </div>
+        <nav class="account-nav__links">
+          <a href="{{ routes.account_url }}" class="account-nav__link">
+            <span class="material-symbols-outlined" style="font-size:18px">receipt_long</span>Orders
+          </a>
+          <a href="{{ routes.account_addresses_url }}" class="account-nav__link active">
+            <span class="material-symbols-outlined" style="font-size:18px">location_on</span>Addresses
+          </a>
+          <a href="{{ routes.account_logout_url }}" class="account-nav__link" style="color:var(--color-error)">
+            <span class="material-symbols-outlined" style="font-size:18px">logout</span>Sign Out
+          </a>
+        </nav>
+      </div>
+
+      <div class="account-content">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:32px">
+          <div>
+            <h1 class="account-content__title" style="margin-bottom:4px">My Addresses</h1>
+            <p class="account-content__subtitle" style="margin-bottom:0">Manage your delivery addresses</p>
+          </div>
+          <button class="btn btn--primary" id="add-address-btn">
+            <span class="material-symbols-outlined" style="font-size:18px">add</span>Add Address
+          </button>
+        </div>
+
+        <!-- New Address Form (hidden by default) -->
+        <div id="new-address-form" style="display:none;margin-bottom:32px">
+          <div class="data-card">
+            <div class="data-card__header">
+              <h2 class="data-card__title">Add New Address</h2>
+              <button class="btn btn--ghost btn--sm" id="cancel-address-btn">Cancel</button>
+            </div>
+            <div class="data-card__body">
+              {%- form 'customer_address', customer.new_address -%}
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+                  <div class="form-field"><label class="form-label">First Name</label><input class="form-input" type="text" name="address[first_name]" autocomplete="given-name"></div>
+                  <div class="form-field"><label class="form-label">Last Name</label><input class="form-input" type="text" name="address[last_name]" autocomplete="family-name"></div>
+                </div>
+                <div class="form-field" style="margin-bottom:16px"><label class="form-label">Address</label><input class="form-input" type="text" name="address[address1]" autocomplete="address-line1"></div>
+                <div class="form-field" style="margin-bottom:16px"><label class="form-label">Apartment, suite, etc.</label><input class="form-input" type="text" name="address[address2]" autocomplete="address-line2"></div>
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px">
+                  <div class="form-field"><label class="form-label">City</label><input class="form-input" type="text" name="address[city]" autocomplete="address-level2"></div>
+                  <div class="form-field"><label class="form-label">State</label><input class="form-input" type="text" name="address[province]"></div>
+                  <div class="form-field"><label class="form-label">ZIP</label><input class="form-input" type="text" name="address[zip]" autocomplete="postal-code"></div>
+                </div>
+                <div class="form-field" style="margin-bottom:20px">
+                  <label class="form-label">Country</label>
+                  <select class="form-select" name="address[country]" autocomplete="country">{{ country_option_tags }}</select>
+                </div>
+                <label style="display:flex;align-items:center;gap:10px;font-size:14px;cursor:pointer;margin-bottom:20px">
+                  <input type="checkbox" name="address[default]" style="accent-color:var(--color-primary)">
+                  Set as default address
+                </label>
+                <button type="submit" class="btn btn--primary">Save Address</button>
+              {%- endform -%}
+            </div>
+          </div>
+        </div>
+
+        <!-- Existing Addresses -->
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:20px">
+          {%- for address in customer.addresses -%}
+            <div class="data-card">
+              <div class="data-card__header">
+                <h3 class="data-card__title">
+                  {{ address.name }}
+                  {%- if address == customer.default_address -%}
+                    <span style="font-size:11px;font-weight:600;background:var(--color-primary);color:white;padding:2px 8px;border-radius:99px;margin-left:8px">Default</span>
+                  {%- endif -%}
+                </h3>
+                <div style="display:flex;gap:8px">
+                  <button class="btn btn--ghost btn--sm">Edit</button>
+                  {%- form 'customer_address', address -%}
+                    <input type="hidden" name="_method" value="delete">
+                    <button type="submit" class="btn btn--ghost btn--sm" style="color:var(--color-error)" onclick="return confirm('Delete this address?')">Delete</button>
+                  {%- endform -%}
+                </div>
+              </div>
+              <div class="data-card__body">
+                <p style="font-size:14px;color:var(--color-text-medium);line-height:1.8">
+                  {{ address.address1 }}<br>
+                  {%- if address.address2 != blank -%}{{ address.address2 }}<br>{%- endif -%}
+                  {{ address.city }}, {{ address.province_code }} {{ address.zip }}<br>
+                  {{ address.country }}
+                </p>
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.getElementById('add-address-btn')?.addEventListener('click', () => {
+    document.getElementById('new-address-form').style.display = '';
+    document.getElementById('add-address-btn').style.display = 'none';
+  });
+  document.getElementById('cancel-address-btn')?.addEventListener('click', () => {
+    document.getElementById('new-address-form').style.display = 'none';
+    document.getElementById('add-address-btn').style.display = '';
+  });
+</script>

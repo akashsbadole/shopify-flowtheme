@@ -1,0 +1,175 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "FlowTheme",
+    "theme_version": "1.0.0",
+    "theme_author": "FlowTheme Studio",
+    "theme_documentation_url": "https://flowtheme.dev/docs",
+    "theme_support_url": "https://flowtheme.dev/support"
+  },
+  {
+    "name": "Logo & Branding",
+    "settings": [
+      {"type":"image_picker","id":"logo","label":"Logo"},
+      {"type":"range","id":"logo_width","min":80,"max":300,"step":10,"unit":"px","label":"Logo Width","default":160},
+      {"type":"text","id":"favicon","label":"Favicon (URL)"}
+    ]
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      {"type":"color","id":"color_primary","label":"Primary Color","default":"#0052FF"},
+      {"type":"color","id":"color_primary_dark","label":"Primary Dark","default":"#003EC7"},
+      {"type":"color","id":"color_surface","label":"Page Background","default":"#fbf9f9"},
+      {"type":"color","id":"color_text","label":"Text Color","default":"#18181b"},
+      {"type":"color","id":"color_border","label":"Border Color","default":"#e4e4e7"}
+    ]
+  },
+  {
+    "name": "Typography",
+    "settings": [
+      {
+        "type":"select","id":"font_heading","label":"Heading Font","default":"Plus Jakarta Sans",
+        "options":[
+          {"value":"Plus Jakarta Sans","label":"Plus Jakarta Sans (Default)"},
+          {"value":"Inter","label":"Inter"},
+          {"value":"DM Sans","label":"DM Sans"},
+          {"value":"Playfair Display","label":"Playfair Display (Luxury)"},
+          {"value":"Space Grotesk","label":"Space Grotesk (Tech)"}
+        ]
+      },
+      {"type":"range","id":"base_font_size","min":14,"max":18,"step":1,"unit":"px","label":"Base Font Size","default":16}
+    ]
+  },
+  {
+    "name": "Header",
+    "settings": [
+      {"type":"link_list","id":"main_menu","label":"Main Navigation Menu","default":"main-menu"},
+      {"type":"select","id":"header_style","label":"Header Style","default":"default",
+        "options":[
+          {"value":"default","label":"Default (Logo left)"},
+          {"value":"centered","label":"Centered logo"},
+          {"value":"minimal","label":"Minimal"}
+        ]
+      },
+      {"type":"checkbox","id":"sticky_header","label":"Sticky Header","default":true},
+      {"type":"checkbox","id":"show_wishlist_count","label":"Show Wishlist Count","default":true},
+      {"type":"image_picker","id":"mega_menu_image","label":"Mega Menu Featured Image"},
+      {"type":"url","id":"mega_menu_link","label":"Mega Menu Image Link"},
+      {"type":"text","id":"mega_menu_label","label":"Mega Menu Image Label","default":"Featured"}
+    ]
+  },
+  {
+    "name": "Announcement Bar",
+    "settings": [
+      {"type":"checkbox","id":"show_announcement","label":"Show Announcement Bar","default":true},
+      {"type":"text","id":"announcement_text","label":"Announcement Text","default":"🎉 Free shipping on orders over $75 — Use code FREESHIP"},
+      {"type":"url","id":"announcement_link","label":"Announcement Link"},
+      {"type":"text","id":"announcement_link_text","label":"Announcement Link Text","default":"Shop Now"}
+    ]
+  },
+  {
+    "name": "Cart",
+    "settings": [
+      {"type":"select","id":"cart_type","label":"Cart Type","default":"drawer",
+        "options":[
+          {"value":"drawer","label":"Slide-out Drawer"},
+          {"value":"page","label":"Cart Page"},
+          {"value":"modal","label":"Modal Popup"}
+        ]
+      },
+      {"type":"number","id":"free_shipping_threshold","label":"Free Shipping Threshold (cents, 0 to disable)","default":7500},
+      {"type":"checkbox","id":"show_cart_trust_badges","label":"Show Trust Badges in Cart","default":true}
+    ]
+  },
+  {
+    "name": "Product Pages",
+    "settings": [
+      {"type":"checkbox","id":"enable_zoom","label":"Enable Image Zoom","default":true},
+      {"type":"checkbox","id":"show_quantity","label":"Show Quantity Selector","default":true},
+      {"type":"checkbox","id":"show_share_buttons","label":"Show Share Buttons","default":true},
+      {"type":"checkbox","id":"enable_sticky_buy_bar","label":"Sticky Add-to-Cart Bar","default":true},
+      {"type":"checkbox","id":"show_size_guide","label":"Show Size Guide Link","default":true}
+    ]
+  },
+  {
+    "name": "Collection Pages",
+    "settings": [
+      {"type":"select","id":"default_columns","label":"Default Grid Columns","default":"4",
+        "options":[
+          {"value":"2","label":"2 Columns"},
+          {"value":"3","label":"3 Columns"},
+          {"value":"4","label":"4 Columns"}
+        ]
+      },
+      {"type":"number","id":"products_per_page","label":"Products per Page","default":24},
+      {"type":"checkbox","id":"show_filter_sidebar","label":"Show Filter Sidebar","default":true},
+      {"type":"checkbox","id":"show_quick_view","label":"Show Quick View","default":true},
+      {"type":"checkbox","id":"enable_wishlist","label":"Enable Wishlist","default":true}
+    ]
+  },
+  {
+    "name": "Search",
+    "settings": [
+      {"type":"checkbox","id":"predictive_search","label":"Enable Predictive Search","default":true},
+      {"type":"number","id":"search_results_limit","label":"Search Results Limit","default":6}
+    ]
+  },
+  {
+    "name": "Niche Presets",
+    "settings": [
+      {
+        "type":"select","id":"niche_preset","label":"Store Niche (loads preset styles)","default":"general",
+        "info":"Choose your store type to apply optimized defaults.",
+        "options":[
+          {"value":"general","label":"General / Multi-niche"},
+          {"value":"fashion","label":"Fashion & Apparel"},
+          {"value":"tech","label":"Tech & Electronics"},
+          {"value":"dropshipping","label":"Dropshipping / General"},
+          {"value":"luxury","label":"Luxury & Premium"},
+          {"value":"local","label":"Local Business / Services"}
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Social Media",
+    "settings": [
+      {"type":"url","id":"social_instagram","label":"Instagram URL"},
+      {"type":"url","id":"social_twitter","label":"Twitter / X URL"},
+      {"type":"url","id":"social_facebook","label":"Facebook URL"},
+      {"type":"url","id":"social_tiktok","label":"TikTok URL"},
+      {"type":"url","id":"social_youtube","label":"YouTube URL"},
+      {"type":"url","id":"social_pinterest","label":"Pinterest URL"}
+    ]
+  },
+  {
+    "name": "Footer",
+    "settings": [
+      {"type":"text","id":"footer_tagline","label":"Brand Tagline","default":"Premium quality, delivered with care."},
+      {"type":"link_list","id":"footer_menu_1","label":"Footer Menu 1","default":"footer"},
+      {"type":"text","id":"footer_menu_label_1","label":"Footer Menu 1 Label","default":"Shop"},
+      {"type":"link_list","id":"footer_menu_2","label":"Footer Menu 2"},
+      {"type":"text","id":"footer_menu_label_2","label":"Footer Menu 2 Label","default":"Support"},
+      {"type":"link_list","id":"footer_menu_3","label":"Footer Menu 3"},
+      {"type":"text","id":"footer_menu_label_3","label":"Footer Menu 3 Label","default":"Company"},
+      {"type":"text","id":"newsletter_text","label":"Newsletter Description","default":"Get early access to new arrivals and exclusive offers."},
+      {"type":"checkbox","id":"show_powered_by","label":"Show 'Powered by Shopify'","default":false}
+    ]
+  },
+  {
+    "name": "GDPR & Privacy",
+    "settings": [
+      {"type":"checkbox","id":"show_cookie_banner","label":"Show Cookie Consent Banner","default":true},
+      {"type":"textarea","id":"cookie_banner_text","label":"Cookie Banner Text","default":"We use cookies to improve your experience."}
+    ]
+  },
+  {
+    "name": "Performance",
+    "settings": [
+      {"type":"checkbox","id":"enable_lazy_load","label":"Lazy Load Images","default":true},
+      {"type":"checkbox","id":"enable_critical_css","label":"Inline Critical CSS","default":true},
+      {"type":"checkbox","id":"preload_fonts","label":"Preload Key Fonts","default":true}
+    ]
+  }
+]

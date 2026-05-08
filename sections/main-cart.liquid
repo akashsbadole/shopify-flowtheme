@@ -1,0 +1,125 @@
+<section class="section" style="padding-top:40px;padding-bottom:80px">
+  <div class="container" style="max-width:900px">
+    <div class="breadcrumbs">
+      <span class="breadcrumbs__item"><a href="/">Home</a></span>
+      <span class="breadcrumbs__item">Cart</span>
+    </div>
+
+    <h1 class="text-h1" style="margin-bottom:40px">Your Cart</h1>
+
+    {%- if cart.item_count == 0 -%}
+      <div style="text-align:center;padding:80px 24px">
+        <span class="material-symbols-outlined" style="font-size:64px;color:var(--color-border);display:block;margin-bottom:24px">shopping_bag</span>
+        <h2 style="font-size:24px;font-weight:800;margin-bottom:12px">Your cart is empty</h2>
+        <p style="color:var(--color-text-medium);margin-bottom:32px">Add some products to get started.</p>
+        <a href="{{ routes.all_products_collection_url }}" class="btn btn--primary">Start Shopping</a>
+      </div>
+    {%- else -%}
+      <div style="display:grid;grid-template-columns:1fr 340px;gap:48px;align-items:start">
+        <!-- Cart Items -->
+        <div>
+          {%- for item in cart.items -%}
+            <div class="cart-item" data-key="{{ item.key }}" style="padding:20px 0;{% unless forloop.last %}border-bottom:1px solid var(--color-border){% endunless %}">
+              <a href="{{ item.url }}" style="flex-shrink:0">
+                <img class="cart-item__image"
+                  src="{{ item.image | image_url: width: 160 }}"
+                  alt="{{ item.title | escape }}"
+                  loading="lazy"
+                  width="80" height="96"
+                  style="width:80px;height:96px;border-radius:var(--radius-sm);object-fit:cover;background:var(--color-surface-low)">
+              </a>
+              <div style="flex:1;padding-left:16px">
+                <a href="{{ item.url }}" class="cart-item__title" style="font-size:15px;font-weight:600">{{ item.product_title }}</a>
+                {%- unless item.variant.title == 'Default Title' -%}
+                  <p style="font-size:13px;color:var(--color-text-medium);margin-top:4px">{{ item.variant.title }}</p>
+                {%- endunless -%}
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px">
+                  <div class="qty-selector" style="height:36px">
+                    <button class="qty-selector__btn" data-cart-qty-btn data-key="{{ item.key }}" data-action="dec" style="width:36px">âˆ’</button>
+                    <input class="qty-selector__input" type="number" value="{{ item.quantity }}" min="1" style="width:44px;font-size:14px" readonly>
+                    <button class="qty-selector__btn" data-cart-qty-btn data-key="{{ item.key }}" data-action="inc" style="width:36px">+</button>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:16px">
+                    <span class="cart-item__price" style="font-size:15px;font-weight:700">{{ item.final_line_price | money }}</span>
+                    <button data-cart-remove data-key="{{ item.key }}" title="Remove" style="color:var(--color-text-medium);background:none;border:none;cursor:pointer">
+                      <span class="material-symbols-outlined" style="font-size:18px">close</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+
+        <!-- Cart Summary -->
+        <div style="background:var(--color-surface-low);border-radius:var(--radius-md);padding:24px;position:sticky;top:88px">
+          <h3 style="font-size:18px;font-weight:800;margin-bottom:20px">Order Summary</h3>
+
+          {%- if settings.free_shipping_threshold > 0 -%}
+            {%- assign threshold = settings.free_shipping_threshold | times: 100 -%}
+            {%- assign progress = cart.total_price | times: 100 | divided_by: threshold | at_most: 100 -%}
+            <div style="margin-bottom:20px">
+              {%- if cart.total_price >= threshold -%}
+                <p style="font-size:13px;font-weight:600;color:var(--color-success);display:flex;align-items:center;gap:6px">
+                  <span class="material-symbols-outlined fill" style="font-size:16px">check_circle</span>
+                  Free shipping unlocked!
+                </p>
+              {%- else -%}
+                {%- assign remaining = threshold | minus: cart.total_price -%}
+                <p style="font-size:13px;color:var(--color-text-medium);margin-bottom:8px">
+                  Add <strong style="color:var(--color-text-high)">{{ remaining | money }}</strong> for free shipping
+                </p>
+              {%- endif -%}
+              <div style="height:4px;background:var(--color-border);border-radius:99px;overflow:hidden">
+                <div style="height:100%;width:{{ progress }}%;background:var(--color-primary);border-radius:99px;transition:width 0.5s"></div>
+              </div>
+            </div>
+          {%- endif -%}
+
+          <div class="cart-summary__row">
+            <span>Subtotal</span>
+            <span>{{ cart.total_price | money }}</span>
+          </div>
+          <div class="cart-summary__row">
+            <span>Shipping</span>
+            <span style="color:var(--color-success)">Calculated at checkout</span>
+          </div>
+          <div class="cart-summary__row cart-summary__row--total">
+            <span>Total</span>
+            <span data-cart-total>{{ cart.total_price | money }}</span>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:10px;margin-top:20px">
+            <a href="{{ routes.checkout_url }}" class="btn btn--primary btn--full">
+              <span class="material-symbols-outlined" style="font-size:18px">lock</span>
+              Checkout â€” {{ cart.total_price | money }}
+            </a>
+          </div>
+
+          {%- if settings.show_cart_trust_badges -%}
+            <div style="display:flex;justify-content:center;gap:16px;margin-top:16px;flex-wrap:wrap">
+              <span style="font-size:12px;color:var(--color-text-medium);display:flex;align-items:center;gap:4px">
+                <span class="material-symbols-outlined" style="font-size:14px">lock</span>Secure checkout
+              </span>
+              <span style="font-size:12px;color:var(--color-text-medium);display:flex;align-items:center;gap:4px">
+                <span class="material-symbols-outlined" style="font-size:14px">cached</span>Free returns
+              </span>
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Cart",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Cart"
+    }
+  ]
+}
+{% endschema %}

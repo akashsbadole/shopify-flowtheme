@@ -1,0 +1,89 @@
+<header class="site-header" role="banner">
+  <div class="container">
+    <div class="header__inner">
+      <!-- Logo -->
+      <a class="header__logo" href="{{ routes.root_url }}">
+        {%- if settings.logo != blank -%}
+          <img src="{{ settings.logo | image_url: width: 200 }}" alt="{{ shop.name }}" height="40" loading="eager">
+        {%- else -%}
+          {{ shop.name }}
+        {%- endif -%}
+      </a>
+
+      <!-- Desktop Navigation -->
+      <nav class="header__nav" aria-label="Main navigation">
+        {%- for link in linklists[settings.main_menu].links -%}
+          {%- if link.links != blank -%}
+            <div class="header__nav-item" style="position:relative">
+              <a href="{{ link.url }}" class="header__nav-link" aria-haspopup="true">{{ link.title }}</a>
+              <div class="mega-menu" role="region" aria-label="{{ link.title }} submenu">
+                <div class="mega-menu__inner">
+                  {%- for sub in link.links limit: 4 -%}
+                    <div class="mega-menu__column">
+                      <h4>{{ sub.title }}</h4>
+                      {%- for child in sub.links -%}
+                        <a href="{{ child.url }}" class="mega-menu__link">{{ child.title }}</a>
+                      {%- endfor -%}
+                    </div>
+                  {%- endfor -%}
+                  {%- if settings.mega_menu_image != blank -%}
+                    <a href="{{ settings.mega_menu_link | default: '#' }}" class="mega-menu__featured">
+                      <img src="{{ settings.mega_menu_image | image_url: width: 400 }}" alt="{{ settings.mega_menu_label }}">
+                      <div class="mega-menu__featured-label">
+                        <p class="text-label">{{ settings.mega_menu_label | default: 'Featured' }}</p>
+                      </div>
+                    </a>
+                  {%- endif -%}
+                </div>
+              </div>
+            </div>
+          {%- else -%}
+            <a href="{{ link.url }}" class="header__nav-link">{{ link.title }}</a>
+          {%- endif -%}
+        {%- endfor -%}
+      </nav>
+
+      <!-- Actions -->
+      <div class="header__actions">
+        <!-- Search -->
+        <button class="header__icon-btn" data-open-search aria-label="Search">
+          <span class="material-symbols-outlined">search</span>
+        </button>
+
+        <!-- Wishlist -->
+        <a href="{{ routes.root_url }}pages/wishlist" class="header__icon-btn" aria-label="Wishlist">
+          <span class="material-symbols-outlined">favorite</span>
+          {%- if settings.show_wishlist_count -%}
+            <span class="header__cart-count" data-wishlist-count style="background:#dc2626">0</span>
+          {%- endif -%}
+        </a>
+
+        <!-- Account -->
+        {%- if customer -%}
+          <a href="{{ routes.account_url }}" class="header__icon-btn" aria-label="Account">
+            <span class="material-symbols-outlined">person</span>
+          </a>
+        {%- else -%}
+          <a href="{{ routes.account_login_url }}" class="header__icon-btn" aria-label="Login">
+            <span class="material-symbols-outlined">person</span>
+          </a>
+        {%- endif -%}
+
+        <!-- Cart -->
+        <button class="header__icon-btn" data-open-cart aria-label="Cart ({{ cart.item_count }} items)">
+          <span class="material-symbols-outlined">shopping_bag</span>
+          {%- if cart.item_count > 0 -%}
+            <span class="header__cart-count">{{ cart.item_count }}</span>
+          {%- else -%}
+            <span class="header__cart-count" style="display:none">0</span>
+          {%- endif -%}
+        </button>
+
+        <!-- Mobile Menu Button -->
+        <button class="header__icon-btn header__mobile-menu-btn" aria-label="Open menu">
+          <span class="material-symbols-outlined">menu</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
